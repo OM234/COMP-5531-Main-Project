@@ -1,3 +1,7 @@
+* {
+    font-family: 'Titillium Web', sans-serif;
+}
+
 .toph1 {
     text-align: left;
     font-size: 25px;
@@ -8,7 +12,6 @@
 }
 
 .topBanner {
-    font-family: 'Titillium Web', sans-serif;
     background-color: #d4d5d5;
     padding: 1px 50px;
     right: 0pxs;
@@ -38,7 +41,7 @@
     padding: 6px 24px;
     text-decoration: none;
     text-shadow: 0px 1px 0px #aade7c;
-    bottom: 165px;
+    bottom: 180px;
 }
 
 .login:hover {
@@ -62,7 +65,7 @@
     padding: 8px;
     box-sizing: border-box;
     transition: .3s;
-    bottom: 185px;
+    bottom: 200px;
     text-align: center;
 }
 
@@ -77,7 +80,7 @@
     padding: 8px;
     box-sizing: border-box;
     transition: .3s;
-    bottom: 175px;
+    bottom: 190px;
     text-align: center;
 }
 
@@ -132,6 +135,15 @@
     text-align: center;
     position: relative;
     right: 45px;
-    bottom: 210px;
+    bottom: 230px;
+    font-size: 12px;
+}
+
+.newAccount {
+    margin-left: 50%;
+    text-align: center;
+    position: relative;
+    right: 188px;
+    bottom: 230px;
     font-size: 12px;
 }

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>New page</title>
+        <link href="css/signup.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="form">
+            <h2 class="topBanner">Sign up for new account</h2>
+            <p class="fillIn"><b>Please fill in this form to create an account</b></p>
+            <p><b>Email</b></p>
+            <input type="text" placeholder="Enter email">
+            <p><b>Username</b></p>
+            <input type="text" placeholder="Enter username">
+            <p><b>Password</b></p>
+            <input type="password" placeholder="Enter password">
+            <p><b>Account type</b></p>
+            <div class="account-toolbar">
+                <input type="radio" id="employerPrime" name="radioSelect" value="employerPrime">
+                <label for="employerPrime">Employer - Prime</label>
+                <input type="radio" id="employerGold" name="radioSelect" value="employerGold">
+                <label for="employerGold">Employer - Gold</label>
+                <br>
+                <input type="radio" id="seekerBasic" name="radioSelect" value="seekerBasic">
+                <label for="seekerBasic">Job Seeker - Basic</label>
+                <input type="radio" id="seekerPrime" name="radioSelect" value="seekerPrime">
+                <label for="seekerPrime">Job Seeker - Prime</label>
+                <input type="radio" id="seekerGold" name="radioSelect" value="seekerGold">
+                <label for="seekerGold">Job Seeker - Gold</label>
+            </div>
+            <p><b>Monthly cost $ </b></p>
+            <p><b>How would you like to pay?</b></p>
+            <input type="radio" id="creditRadio" name="paymentRadio" value="creditRadio">
+            <label for="creditRadio">Credit Card</label>
+            <p><b>Name</b></p>
+            <input type="text" placeholder="Enter name">
+            <p><b>Credit card number</b></p>
+            <input type="text" placeholder="Enter card number">
+            <p><b>Expiration(MMYYYY)</b></p>
+            <input type="text" placeholder="Enter expiration">
+            <br>
+            <br>
+            <input type="radio" id="bankAccount" name="paymentRadio" value="bankAccount">
+            <label for="bankAccount">Bank Account</label>
+            <p><b>Account number</b></p>
+            <input type="text" placeholder="Enter account number">
+            <p><b>Transit Number</b></p>
+            <input type="text" placeholder="Enter transit number">
+            <br>
+            <br>
+            <button onclick="document.location='index.html'" class="cancel">Cancel</button>
+            <button class="make">Make Account</button>
+        </div>
+    </body>
+</html>

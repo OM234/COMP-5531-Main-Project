@@ -4,18 +4,19 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="description" content="">
-        <meta name="author" content="">
-        <title>New page</title>
+        <meta name="COMP 5531 Team" content="">
+        <title>COMP 5531: Main Project</title>
         <link href="css/style.css" rel="stylesheet">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta&display=swap">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&display=swap">
+        <script src="js/scripts.js"></script>
     </head>
     <body>
         <div class="topBanner">
-            <p class="toph1"><b>Concordia: Files and Databases: </b> COMP 5531   <span class="toph2"> <b>Main Project:</b> Online Job Portal </span> </p> 
+            <p class="toph1"><b>Concordia: Files and Databases: </b> COMP 5531 <span class="toph2"> <b>Main Project:</b> Online Job Portal </span> </p>
             <div style="text-align:center">
                 <h2>Created by: <span style="font-weight:normal"> Md Tanveer Alamgir, Craig Boucher</span></h2>
-                <h2><span style="font-weight:normal"> Osman Momoh and Fan Zou</span> </h2>
+                <h2><span style="font-weight:normal"> Osman Momoh and Fan Zou</span></h2>
             </div>
         </div>
         <div class="briefcase">
@@ -24,14 +25,17 @@
             <input type="password" class="password" placeholder="password"/>
             <button class="login">login</button>
             <div class="radio-toolbar">
-                <input type="radio" id="employer" name="radioSelect" value="employer" checked>
+                <input type="radio" id="employer" name="radioSelect" value="employer">
                 <label for="employer">Employer</label>
                 <input type="radio" id="jobSeeker" name="radioSelect" value="jobSeeker">
                 <label for="jobSeeker">Job Seeker</label>
                 <input type="radio" id="administrator" name="radioSelect" value="administrator">
-                <label for="administrator">Administrator</label>                 
+                <label for="administrator" style="position: relative;">Administrator</label>
             </div>
-            <a class="forgotPass" href="">Forgot password?</a>
+            <a onclick="passPrompt()" class="forgotPass" href="">Forgot password?</a>
+            <div class="newAccount">Need an account?
+                <a target="_self" href="signUp.html">New account</a>
+            </div>
         </div>
     </body>
 </html>
