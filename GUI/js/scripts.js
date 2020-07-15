@@ -1,4 +1,5 @@
 ﻿function passPrompt() {
+
     var email = prompt("Enter email", "");
     if (/*TODO: email exists*/false) {
         /*sent email*/
@@ -20,6 +21,30 @@ function newAccount() {
 
 }
 
+function login() {
+
+    var categories = document.getElementsByName('radioSelect');
+    var category;
+
+    for (i = 0; i < categories.length; i++) {
+        if (categories[i].checked) {
+            category = categories[i];
+            break;
+        }
+    }
+
+    switch (category.value) {
+
+        case 'employer':
+            window.location.href = 'employerDash.html';
+            break;
+        case 'jobSeeker':
+            break;
+        case 'administrator':
+            break;
+    }
+}
+
 function changePrice() {
 
     var categories = document.getElementsByName('radioSelect');
@@ -31,6 +56,7 @@ function changePrice() {
             break;
         }
     }
+
     switch (category.value) {
         case 'employerPrime':
             document.getElementById("cost").innerHTML = "<b>Monthly cost $50</b>";
@@ -48,7 +74,4 @@ function changePrice() {
             document.getElementById("cost").innerHTML = "<b>Monthly cost $20</b>";
             break;
     }
-
-
-    //document.getElementById("cost").innerHTML = "<b>Monthly cost $25</b>";
 }

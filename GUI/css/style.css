@@ -49,11 +49,6 @@
     background-color: #5cb811;
 }
 
-.login:active {
-    position: relative;
-    top: 770px;
-}
-
 .username {
     margin-left: auto;
     margin-right: auto;
