@@ -7,6 +7,7 @@
         <meta name="author" content="">
         <title>New page</title>
         <link href="css/signup.css" rel="stylesheet">
+        <script src="js/scripts.js"></script>
     </head>
     <body>
         <div class="form">
@@ -19,7 +20,7 @@
             <p><b>Password</b></p>
             <input type="password" placeholder="Enter password">
             <p><b>Account type</b></p>
-            <div class="account-toolbar">
+            <div onclick = "changePrice()" class="account-toolbar">
                 <input type="radio" id="employerPrime" name="radioSelect" value="employerPrime">
                 <label for="employerPrime">Employer - Prime</label>
                 <input type="radio" id="employerGold" name="radioSelect" value="employerGold">
@@ -32,7 +33,7 @@
                 <input type="radio" id="seekerGold" name="radioSelect" value="seekerGold">
                 <label for="seekerGold">Job Seeker - Gold</label>
             </div>
-            <p><b>Monthly cost $ </b></p>
+            <p id = "cost"><b>Monthly cost $ </b></p>
             <p><b>How would you like to pay?</b></p>
             <input type="radio" id="creditRadio" name="paymentRadio" value="creditRadio">
             <label for="creditRadio">Credit Card</label>
