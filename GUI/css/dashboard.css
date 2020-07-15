@@ -1,0 +1,11 @@
+* {
+    font-family: 'Titillium Web', sans-serif;
+}
+
+.row {
+    margin-top: 50px;
+}
+
+.jobTitle {
+    text-align: center;
+}
