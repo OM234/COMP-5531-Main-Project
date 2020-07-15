@@ -39,8 +39,10 @@ function login() {
             window.location.href = 'employerDash.html';
             break;
         case 'jobSeeker':
+            window.location.href = 'seekerDash.html';
             break;
         case 'administrator':
+            window.location.href = 'adminDash.html';
             break;
     }
 }
