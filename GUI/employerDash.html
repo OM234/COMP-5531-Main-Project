@@ -27,10 +27,10 @@
                     <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Post Jobs</a>
+                    <a class="nav-link" onclick="postJob()" href="#">Post Jobs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick = "viewJobs()">View Posted Jobs</a>
+                    <a class="nav-link" href="#" onclick="viewJobs()">View Posted Jobs</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">View Applicants</a>
@@ -43,7 +43,33 @@
             </ul>
         </div>
     </nav>
-    <scipt id="viewJobs"> </scipt>
+    <div id="viewJobs"></div>
+    <div id = "postJob" class="row justify-content-center postJob">
+        <div class="col-8">
+            <form>
+                <div class="form-group">
+                    <label for="title">Job Title</label>
+                    <input type="text" class="form-control" id="title" placeholder="Software Engineer">
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" class="form-control">
+                        <option selected>Technology</option>
+                        <option>...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description (Max 250 characters)</label>
+                    <textarea class="form-control" type="text" class="form-control" id="description"> </textarea>
+                </div>
+                <div class="form-group">
+                    <label for="numOpenings">Number of openings</label>
+                    <input type="text" class="form-control numInput" id="numOpenings" placeholder="1...">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
 </div>
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/popper.js"></script>

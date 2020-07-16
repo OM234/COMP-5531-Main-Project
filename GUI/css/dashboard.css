@@ -9,3 +9,11 @@
 .jobTitle {
     text-align: center;
 }
+
+.postJob {
+    visibility: hidden;
+}
+
+.numInput{
+    width: 100px;
+}

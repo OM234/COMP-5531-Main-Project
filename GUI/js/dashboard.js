@@ -1,5 +1,7 @@
 function viewJobs() {
 
+    document.getElementById("postJob").style.visibility = "hidden";
+
     var html = "";
 
     for (i = 0; i < 5; i++) {   //TODO: number of posted jobs
@@ -22,4 +24,10 @@ function viewJobs() {
             "    </div>";
     }
     document.getElementById("viewJobs").innerHTML = html;
+}
+
+function postJob() {
+
+    document.getElementById("viewJobs").innerHTML = "";
+    document.getElementById("postJob").style.visibility = "visible";
 }
