@@ -88,10 +88,10 @@ input[type="password"] {
     background-color: #5cb811;
 }
 
-.make:active {
-    position: relative;
-    top: 770px;
-}
+/*.make:active {*/
+/*    position: relative;*/
+/*    top: 770px;*/
+/*}*/
 
 .cancel {
     width: 160px;
@@ -117,10 +117,10 @@ input[type="password"] {
     background-color: #ce0100;
 }
 
-.cancel:active {
-    position: relative;
-    top: 1px;
-}
+/*.cancel:active {*/
+/*    position: relative;*/
+/*    top: 1px;*/
+/*}*/
 
 .column {
     float: left;
@@ -135,6 +135,36 @@ input[type="password"] {
     margin-bottom: 50px;
 }
 
+.error {
+    color: #FF0000;
+}
 
+/*input[type=submit] {*/
+/*    width: 160px;*/
+/*    height: 35px;*/
+/*    box-shadow: inset 0px 1px 0px 0px #caefab;*/
+/*    background: linear-gradient(to bottom, #77d42a 5%, #5cb811 100%);*/
+/*    background-color: #77d42a;*/
+/*    border-radius: 6px;*/
+/*    border: 1px solid #268a16;*/
+/*    cursor: pointer;*/
+/*    color: #000000;*/
+/*    font-size: 15px;*/
+/*    font-weight: bold;*/
+/*    padding: 6px 24px;*/
+/*    text-decoration: none;*/
+/*    text-shadow: 0px 1px 0px #aade7c;*/
+/*    bottom: 180px;*/
+/*}*/
+
+/*input[type=submit]:hover {*/
+/*    background: linear-gradient(to bottom, #5cb811 5%, #77d42a 100%);*/
+/*    background-color: #5cb811;*/
+/*}*/
+
+/*input[type=submit]:active {*/
+/*    position: relative;*/
+/*    top: 770px;*/
+/*}*/
 
 

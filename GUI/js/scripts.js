@@ -49,7 +49,7 @@ function login() {
 
 function changePrice() {
 
-    var categories = document.getElementsByName('radioSelect');
+    var categories = document.getElementsByName('accountType');
     var category;
 
     for (i = 0; i < categories.length; i++) {
