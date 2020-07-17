@@ -26,25 +26,18 @@ function login() {
     var categories = document.getElementsByName('radioSelect');
     var category;
 
-    for (i = 0; i < categories.length; i++) {
+    for (let i = 0; i < categories.length; i++) {
         if (categories[i].checked) {
             category = categories[i];
             break;
         }
     }
-
-    switch (category.value) {
-
-        case 'employer':
-            window.location.href = 'employerDash.html';
-            break;
-        case 'jobSeeker':
-            window.location.href = 'seekerDash.html';
-            break;
-        case 'administrator':
-            window.location.href = 'adminDash.html';
-            break;
+    if (category === undefined) {
+        alert("choose one category");
+        return false;
     }
+    return true;
+
 }
 
 function changePrice() {
