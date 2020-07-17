@@ -6,9 +6,23 @@
  * Login page, authenticate username and password,
  * if login success, go to dashboard, start a session for this user.
  * Set the session attribute, "username", "password", "accountType".
+ *
+ * If user already login, redirect to dashboard page.
  */
 
-//$loginErr = "";
+session_start();
+
+/* if request method is get, check login status first,
+if already login, redirect to dashborad */
+if ($_SERVER["REQUEST_METHOD"] == "GET") {
+    if (isset($_SESSION['isLogin']) && $_SESSION['isLogin'] == true) {
+        echo "Already logged in";
+    } else {
+        echo "Not logged in";
+    }
+}
+
+
 
 /* if request method is post, compare user's input username and password with
    data stored in database */
@@ -23,12 +37,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // if authenticate success, start session, and then set session attributes.
     if (authenticate($username, $password)) {
         session_start();
+        $_SESSION['isLogin'] = true;
         $_SESSION["username"] = $username;
         $_SESSION["password"] = $password;
         $_SESSION["accountType"] = $accountType;
         goToDashboard($accountType);
     } else {
-//        $loginErr = "Login error, please try again!";
         echo "<script>alert('Login error, please try again!')</script>";
     }
 }
