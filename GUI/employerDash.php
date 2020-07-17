@@ -30,7 +30,19 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
     }
 }
 
-// show post job in "postJob" tab
+// post jobs
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    echo $_REQUEST['tab'] . "<br>";
+    echo $_POST['title'] . "<br>";
+    echo $_POST['category'] . "<br>";
+    echo $_POST['description'] . "<br>";
+    echo $_POST['numOpenings'] . "<br>";
+
+    // TODO: database insert operation
+
+}
+
+// show post job form in "postJob" tab
 function showPostJobForm() {
     echo "<script>document.getElementById(\"viewJobs\").innerHTML = \"\";
     document.getElementById(\"postJob\").style.visibility = \"visible\";</script>";

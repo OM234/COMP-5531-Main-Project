@@ -47,27 +47,27 @@
     <div id="viewJobs"></div>
     <div id = "postJob" class="row justify-content-center postJob">
         <div class="col-8">
-            <form>
+            <form method="post" action=<?php echo $_SERVER['PHP_SELF']."?tab=postJob"; ?>>
                 <div class="form-group">
                     <label for="title">Job Title</label>
-                    <input type="text" class="form-control" id="title" placeholder="Software Engineer">
+                    <input type="text" class="form-control" id="title" name ="title" placeholder="Software Engineer">
                 </div>
                 <div class="form-group">
                     <label for="category">Category</label>
-                    <select id="category" class="form-control">
+                    <select id="category" class="form-control" name="category">
                         <option selected>Technology</option>
                         <option>...</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="description">Description (Max 250 characters)</label>
-                    <textarea class="form-control" type="text" class="form-control" id="description"> </textarea>
+                    <textarea class="form-control" type="text" class="form-control" id="description" name="description"> </textarea>
                 </div>
                 <div class="form-group">
                     <label for="numOpenings">Number of openings</label>
-                    <input type="text" class="form-control numInput" id="numOpenings" placeholder="1...">
+                    <input type="text" class="form-control numInput" id="numOpenings" placeholder="1..." name="numOpenings">
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <input type="submit" class="btn btn-primary" value="Submit">
             </form>
         </div>
     </div>
