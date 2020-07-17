@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION["accountType"] = $accountType;
         goToDashboard($accountType);
     } else {
-        echo "<script>alert('Login error, please try again!')</script>";
+        echo "<script>alert('Login error, please try again!, use password 123456 to login')</script>";
     }
 }
 
