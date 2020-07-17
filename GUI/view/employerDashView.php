@@ -27,14 +27,14 @@
                     <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" onclick="postJob()" href="#?tab=postJobs">Post Jobs</a>
+                    <a class="nav-link"  href=<?php echo $_SERVER['PHP_SELF']."?tab=postJob";?>>Post Jobs</a>
                 </li>
                 <li class="nav-item">
-<!--                    <a class="nav-link" href="#?tab=viewJobs" onclick="viewJobsEmployer()">View Posted Jobs</a>-->
-                    <a class="nav-link" href="#?tab=viewJobs">View Posted Jobs</a>
+                    <!-- <a class="nav-link" href="#?tab=viewJobs" onclick="viewJobsEmployer()">View Posted Jobs</a>-->
+                    <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF']."?tab=viewJobs";?>>View Posted Jobs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#?tab=viewApplications">View Applicants</a>
+                    <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF']."?tab=viewApplications";?>>View Applicants</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
