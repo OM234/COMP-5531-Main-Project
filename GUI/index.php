@@ -60,7 +60,7 @@ function authenticate($username, $password) {
 function goToDashboard($accountType) {
     switch($accountType) {
         case 'employer':
-            echo "<script>window.location.href = 'employerDash.html';</script>";
+            echo "<script>window.location.href = 'employerDash.php';</script>";
             break;
         case 'jobSeeker':
             echo "<script>window.location.href = 'seekerDash.html';</script>";

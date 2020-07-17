@@ -8,6 +8,7 @@ if (!isset($_SESSION['isLogin']) || $_SESSION['isLogin'] == false) {
 
 $username = $_SESSION['username'];
 $accountType = $_SESSION['accountType'];
+echo "username: " . $username . "<br>";
 
 /* Variable declaration */
 $postedJobsData = array();
