@@ -16,17 +16,24 @@ $postedJobsData = array();
 
 // if already logged in, check tab parameter to decide which part to shown in this page
 if ($_SERVER['REQUEST_METHOD'] == "GET") {
-    $tab = $_GET['tab'];
-    echo "$tab<br>";
+
     require_once "../GUI/view/employerDashView.php";
-    switch ($tab) {
-        case "viewJobs":  // view posted jobs
-            $postedJobsData = getPostedJobsData();
-            showPostedJobs($postedJobsData);
-            break;
-        case "postJob":  // post a job
-            showPostJobForm();
-            break;
+
+    if(isset($_GET['tab'])) {
+        
+        $tab = $_GET['tab'];
+
+        echo "$tab<br>";
+
+        switch ($tab) {
+            case "viewJobs":  // view posted jobs
+                $postedJobsData = getPostedJobsData();
+                showPostedJobs($postedJobsData);
+                break;
+            case "postJob":  // post a job
+                showPostJobForm();
+                break;
+        }
     }
 }
 
