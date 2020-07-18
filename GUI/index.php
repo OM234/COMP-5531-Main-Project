@@ -63,10 +63,10 @@ function goToDashboard($accountType) {
             echo "<script>window.location.href = 'employerDash.php';</script>";
             break;
         case 'jobSeeker':
-            echo "<script>window.location.href = 'seekerDash.html';</script>";
+            echo "<script>window.location.href = 'seekerDash.php';</script>";
             break;
         case 'administrator':
-            echo "<script>window.location.href = 'adminDash.html';</script>";
+            echo "<script>window.location.href = 'adminDash.php';</script>";
             break;
     }
 }
