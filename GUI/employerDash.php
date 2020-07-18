@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
     require_once "../GUI/view/employerDashView.php";
 
     if(isset($_GET['tab'])) {
-        
+
         $tab = $_GET['tab'];
 
         echo "$tab<br>";
@@ -64,6 +64,7 @@ function showPostedJobs($postedJobsData) {
             "<div class='row justify-content-center'>".
             "    <div class='col-10 border'>".
             "       <p class='jobTitle'><b>". $postedJobsData[$i]['title'] ."</b></p><br>".
+            "       <p><b>Job ID: </b>". $postedJobsData[$i]['jobID'] ."</p>".
             "       <p><b>Date Posted: </b>". $postedJobsData[$i]['datePosted'] ."</p>".
             "       <p><b>Category: </b>". $postedJobsData[$i]['category'] ."</p>".
             "       <p><b>Description: </b>". $postedJobsData[$i]['description'] ."</p>".
@@ -80,13 +81,13 @@ function showPostedJobs($postedJobsData) {
 // TODO: get posted jobs data from database
 function getPostedJobsData() {
     $data = array();
-    $job1 = array("title"=>"Job1", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description1", "numOfOpenings"=>1, "numOfApplications"=>1);
-    $job2 = array("title"=>"Job2", "datePosted"=>date("Y-m-d"), "category"=>"category1",
+    $job1 = array("jobID" =>1, "title"=>"Job1", "datePosted"=>date("Y-m-d"), "category"=>"category1",
+        "description"=>"Description1", "numOfOpenings"=>1, "numOfApplications"=>1,);
+    $job2 = array("jobID" =>2, "title"=>"Job2", "datePosted"=>date("Y-m-d"), "category"=>"category1",
         "description"=>"Description2", "numOfOpenings"=>2, "numOfApplications"=>2);
-    $job3 = array("title"=>"Job3", "datePosted"=>date("Y-m-d"), "category"=>"category1",
+    $job3 = array("jobID" =>3, "title"=>"Job3", "datePosted"=>date("Y-m-d"), "category"=>"category1",
         "description"=>"Description3", "numOfOpenings"=>3, "numOfApplications"=>3);
-    $job4 = array("title"=>"Job4", "datePosted"=>date("Y-m-d"), "category"=>"category1",
+    $job4 = array("jobID" =>4, "title"=>"Job4", "datePosted"=>date("Y-m-d"), "category"=>"category1",
         "description"=>"Description4", "numOfOpenings"=>4, "numOfApplications"=>4);
     array_push($data, $job1);
     array_push($data, $job2);
