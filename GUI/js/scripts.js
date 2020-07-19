@@ -36,6 +36,12 @@ function login() {
         alert("choose one category");
         return false;
     }
+
+    var input_password = document.getElementById("input-password");
+    var md5_password = document.getElementById("md5-password");
+    // transform input password into md5 password
+    md5_password.value = MD5(input_password.value);
+
     return true;
 
 }

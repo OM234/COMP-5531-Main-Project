@@ -11,6 +11,7 @@
  */
 
 session_start();
+//session_destroy();
 
 /* if request method is get, check login status first,
 if already login, redirect to dashborad */
@@ -50,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 // TODO: query in database, selectPasswordByUsername();
 function authenticate($username, $password) {
-    if ($password == "123456") {
+    if ($password == md5("123456")) {
         return true;
     }
     return false;
@@ -84,6 +85,7 @@ function goToDashboard($accountType) {
     <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&display=swap">
+    <script src="js/MD5.js"></script>
     <script src="js/scripts.js"></script>
 </head>
 <body>
@@ -101,7 +103,8 @@ function goToDashboard($accountType) {
           onSubmit="return login()"
           method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
         <input type="text" class="username" placeholder="username" name="username" required/>
-        <input type="password" class="password" placeholder="password" name="password" required/>
+        <input type="password" id="input-password" class="password" placeholder="password" required/>
+        <input type="hidden" id="md5-password" name="password"/>
 <!--        <button onclick="login()" class="login">login</button>-->
         <input type="submit" class="login" value="login">
         <div class="radio-toolbar">
