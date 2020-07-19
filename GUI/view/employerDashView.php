@@ -47,25 +47,30 @@
     <div id="viewJobs"></div>
     <div id = "postJob" class="row justify-content-center postJob">
         <div class="col-8">
-            <form method="post" action=<?php echo $_SERVER['PHP_SELF']."?tab=postJob"; ?>>
+            <form name="postJobForm"
+                  method="post"
+                  onsubmit="return validateForm()"
+                  action=<?php echo $_SERVER['PHP_SELF']."?tab=postJob"; ?>>
                 <div class="form-group">
                     <label for="title">Job Title</label>
-                    <input type="text" class="form-control" id="title" name ="title" placeholder="Software Engineer">
+                    <input type="text" class="form-control" id="title" name ="title" placeholder="Software Engineer" required>
+                    <span id="titleError"></span>
                 </div>
                 <div class="form-group">
                     <label for="category">Category</label>
-                    <select id="category" class="form-control" name="category">
+                    <select id="category" class="form-control" name="category" required>
                         <option selected>Technology</option>
                         <option>...</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="description">Description (Max 250 characters)</label>
-                    <textarea class="form-control" type="text" class="form-control" id="description" name="description"> </textarea>
+                    <textarea class="form-control" type="text" id="description" name="description" required></textarea>
                 </div>
                 <div class="form-group">
                     <label for="numOpenings">Number of openings</label>
-                    <input type="text" class="form-control numInput" id="numOpenings" placeholder="1..." name="numOpenings">
+                    <input type="text" class="form-control numInput" id="numOpenings" placeholder="1..." name="numOpenings" required>
+                    <span id="error" style="color: red"></span>
                 </div>
                 <input type="submit" class="btn btn-primary" value="Submit">
             </form>
