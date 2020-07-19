@@ -44,14 +44,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION["accountType"] = $accountType;
         goToDashboard($accountType);
     } else {
-        echo "<script>alert('Login error, please try again!, use password 123456 to login')</script>";
+        echo "<script>alert('Login error, please try again!, use password 1 to login')</script>";
     }
 }
 
 
 // TODO: query in database, selectPasswordByUsername();
 function authenticate($username, $password) {
-    if ($password == md5("123456")) {
+    if ($password == md5("1")) {
         return true;
     }
     return false;
