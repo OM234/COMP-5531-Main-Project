@@ -69,10 +69,11 @@ function showPostedJobs($postedJobsData) {
             "       <p><b>Category: </b>" . $postedJobsData[$i]['category'] . "</p>" .
             "       <p><b>Description: </b>" . $postedJobsData[$i]['description'] . "</p>" .
             "       <p><b># Openings: </b>" . $postedJobsData[$i]['numOfOpenings'] . "</p>" .
-            "       <p><b># Applications: </b>" . $postedJobsData[$i]['numOfApplications'] . "</p>" .
+            "       <p><a href='#' onclick = 'viewApplications(". $postedJobsData[$i]['jobID'] .")' ># Applications: " .
+                        $postedJobsData[$i]['numOfApplications'] . "</a></p>" .
             "    </div>" .
             "    <div class='col-2 d-flex justify-content-center '>" .
-            "       <button class='btn btn-danger' onclick = 'return deleteJob(". $postedJobsData[$i]['jobID'] .")'> Delete </button>" .
+            "       <button class='btn btn-danger' onclick = 'deleteJob(". $postedJobsData[$i]['jobID'] .")'> Delete </button>" .
             "    </div>" .
             "</div>";
 

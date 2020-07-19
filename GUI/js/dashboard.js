@@ -60,5 +60,10 @@ function postJob() {
 
 function deleteJob(ID) {
 
-    return confirm("Are you sure you want to delete job with ID #" + ID);
+    confirm("Are you sure you want to delete job with ID #" + ID);
+    //TODO: return confirm value
+}
+
+function viewApplications(ID) {
+
 }
