@@ -62,3 +62,21 @@ function deleteJob(ID) {
 
     return confirm("Are you sure you want to delete job with ID #" + ID);
 }
+
+// validate post job form
+function validateForm() {
+    let title = document.forms["postJobForm"]["title"];
+    if (title.length > 50) {
+        document.getElementById("titleError").innerHTML = "Title length must less than 50 characters";
+        return false;
+    }
+
+    let numberOpenings = document.getElementById("numOpenings").value;
+    let text = "";
+    // if numberOpenings Not a Number or less than 1
+    if (isNaN(numberOpenings) || numberOpenings < 1) {
+        text = "Input not valid";
+        document.getElementById("error").innerHTML = text;
+        return false;
+    }
+}
