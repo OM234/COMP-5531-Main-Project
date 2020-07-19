@@ -7,11 +7,10 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>zz</title>
-    <!-- Bootstrap core CSS -->
     <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-    <!-- Custom styles for this template -->
-    <link href="css/dashboard.css" rel="stylesheet">
-    <script src="js/dashboard.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="/COMP-5531-Main-Project/GUI/css/dashboard.css" rel="stylesheet">
+    <script src="/COMP-5531-Main-Project/GUI/js/dashboard.js"></script>
 </head>
 <body>
 <div class="container">

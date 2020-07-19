@@ -61,19 +61,25 @@ function showPostedJobs($postedJobsData) {
     $html = "";
     for ($i = 0; $i < count($postedJobsData); $i++) {
         $html .=
-            "<div class='row justify-content-center'>".
-            "    <div class='col-10 border'>".
-            "       <p class='jobTitle'><b>". $postedJobsData[$i]['title'] ."</b></p><br>".
-            "       <p><b>Job ID: </b>". $postedJobsData[$i]['jobID'] ."</p>".
-            "       <p><b>Date Posted: </b>". $postedJobsData[$i]['datePosted'] ."</p>".
-            "       <p><b>Category: </b>". $postedJobsData[$i]['category'] ."</p>".
-            "       <p><b>Description: </b>". $postedJobsData[$i]['description'] ."</p>".
-            "       <p><b># Openings: </b>". $postedJobsData[$i]['numOfOpenings'] ."</p>".
-            "       <p><b># Applications: </b>". $postedJobsData[$i]['numOfApplications'] ."</p>".
-            "    </div>".
+            "<div class='row align-items-center justify-content-center'>" .
+            "    <div class='col-8 border'>" .
+            "       <p class='jobTitle'><b>" . $postedJobsData[$i]['title'] . "</b></p><br>" .
+            "       <p><b>Job ID: </b>" . $postedJobsData[$i]['jobID'] . "</p>" .
+            "       <p><b>Date Posted: </b>" . $postedJobsData[$i]['datePosted'] . "</p>" .
+            "       <p><b>Category: </b>" . $postedJobsData[$i]['category'] . "</p>" .
+            "       <p><b>Description: </b>" . $postedJobsData[$i]['description'] . "</p>" .
+            "       <p><b># Openings: </b>" . $postedJobsData[$i]['numOfOpenings'] . "</p>" .
+            "       <p><b># Applications: </b>" . $postedJobsData[$i]['numOfApplications'] . "</p>" .
+            "    </div>" .
+            "    <div class='col-2 d-flex justify-content-center '>" .
+            "       <button class='btn btn-danger' onclick = 'return deleteJob(". $postedJobsData[$i]['jobID'] .")'> Delete </button>" .
+            "    </div>" .
             "</div>";
+
+        echo $postedJobsData[$i]['jobID'];
     }
     echo "<script>document.getElementById('viewJobs').innerHTML = \"". $html ."\"</script>";
+
 //    echo "<script>document.getElementById('viewJobs').innerHTML = \"<h1>Hello</h1>\"</script>";
 }
 
@@ -81,13 +87,13 @@ function showPostedJobs($postedJobsData) {
 // TODO: get posted jobs data from database
 function getPostedJobsData() {
     $data = array();
-    $job1 = array("jobID" =>1, "title"=>"Job1", "datePosted"=>date("Y-m-d"), "category"=>"category1",
+    $job1 = array("jobID" =>100, "title"=>"Job1", "datePosted"=>date("Y-m-d"), "category"=>"category1",
         "description"=>"Description1", "numOfOpenings"=>1, "numOfApplications"=>1,);
-    $job2 = array("jobID" =>2, "title"=>"Job2", "datePosted"=>date("Y-m-d"), "category"=>"category1",
+    $job2 = array("jobID" =>200, "title"=>"Job2", "datePosted"=>date("Y-m-d"), "category"=>"category1",
         "description"=>"Description2", "numOfOpenings"=>2, "numOfApplications"=>2);
-    $job3 = array("jobID" =>3, "title"=>"Job3", "datePosted"=>date("Y-m-d"), "category"=>"category1",
+    $job3 = array("jobID" =>300, "title"=>"Job3", "datePosted"=>date("Y-m-d"), "category"=>"category1",
         "description"=>"Description3", "numOfOpenings"=>3, "numOfApplications"=>3);
-    $job4 = array("jobID" =>4, "title"=>"Job4", "datePosted"=>date("Y-m-d"), "category"=>"category1",
+    $job4 = array("jobID" =>400, "title"=>"Job4", "datePosted"=>date("Y-m-d"), "category"=>"category1",
         "description"=>"Description4", "numOfOpenings"=>4, "numOfApplications"=>4);
     array_push($data, $job1);
     array_push($data, $job2);

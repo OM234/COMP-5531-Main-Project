@@ -57,3 +57,8 @@ function postJob() {
     document.getElementById("viewJobs").innerHTML = "";
     document.getElementById("postJob").style.visibility = "visible";
 }
+
+function deleteJob(ID) {
+
+    return confirm("Are you sure you want to delete job with ID #" + ID);
+}
