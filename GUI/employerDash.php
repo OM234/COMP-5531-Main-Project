@@ -159,7 +159,7 @@ function viewApplicationsOfJob($jobID, string $jobTitle, string $datePosted, str
 
 function viewAllApplications(string $jobID2, string $jobTitle, string $datePosted, string $html, string $appID, string $appName, string $appDate, string $appStatus): string
 {
-    for ($totEmpJobs = 0; $$totEmpJobs < 3 /*TODO: total employer jobs*/; $$totEmpJobs++) {
+    for ($totEmpJobs = 0; $totEmpJobs < 3 /*TODO: total employer jobs*/; $totEmpJobs++) {
         $html .=
             "<div class='row jobRow justify-content-center'>" .
             "     <div class='col-10 border text-center'>" .
