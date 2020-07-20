@@ -42,13 +42,21 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
 // post jobs
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    echo $_REQUEST['tab'] . "<br>";
-    echo $_POST['title'] . "<br>";
-    echo $_POST['category'] . "<br>";
-    echo $_POST['description'] . "<br>";
-    echo $_POST['numOpenings'] . "<br>";
 
-    // TODO: database insert operation
+    $tab = $_REQUEST['tab'];
+    switch ($tab) {
+        case "viewJobs":
+            echo "deleteJobId: " . $_POST['deleteJobID'] . "<br>";
+            // TODO: database delete operation
+            break;
+        case "postJob":
+            echo "title:" . $_POST['title'] . "<br>";
+            echo "category" . $_POST['category'] . "<br>";
+            echo "description" . $_POST['description'] . "<br>";
+            echo "numOpenings" . $_POST['numOpenings'] . "<br>";
+            // TODO: database insert operation
+            break;
+    }
 
 }
 
@@ -79,7 +87,9 @@ function showPostedJobs($postedJobsData) {
                         $postedJobsData[$i]['numOfApplications'] . "</a></p>" .
             "    </div>" .
             "    <div class='col-2 d-flex justify-content-center '>" .
-            "       <button class='btn btn-danger' onclick = 'deleteJob(". $postedJobsData[$i]['jobID'] .")'> Delete </button>" .
+            "    <form action='" . $_SERVER['PHP_SELF'] . "?tab=viewJobs' method='post' onsubmit='return deleteJob(" . $ID . ")'>" .
+            "       <button type='submit' name='deleteJobID' value='" . $ID . "' class='btn btn-danger'> Delete </button>" .
+            "    </form>" .
             "    </div>" .
             "</div>";
 
