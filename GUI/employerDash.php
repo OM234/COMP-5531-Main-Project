@@ -162,12 +162,19 @@ function getJobByID($jobID) {
  *  "description": "description...",
  *  "numOfOpenings": 3,
  *  "numOfApplications": 3,
- *  "applications": {
- *      "appID" : 1,
- *      "appName": "Jack",
- *      "appDate": "2020-6-20",
- *      "appStatus": "Accepted",
- *      }
+ *  "applications":
+ *   [
+ *      {
+ *          "appID" : 1,
+ *          "appName": "Jack",
+ *          "appDate": "2020-6-20",
+ *          "appStatus": "Accepted",
+ *      },
+ *      {
+ *          ...
+ *      },
+ *      ...
+ *   ]
  * },
  * {
  *    ...
