@@ -34,7 +34,7 @@
                     <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF'] . "?tab=viewJobs"; ?>>View Posted Jobs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF'] . "?tab=viewApplications&jobID=null"; ?>>View
+                    <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF'] . "?tab=viewApplications"; ?>>View
                         Applicants</a>
                 </li>
             </ul>

@@ -43,22 +43,22 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
                 showPostJobForm();
                 break;
             case "viewApplications":
-                $jobID = $_GET['jobID'];
-                showApplications($jobID);
+                showApplications();
                 break;
         }
     }
 }
 
 //$jobID == null -> viewAllApplications else viewApplications of jobID
-function showApplications($jobID)
+function showApplications()
 {
     $html = "";
-    if ($jobID == 'null') {
+    if (!isset($_GET['jobID'])) {
         $jobsWithApplications = getAllApplications();  // get all applications data
         $html = viewAllApplications($jobsWithApplications); // show all applications, pass data to view.
     }
     else {
+        $jobID = $_GET['jobID'];
         $job = getApplicationsByJobID($jobID);  // get one job, and its applications data
         $html = viewApplicationsOfJob($job);    // show applications of this job
     }
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         case "viewJobs":
             echo "deleteJobId: " . $_POST['deleteJobID'] . "<br>";
             // TODO: database delete operation
-            header("Location: /GUI/employerDash.php?tab=viewJobs");
+//            header("Location: /GUI/employerDash.php?tab=viewJobs");
             break;
         case "postJob":
             echo "title:" . $_POST['title'] . "<br>";
@@ -84,10 +84,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             echo "description" . $_POST['description'] . "<br>";
             echo "numOpenings" . $_POST['numOpenings'] . "<br>";
             // TODO: database insert operation
-            header("Location: /GUI/employerDash.php?tab=viewJobs");
+//            header("Location: /GUI/employerDash.php?tab=viewJobs");
             break;
         case "viewApplications":
-            changeApplicationStatus();
+            $appID = $_REQUEST['appID'];
+            $operation = $_REQUEST['op'];
+            echo "operation: " . $operation . "<br>";
+            echo "applicationID: " . $appID;
+            changeApplicationStatus();  /* TODO: change application status */
+//            header("Location: /GUI/employerDash.php?tab=viewApplications");
             break;
     }
 
@@ -157,7 +162,8 @@ function getJobByID($jobID) {
  * return all jobs with applications information
  * {
  *  "jobID": 100,
- *  "title": "abc"*  "datePosted": "2020-5-10",
+ *  "title": "abc",
+ *  "datePosted": "2020-5-10",
  *  "category": "cat1",
  *  "description": "description...",
  *  "numOfOpenings": 3,
@@ -208,12 +214,15 @@ function getAllApplications() {
  *  "description": "description...",
  *  "numOfOpenings": 3,
  *  "numOfApplications": 3,
- *  "applications": {
- *      "appID" : 1,
- *      "appName": "Jack",
- *      "appDate": "2020-7-20",
- *      "appStatus": "Accepted"
- *   }
+ *  "applications":
+ *    [
+ *      {
+ *          "appID" : 1,
+ *          "appName": "Jack",
+ *          "appDate": "2020-7-20",
+ *          "appStatus": "Accepted"
+ *      }
+ *    ]
  * }
  */
 function getApplicationsByJobID($jobID) {
@@ -332,11 +341,13 @@ function viewApplicationsOfJob($job)
             "           <p><b>Status:</b> $appStatus</p>" .
             "     </div>" .
             "     <div class='col-4 text-center my-auto'>" .
-            "           <button class='btn btn-warning'>Deny</button>" .
-            "           <button class='btn btn-secondary'>Review</button>" .
-            "           <button class='btn btn-primary'>Send Offer</button>" .
-            "           <button class='btn btn-success'>Hire</button>" .
-            "           <button class='btn btn-danger m-2'>Delete</button>" .
+            "           <form action='". $_SERVER['PHP_SELF']."?tab=viewApplications&appID=$appID"."' method='post'>".
+            "           <button type='submit' name='op' value='deny' class='btn btn-warning'>Deny</button>" .
+            "           <button type='submit' name='op' value='review' class='btn btn-secondary'>Review</button>" .
+            "           <button type='submit' name='op' value='sendOffer' class='btn btn-primary'>Send Offer</button>" .
+            "           <button type='submit' name='op' value='hire' class='btn btn-success'>Hire</button>" .
+            "           <button type='submit' name='op' value='delete' class='btn btn-danger m-2'>Delete</button>" .
+            "           </form>" .
             "    </div>" .
             "</div>";
     }
