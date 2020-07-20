@@ -221,7 +221,11 @@ function getAllApplications() {
  *          "appName": "Jack",
  *          "appDate": "2020-7-20",
  *          "appStatus": "Accepted"
- *      }
+ *      },
+ *      {
+ *          ...
+ *      },
+ *      ...
  *    ]
  * }
  */
