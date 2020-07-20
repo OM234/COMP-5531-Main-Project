@@ -118,7 +118,7 @@ function goToDashboard($accountType) {
     </form>
     <a onclick="passPrompt()" class="forgotPass" href="">Forgot password?</a>
     <div class="newAccount">Need an account?
-        <a target="_self" href="signUp.html">New account</a>
+        <a target="_self" href="html/signUp.html">New account</a>
     </div>
 </div>
 </body>
