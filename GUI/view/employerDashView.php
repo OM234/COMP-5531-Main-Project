@@ -47,6 +47,7 @@
     </nav>
     <div id="viewJobs"></div>
     <div id="viewApplications" class="container"></div>
+    <div id="accountSettings" class="container"></div>
     <div id="postJob" class="row justify-content-center postJob">
         <div class="col-8">
             <form name="postJobForm"

@@ -61,7 +61,26 @@ function showPostJobForm() {
 
 // show posted jobs in "viewJobs" tab
 function showPostedJobs($postedJobsData) {
-    $html = "";
+    $html =
+        "<div class='row justify-content-center'>".
+        "    <div class = 'col-3'>".
+        "       <div class='form-group text-center'>" .
+        "            <label for='selectCategory'>Select category:</label>" .
+        "            <select class='form-control'' id='selectCategory'>" .
+        "                 <option>...</option>";
+
+    for($i = 0; $i < 5 /*TODO: count of categories*/; $i++) {
+
+        $category = "category";
+        $html .=
+        "                 <option>$category</option>";
+    }
+    $html .=
+        "            </select>" .
+        "      </div>".
+        "   </div>".
+        "</div>";
+
     for ($i = 0; $i < count($postedJobsData); $i++) {
 
         $ID = $postedJobsData[$i]['jobID'];
