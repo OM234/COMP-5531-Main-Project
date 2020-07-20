@@ -3,7 +3,7 @@
 }
 
 .row {
-    margin-top: 50px;
+    margin-top: 75px;
 }
 
 .jobTitle {
@@ -12,6 +12,14 @@
 
 .postJob {
     visibility: hidden;
+}
+
+.jobRow {
+    margin-bottom: 0px;
+}
+
+.applicantRow {
+    margin-top: 0px;
 }
 
 .numInput {

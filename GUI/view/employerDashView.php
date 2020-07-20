@@ -27,14 +27,15 @@
                     <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link"  href=<?php echo $_SERVER['PHP_SELF']."?tab=postJob";?>>Post Jobs</a>
+                    <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF'] . "?tab=postJob"; ?>>Post Jobs</a>
                 </li>
                 <li class="nav-item">
                     <!-- <a class="nav-link" href="#?tab=viewJobs" onclick="viewJobsEmployer()">View Posted Jobs</a>-->
-                    <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF']."?tab=viewJobs";?>>View Posted Jobs</a>
+                    <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF'] . "?tab=viewJobs"; ?>>View Posted Jobs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF']."?tab=viewApplications";?>>View Applicants</a>
+                    <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF'] . "?tab=viewApplications&jobID=null"; ?>>View
+                        Applicants</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
@@ -45,15 +46,17 @@
         </div>
     </nav>
     <div id="viewJobs"></div>
-    <div id = "postJob" class="row justify-content-center postJob">
+    <div id="viewApplications" class="container"></div>
+    <div id="postJob" class="row justify-content-center postJob">
         <div class="col-8">
             <form name="postJobForm"
                   method="post"
                   onsubmit="return validateForm()"
-                  action=<?php echo $_SERVER['PHP_SELF']."?tab=postJob"; ?>>
+                  action=<?php echo $_SERVER['PHP_SELF'] . "?tab=postJob"; ?>>
                 <div class="form-group">
                     <label for="title">Job Title</label>
-                    <input type="text" class="form-control" id="title" name ="title" placeholder="Software Engineer" required>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="Software Engineer"
+                           required>
                     <span id="titleError"></span>
                 </div>
                 <div class="form-group">
@@ -69,7 +72,8 @@
                 </div>
                 <div class="form-group">
                     <label for="numOpenings">Number of openings</label>
-                    <input type="text" class="form-control numInput" id="numOpenings" placeholder="1..." name="numOpenings" required>
+                    <input type="text" class="form-control numInput" id="numOpenings" placeholder="1..."
+                           name="numOpenings" required>
                     <span id="error" style="color: red"></span>
                 </div>
                 <input type="submit" class="btn btn-primary" value="Submit">

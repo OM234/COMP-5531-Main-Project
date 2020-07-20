@@ -65,5 +65,5 @@ function deleteJob(ID) {
 }
 
 function viewApplications(ID) {
-
+    alert("seeint me");
 }
