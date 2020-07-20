@@ -6,14 +6,23 @@ if (!isset($_SESSION['isLogin']) || $_SESSION['isLogin'] == false) {
     goToPage("/GUI/index.php");
 }
 
-$username = $_SESSION['username'];
-$accountType = $_SESSION['accountType'];
+
+
+/*********** Data models variables ***********************************************************************/
+
+$username = $_SESSION['username'];      // currently logged in user
+$accountType = $_SESSION['accountType'];  // current user account type
 echo "username: " . $username . "<br>";
 
-/* Variable declaration */
-$postedJobsData = array();
+$postedJobsData = array();   // posted Job data
+$jobsWithApplication = array();  // posted Job with application data
+
+/************** End of data models ************************************************************************/
 
 
+
+
+/*********************** Controllers *********************************************************************/
 // if already logged in, check tab parameter to decide which part to shown in this page
 if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
@@ -48,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         case "viewJobs":
             echo "deleteJobId: " . $_POST['deleteJobID'] . "<br>";
             // TODO: database delete operation
+            header("Location: /GUI/employerDash.php?tab=viewJobs");
             break;
         case "postJob":
             echo "title:" . $_POST['title'] . "<br>";
@@ -55,11 +65,46 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             echo "description" . $_POST['description'] . "<br>";
             echo "numOpenings" . $_POST['numOpenings'] . "<br>";
             // TODO: database insert operation
+            header("Location: /GUI/employerDash.php?tab=viewJobs");
+            break;
+        case "viewApplications":
+            changeApplicationStatus();
             break;
     }
 
 }
+/*********************** End of Controllers ******************************************************/
 
+
+
+/************* Data access part *****************************************************************************/
+// TODO: get posted jobs data from database
+function getPostedJobsData() {
+    $data = array();
+    $job1 = array("jobID" =>100, "title"=>"Job1", "datePosted"=>date("Y-m-d"), "category"=>"category1",
+        "description"=>"Description1", "numOfOpenings"=>1, "numOfApplications"=>1,);
+    $job2 = array("jobID" =>200, "title"=>"Job2", "datePosted"=>date("Y-m-d"), "category"=>"category1",
+        "description"=>"Description2", "numOfOpenings"=>2, "numOfApplications"=>2);
+    $job3 = array("jobID" =>300, "title"=>"Job3", "datePosted"=>date("Y-m-d"), "category"=>"category1",
+        "description"=>"Description3", "numOfOpenings"=>3, "numOfApplications"=>3);
+    $job4 = array("jobID" =>400, "title"=>"Job4", "datePosted"=>date("Y-m-d"), "category"=>"category1",
+        "description"=>"Description4", "numOfOpenings"=>4, "numOfApplications"=>4);
+    array_push($data, $job1);
+    array_push($data, $job2);
+    array_push($data, $job3);
+    array_push($data, $job4);
+    return $data;
+}
+
+
+
+/************************* End of data access *****************************************************/
+
+
+
+
+
+/****************** Front-end view part ******************************************************/
 // show post job form in "postJob" tab
 function showPostJobForm() {
     echo "<script>document.getElementById(\"viewJobs\").innerHTML = \"\";
@@ -101,23 +146,7 @@ function showPostedJobs($postedJobsData) {
 }
 
 
-// TODO: get posted jobs data from database
-function getPostedJobsData() {
-    $data = array();
-    $job1 = array("jobID" =>100, "title"=>"Job1", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description1", "numOfOpenings"=>1, "numOfApplications"=>1,);
-    $job2 = array("jobID" =>200, "title"=>"Job2", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description2", "numOfOpenings"=>2, "numOfApplications"=>2);
-    $job3 = array("jobID" =>300, "title"=>"Job3", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description3", "numOfOpenings"=>3, "numOfApplications"=>3);
-    $job4 = array("jobID" =>400, "title"=>"Job4", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description4", "numOfOpenings"=>4, "numOfApplications"=>4);
-    array_push($data, $job1);
-    array_push($data, $job2);
-    array_push($data, $job3);
-    array_push($data, $job4);
-    return $data;
-}
+
 
 //$jobID == null -> viewAllApplications else viewApplications of jobID
 function showApplications($jobID)
