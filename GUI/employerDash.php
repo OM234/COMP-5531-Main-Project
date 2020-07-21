@@ -15,7 +15,7 @@ $accountType = $_SESSION['accountType'];  // current user account type
 echo "username: " . $username . "<br>";
 
 $postedJobsData = array();   // posted Job data
-$jobsWithApplication = array();  // posted Job with application data
+$jobsWithApplications = array();  // posted Job with application data
 
 /************** End of data models ************************************************************************/
 
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
                 showPostJobForm();
                 break;
             case "viewApplications":
-                showApplications($_GET['jobID']);
+                showApplications();
                 break;
             case "viewAccountSettings":
                 showAccountSettings();
@@ -51,6 +51,25 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         }
     }
 }
+
+//$jobID == null -> viewAllApplications else viewApplications of jobID
+function showApplications()
+{
+    $html = "";
+    if (!isset($_GET['jobID'])) {
+        $jobsWithApplications = getAllApplications();  // get all applications data
+        $html = viewAllApplications($jobsWithApplications); // show all applications, pass data to view.
+    }
+    else {
+        $jobID = $_GET['jobID'];
+        $job = getApplicationsByJobID($jobID);  // get one job, and its applications data
+        $html = viewApplicationsOfJob($job);    // show applications of this job
+    }
+    echo "<script>document.getElementById('viewApplications').innerHTML = \"". $html ."\"</script>";
+
+}
+
+
 
 // post jobs
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
@@ -60,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         case "viewJobs":
             echo "deleteJobId: " . $_POST['deleteJobID'] . "<br>";
             // TODO: database delete operation
-            header("Location: /GUI/employerDash.php?tab=viewJobs");
+//            header("Location: /GUI/employerDash.php?tab=viewJobs");
             break;
         case "postJob":
             echo "title:" . $_POST['title'] . "<br>";
@@ -68,10 +87,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             echo "description" . $_POST['description'] . "<br>";
             echo "numOpenings" . $_POST['numOpenings'] . "<br>";
             // TODO: database insert operation
-            header("Location: /GUI/employerDash.php?tab=viewJobs");
+//            header("Location: /GUI/employerDash.php?tab=viewJobs");
             break;
         case "viewApplications":
-            changeApplicationStatus();
+            $appID = $_REQUEST['appID'];
+            $operation = $_REQUEST['op'];
+            echo "operation: " . $operation . "<br>";
+            echo "applicationID: " . $appID;
+            changeApplicationStatus();  /* TODO: change application status */
+//            header("Location: /GUI/employerDash.php?tab=viewApplications");
             break;
     }
 
@@ -85,18 +109,121 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 function getPostedJobsData() {
     $data = array();
     $job1 = array("jobID" =>100, "title"=>"Job1", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description1", "numOfOpenings"=>1, "numOfApplications"=>1,);
+        "description"=>"Description1", "numOfOpenings"=>1, "numOfApplications"=>3,);
     $job2 = array("jobID" =>200, "title"=>"Job2", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description2", "numOfOpenings"=>2, "numOfApplications"=>2);
+        "description"=>"Description2", "numOfOpenings"=>2, "numOfApplications"=>3);
     $job3 = array("jobID" =>300, "title"=>"Job3", "datePosted"=>date("Y-m-d"), "category"=>"category1",
         "description"=>"Description3", "numOfOpenings"=>3, "numOfApplications"=>3);
     $job4 = array("jobID" =>400, "title"=>"Job4", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description4", "numOfOpenings"=>4, "numOfApplications"=>4);
+        "description"=>"Description4", "numOfOpenings"=>4, "numOfApplications"=>3);
     array_push($data, $job1);
     array_push($data, $job2);
     array_push($data, $job3);
     array_push($data, $job4);
     return $data;
+}
+
+// TODO: get job by jobID, select * from Job where jobID = $jobID
+/**
+ * @param $jobID
+ * @return array, job information
+ * {
+ *  "jobID": 1,
+ *  "title": "abc",
+ *  "datePosted": "2020-5-10",
+ *  "category": "cat1",
+ *  "description": "description...",
+ *  "numOfOpenings": 3,
+ *  "numOfApplications": 3
+ * }
+ */
+function getJobByID($jobID) {
+    $job1 = array("jobID" =>100, "title"=>"Job1", "datePosted"=>date("Y-m-d"), "category"=>"category1",
+        "description"=>"Description1", "numOfOpenings"=>1, "numOfApplications"=>3,);
+    return $job1;
+}
+
+
+// TODO: get all applications
+/**
+ * return all jobs with applications information
+ * {
+ *  "jobID": 100,
+ *  "title": "abc",
+ *  "datePosted": "2020-5-10",
+ *  "category": "cat1",
+ *  "description": "description...",
+ *  "numOfOpenings": 3,
+ *  "numOfApplications": 3,
+ *  "applications":
+ *   [
+ *      {
+ *          "appID" : 1,
+ *          "appName": "Jack",
+ *          "appDate": "2020-6-20",
+ *          "appStatus": "Accepted",
+ *      },
+ *      {
+ *          ...
+ *      },
+ *      ...
+ *   ]
+ * },
+ * {
+ *    ...
+ * },
+ * ...
+ */
+function getAllApplications() {
+    $allJobsWithApplications = getPostedJobsData();
+    for ($i = 0; $i < count($allJobsWithApplications); $i++) {
+        $applications = array();
+        $application1 = array("appID"=>1, "appName"=>"Jack", "appDate"=>date("Y-m-d"), "appStatus"=>"Accepted");
+        $application2 = array("appID"=>2, "appName"=>"Alice", "appDate"=>date("Y-m-d"), "appStatus"=>"Accepted");
+        $application3 = array("appID"=>3, "appName"=>"Michael", "appDate"=>date("Y-m-d"), "appStatus"=>"Accepted");
+        array_push($applications, $application1);
+        array_push($applications, $application2);
+        array_push($applications, $application3);
+        $allJobsWithApplications[$i]["applications"] = $applications;
+        $allJobsWithApplications[$i]["numOfApplications"] = 3;
+    }
+    return $allJobsWithApplications;
+}
+
+// TODO: get applications by job ID.
+/**
+ * @param $jobID
+ * @return
+ * {
+ *  "jobID": 100,
+ *  "title": "abc",
+ *  "category": "cat1",
+ *  "description": "description...",
+ *  "numOfOpenings": 3,
+ *  "numOfApplications": 3,
+ *  "applications":
+ *    [
+ *      {
+ *          "appID" : 1,
+ *          "appName": "Jack",
+ *          "appDate": "2020-7-20",
+ *          "appStatus": "Accepted"
+ *      }
+ *    ]
+ * }
+ */
+function getApplicationsByJobID($jobID) {
+    $job = getJobByID($jobID);
+    $applications = array();
+    $application1 = array("appID"=>1, "appName"=>"Jack", "appDate"=>date("Y-m-d"), "appStatus"=>"Accepted");
+    $application2 = array("appID"=>2, "appName"=>"Alice", "appDate"=>date("Y-m-d"), "appStatus"=>"Accepted");
+    $application3 = array("appID"=>3, "appName"=>"Michael", "appDate"=>date("Y-m-d"), "appStatus"=>"Accepted");
+    array_push($applications, $application1);
+    array_push($applications, $application2);
+    array_push($applications, $application3);
+    $job["applications"] = $applications;
+    $job["numOfApplications"] = 3;
+    return $job;
 }
 
 
@@ -166,26 +293,15 @@ function showPostedJobs($postedJobsData) {
 
 //    echo "<script>document.getElementById('viewJobs').innerHTML = \"<h1>Hello</h1>\"</script>";
 }
-//$jobID == null -> viewAllApplications else viewApplications of jobID
-function showApplications($jobID)
+
+function changeApplicationStatus($job)
 {
     $html = "";
-    $jobID2 = $jobTitle = $datePosted = $appID = $appName = $appDate = $appStatus = "not yet set";
-    $appStatus = "Denied/Under review/offer sent/accepted";
-
-    if($jobID == 'null') {
-        $html = viewAllApplications($jobID2, $jobTitle, $datePosted, $html, $appID, $appName, $appDate, $appStatus);
-    } else {
-        $html = viewApplicationsOfJob($jobID, $jobTitle, $datePosted, $html, $appID, $appName, $appDate, $appStatus);
-    }
-
-    echo "<script>document.getElementById('viewJobs').innerHTML = \"". $html ."\"</script>";
-}
-
-function viewApplicationsOfJob($jobID, string $jobTitle, string $datePosted, string $html, string $appID, string $appName, string $appDate, string $appStatus): string
-{
-    $jobID = $_GET['jobID'];
-
+    $jobID = $job["jobID"];
+    $jobTitle = $job["title"];
+    $datePosted = $job["datePosted"];
+    $numOfApps = $job["numOfApplications"];
+    $apps = $job["applications"];
     $html .=
         "<div class='row jobRow justify-content-center'>" .
         "     <div class='col-10 border text-center'>" .
@@ -193,7 +309,11 @@ function viewApplicationsOfJob($jobID, string $jobTitle, string $datePosted, str
         "     </div>" .
         "</div>";
 
-    for ($applOfJob = 0; $applOfJob < 5/*TODO: total applicants of job*/; $applOfJob++) {
+    for ($i = 0; $i < $numOfApps; $i++) {
+        $appID = $apps[$i]['appID'];
+        $appName = $apps[$i]['appName'];
+        $appDate = $apps[$i]['appDate'];
+        $appStatus = $apps[$i]['appStatus'];
         $html .=
             "<div class='row applicantRow justify-content-center'>" .
             "      <div class='col-6 border'>" .
@@ -203,44 +323,24 @@ function viewApplicationsOfJob($jobID, string $jobTitle, string $datePosted, str
             "           <p><b>Status:</b> $appStatus</p>" .
             "     </div>" .
             "     <div class='col-4 text-center my-auto'>" .
-            "           <button class='btn btn-warning'>Deny</button>" .
-            "           <button class='btn btn-secondary'>Review</button>" .
-            "           <button class='btn btn-primary'>Send Offer</button>" .
-            "           <button class='btn btn-success'>Hire</button>" .
-            "           <button class='btn btn-danger m-2'>Delete</button>" .
+            "           <form action='". $_SERVER['PHP_SELF']."?tab=viewApplications&appID=$appID"."' method='post'>".
+            "           <button type='submit' name='op' value='deny' class='btn btn-warning'>Deny</button>" .
+            "           <button type='submit' name='op' value='review' class='btn btn-secondary'>Review</button>" .
+            "           <button type='submit' name='op' value='sendOffer' class='btn btn-primary'>Send Offer</button>" .
+            "           <button type='submit' name='op' value='hire' class='btn btn-success'>Hire</button>" .
+            "           <button type='submit' name='op' value='delete' class='btn btn-danger m-2'>Delete</button>" .
+            "           </form>" .
             "    </div>" .
             "</div>";
     }
     return $html;
 }
 
-function viewAllApplications(string $jobID2, string $jobTitle, string $datePosted, string $html, string $appID, string $appName, string $appDate, string $appStatus): string
+function viewAllApplications($jobs)
 {
-    for ($totEmpJobs = 0; $totEmpJobs < 3 /*TODO: total employer jobs*/; $totEmpJobs++) {
-        $html .=
-            "<div class='row jobRow justify-content-center'>" .
-            "     <div class='col-10 border text-center'>" .
-            "         <p><b>Job ID:</b> $jobID2 <b>Job title:</b> $jobTitle <b>Date posted:</b> $datePosted </p>" .
-            "     </div>" .
-            "</div>";
-        for ($applOfJob = 0; $applOfJob < 5/*TODO: total applicants of job*/; $applOfJob++) {
-            $html .=
-                "<div class='row applicantRow justify-content-center'>" .
-                "      <div class='col-6 border'>" .
-                "           <p><b>Applicant ID:</b> $appID</p>" .
-                "           <p><b>Applicant Name:</b> $appName</p>" .
-                "           <p><b>Application Date:</b> $appDate</p>" .
-                "           <p><b>Status:</b> $appStatus</p>" .
-                "     </div>" .
-                "     <div class='col-4 text-center my-auto'>" .
-                "           <button class='btn btn-warning'>Deny</button>" .
-                "           <button class='btn btn-secondary'>Review</button>" .
-                "           <button class='btn btn-primary'>Send Offer</button>" .
-                "           <button class='btn btn-success'>Hire</button>" .
-                "           <button class='btn btn-danger m-2'>Delete</button>" .
-                "    </div>" .
-                "</div>";
-        }
+    $html = "";
+    for ($i = 0; $i < count($jobs); $i++) {
+        $html .= viewApplicationsOfJob($jobs[$i]);
     }
     return $html;
 }
@@ -400,6 +500,7 @@ function showBalance(string $html): string
     $html .=
         "</div>" .
         "</div>";
+
     return $html;
 }
 
