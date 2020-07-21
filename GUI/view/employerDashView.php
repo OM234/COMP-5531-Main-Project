@@ -40,7 +40,7 @@
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Account Settings</a>
+                    <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF'] . "?tab=viewAccountSettings"; ?>>Account Settings</a>
                 </li>
             </ul>
         </div>
