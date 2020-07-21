@@ -294,7 +294,7 @@ function showPostedJobs($postedJobsData) {
 //    echo "<script>document.getElementById('viewJobs').innerHTML = \"<h1>Hello</h1>\"</script>";
 }
 
-function changeApplicationStatus($job)
+function viewApplicationsOfJob($job)
 {
     $html = "";
     $jobID = $job["jobID"];
@@ -374,7 +374,8 @@ function showAccountSettings() {
         "         </div>" .
         "   </div>".
         "</div>".
-        "</form>";
+        "</form>".
+        "<h1>not yet completed<h1>";
     echo "<script>document.getElementById('accountSettings').innerHTML = \"". $html ."\"</script>";
 }
 
