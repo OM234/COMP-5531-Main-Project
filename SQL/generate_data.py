@@ -49,12 +49,12 @@ ccList = []
 ccNumber = ""
 
 for k in range(100):
-    for h in range(12):
+    for h in range(16):
         ccNumber += str(r.randrange(10))
 
     ccList.append(ccNumber)
     ccNumber = ""
 
-for i in range(len(ccList)):
-    print(ccList[i])
+# for i in range(len(ccList)):
+#    print(ccList[i])
 
