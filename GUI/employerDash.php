@@ -611,8 +611,12 @@ function showContactInfo() {
         "                  <input type='text' class='form-control' id='eName' placeholder='Enter employer name'>" .
         "              </div>" .
         "              <div class='form-group'>" .
-        "                  <label for='name'><b>Representative Name</b></label>" .
-        "                  <input type='text' class='form-control' id='name' placeholder='Enter representative name'>" .
+        "                  <label for='name'><b>Representative First Name</b></label>" .
+        "                  <input type='text' class='form-control' id='firstName' placeholder='Enter representative name'>" .
+        "              </div>" .
+        "              <div class='form-group'>" .
+        "                  <label for='name'><b>Representative Last Name</b></label>" .
+        "                  <input type='text' class='form-control' id='lastName' placeholder='Enter representative name'>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                  <label for='email'><b>Representative email</b></label>" .
