@@ -34,6 +34,17 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
         echo "$tab<br>";
 
+        switch ($tab) {     //Make Account Settings navbar visible
+
+            case "viewAccountSettings":
+            case "viewContactInfo":
+            case "viewPaymentInfo":
+            case "viewAccBalance":
+            case "viewPasswordChange":
+                echo "<script>document.getElementById('accSettingsNavbar').classList.remove('d-none');</script>";
+                break;
+        }
+
         switch ($tab) {
             case "viewJobs":  // view posted jobs
                 $postedJobsData = getPostedJobsData();
@@ -58,9 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
                 showPasswordChange();
                 break;
 
-//            case "viewAccountSettings":
-//                showAccountSettings();
-//                break;
         }
     }
 }
@@ -283,7 +291,7 @@ function showPostedJobs($postedJobsData) {
 
         $html .=
             "<div class='row align-items-center justify-content-center'>" .
-            "    <div class='col-8 border'>" .
+            "    <div class='col-8 border border-dark rounded'>" .
             "       <p class='jobTitle'><b>" . $postedJobsData[$i]['title'] . "</b></p><br>" .
             "       <p><b>Job ID: </b>" . $postedJobsData[$i]['jobID'] . "</p>" .
             "       <p><b>Date Posted: </b>" . $postedJobsData[$i]['datePosted'] . "</p>" .
@@ -292,6 +300,7 @@ function showPostedJobs($postedJobsData) {
             "       <p><b># Openings: </b>" . $postedJobsData[$i]['numOfOpenings'] . "</p>" .
             "       <p><a href='employerDash.php?tab=viewApplications&jobID=$ID'># Applications: " .
                         $postedJobsData[$i]['numOfApplications'] . "</a></p>" .
+            "       <p><b># Hires: </b>" . /*TODO: $postedJobsData[$i]['numOfHires']" */ "To do". "</p>" .
             "    </div>" .
             "    <div class='col-2 d-flex justify-content-center '>" .
             "    <form action='" . $_SERVER['PHP_SELF'] . "?tab=viewJobs' method='post' onsubmit='return deleteJob(" . $ID . ")'>" .
@@ -483,19 +492,19 @@ function showContactInfo() {
         "  <div class = 'col-8'>" .
         "           <form>" .
         "              <div class='form-group'>" .
-        "                  <label for='eName'>Employer Name</label>" .
+        "                  <label for='eName'><b>Employer Name</b></label>" .
         "                  <input type='text' class='form-control' id='eName' placeholder='Enter employer name'>" .
         "              </div>" .
         "              <div class='form-group'>" .
-        "                  <label for='name'>Representative Name</label>" .
+        "                  <label for='name'><b>Representative Name</b></label>" .
         "                  <input type='text' class='form-control' id='name' placeholder='Enter representative name'>" .
         "              </div>" .
         "              <div class='form-group'>" .
-        "                  <label for='email'>Representative email</label>" .
+        "                  <label for='email'><b>Representative email</b></label>" .
         "                  <input type='email' class='form-control' id='email' placeholder='Enter email'>" .
         "              </div>" .
         "              <div class='form-group'>" .
-        "                  <label for='number'>Representative number</label>" .
+        "                  <label for='number'><b>Representative number</b></label>" .
         "                  <input type='text' class='form-control' id='number' placeholder='Enter phone number'>" .
         "              </div>" .
         "              <input class='btn btn-primary' type='submit' value='Submit'>".
@@ -620,15 +629,15 @@ function showPasswordChange() {
         "     <div class = 'row justify-content-center'>".
         "        <div class = 'col-8'>".
         "             <div class='form-group'>" .
-        "                  <label for='prevPass'<b>Previous Password</b></label> " .
+        "                  <label for='prevPass'><b>Previous Password</b></label> " .
         "                  <input type='password' class='form-control' placeholder='Enter previous password' id='prevPass' name='prevPass' value=''>" .
         "              </div>" .
         "              <div class='form-group'>" .
-        "                   <label for='newPass'<b>New Password</b></label> " .
+        "                   <label for='newPass'><b>New Password</b></label> " .
         "                   <input type='password' class='form-control' placeholder='Enter new password' id='newPass' name='newPass' value=''>" .
         "              </div>" .
         "              <div class='form-group'>" .
-        "                   <label for='conNewPass'<b>Confirm New Password</b></label> " .
+        "                   <label for='conNewPass'><b>Confirm New Password</b></label> " .
         "                   <input type='password' class='form-control' placeholder='Confirm password' id='conNewPass' name='conNewPass' value=''>" .
         "              </div>" .
         "                   <input class='btn btn-primary' type='submit' value='Submit'>".
