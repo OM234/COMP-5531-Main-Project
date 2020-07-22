@@ -63,7 +63,7 @@ CREATE TABLE Job
 
 CREATE TABLE DefaultMOP
 (
-    CardNumber INT,
+    CardNumber BIGINT,
     Auto_Manual VARCHAR(100),
     PRIMARY KEY(CardNumber)
 );

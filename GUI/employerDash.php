@@ -60,7 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
                 showContactInfo();
                 break;
             case "viewPaymentInfo":
-                showPaymentInfo();
+                $paymentInfo = getPaymentInfo();  // get payment info data
+                showPaymentInfo($paymentInfo);    // show payment info
                 break;
             case "viewAccBalance":
                 showAccBalance();
@@ -229,7 +230,11 @@ function getAllApplications() {
  *          "appName": "Jack",
  *          "appDate": "2020-7-20",
  *          "appStatus": "Accepted"
- *      }
+ *      },
+ *      {
+ *          ...
+ *      },
+ *      ...
  *    ]
  * }
  */
@@ -247,6 +252,86 @@ function getApplicationsByJobID($jobID) {
     return $job;
 }
 
+
+/**
+ * @return array[]: [creditCardInfo, debitCardInfo]
+ * creditCardInfo :
+ * [
+ *   {
+ *      "CCNumber" : "123456",
+ *      "CCExpiry" : "2020-8-1",
+ *      "CCName" : "Alice",
+ *      "isDefault" : false
+ *   },
+ *   {
+ *     ...
+ *   },
+ *  ...
+ * ]
+ *
+ * debitCardInfo:
+ * [
+ *   {
+ *      "bankAccountNumber" : "123456789",
+ *      "bankTransitNumber" : "TDB",
+ *      "isDefault" : false
+ *   },
+ *   {
+ *      ...
+ *   }
+ *  ...
+ * ]
+ */
+
+function getPaymentInfo() {
+    $creditCardInfo = array();
+    array_push($creditCardInfo, array("CCNumber"=>"654321", "CCExpiry"=>date("Y-m-d"),
+        "CCName"=>"Alice", "isDefault"=>false));
+    array_push($creditCardInfo, array("CCNumber"=>"123456", "CCExpiry"=>date("Y-m-d"),
+        "CCName"=>"Alice", "isDefault"=>false));
+
+
+    $debitCardInfo = array();
+    array_push($debitCardInfo, array("bankAccountNumber"=>"123456789", "bankTransitNumber"=>"TDB",
+        "isDefault"=>false));
+    array_push($debitCardInfo, array("bankAccountNumber"=>"987654321", "bankTransitNumber"=>"TDB",
+        "isDefault"=>false));
+
+    // set one card to default
+    $flag = false;
+    $defaultCardNum = getDefaultMOP();
+    for ($i = 0; $i < count($creditCardInfo); $i++) {
+        if ($creditCardInfo[$i]["CCNumber"] === $defaultCardNum) {
+            if ($flag === false) {
+                $creditCardInfo[$i]["isDefault"] = true;
+                $flag = true;
+            } else {
+                echo "<script>alert('Default payment method already exist')</script>";
+            }
+        }
+    }
+    for ($i = 0; $i < count($debitCardInfo); $i++) {
+        if ($debitCardInfo[$i]["CCNumber"] === $defaultCardNum) {
+            if ($flag === false) {
+                $debitCardInfo[$i]["isDefault"] = true;
+                $flag = true;
+            } else {
+                echo "<script>alert('Default payment method already exist')</script>";
+            }
+        }
+    }
+
+    if ($flag === false) {
+        echo "<script>alert('Please select one default payment method')</script>";
+    }
+
+    return [$creditCardInfo, $debitCardInfo];
+}
+
+// should get default MOP by username, return the default card number.
+function getDefaultMOP() {
+    return "123456";
+}
 
 
 /************************* End of data access *****************************************************/
@@ -366,7 +451,10 @@ function viewAllApplications($jobs)
     }
     return $html;
 }
-function showPaymentInfo() {
+function showPaymentInfo($paymentInfo) {
+
+    $creditCardInfo = $paymentInfo[0];
+    $debitCardInfo = $paymentInfo[1];
 
     $html =
         "<div class = 'row justify-content-center align-items-center'>".
@@ -377,26 +465,26 @@ function showPaymentInfo() {
         "</div>";
 
 
-    for($i = 0; $i < 5 /*TODO: count of payment methods*/; $i++) {
+    for($i = 0; $i < count($creditCardInfo); $i++) {
 
-        if(/*TODO: if credit card*/ $i<4) {
+        $html = showCreditCardInfo($html, $creditCardInfo[$i]);
 
-            $html = showCreditCardInfo($html/*, TODO: $CCNumber, CCExpiry*/);
+    }
 
-        } else {
+    for ($i = 0; $i < count($debitCardInfo); $i++) {
 
-            $html = showDebitCardInfo($html /*, TODO: $bankAccountNumber*/);
-        }
+        $html = showDebitCardInfo($html, $debitCardInfo[$i]);
+
     }
 
     echo "<script>document.getElementById('accountSettings').innerHTML = \"". $html ."\"</script>";
 }
 
-function showDebitCardInfo(string $html/*, TODO: $bankAccountNumber*/): string
+function showDebitCardInfo(string $html, $data): string
 {
-    $isDefault = /*TODO: getDefaultPaymentMethod()*/ true;
-    $bankAccountNumber = -1;
-    $bankTransitNumber = -1;
+    $isDefault = $data["isDefault"];
+    $bankAccountNumber = $data["bankAccountNumber"];
+    $bankTransitNumber = $data["bankTransitNumber"];
 
     $html .=
         "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>";
@@ -448,12 +536,12 @@ function showDebitCardInfo(string $html/*, TODO: $bankAccountNumber*/): string
     return $html;
 }
 
-function showCreditCardInfo(string $html/*, TODO: $CCNumber, CCExpiry*/): string
+function showCreditCardInfo(string $html, $data): string
 {
-    $isDefault = /*TODO: getDefaultPaymentMethod()*/ false;
-    $CCName = "To do";
-    $CCNumber = -1;
-    $CCExpiry = -1;
+    $isDefault = $data["isDefault"];
+    $CCName = $data["CCName"];
+    $CCNumber = $data["CCNumber"];
+    $CCExpiry = $data["CCExpiry"];
 
     $html .=
         "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>";
