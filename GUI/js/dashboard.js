@@ -83,3 +83,8 @@ function validateForm() {
         return false;
     }
 }
+
+function paymentApplied() {
+    alert("Payment Applied");
+    location.reload();
+}
