@@ -372,7 +372,14 @@ function viewAllApplications($jobs)
 }
 function showPaymentInfo() {
 
-    $html = "";
+    $html =
+        "<div class = 'row justify-content-center align-items-center'>".
+        "     <div class = 'col-8 text-center'>".
+        "          <button class = 'btn btn-success' onclick='editCreditCard(/* null */)'>Add Credit Card</button>" .
+        "          <button class = 'btn btn-success' onclick='editDebitCard(/*null*/)'>Add Bank Card</button>" .
+        "     </div>".
+        "</div>";
+
 
     for($i = 0; $i < 5 /*TODO: count of payment methods*/; $i++) {
 
@@ -491,7 +498,7 @@ function showCreditCardInfo(string $html/*, TODO: $CCNumber, CCExpiry*/): string
         $html .=
             "   <div class = 'col-2 text-center'>" .
             "       <button class = 'btn btn-primary'>Set Default</button>" .
-            "      <button class = 'btn btn-info' onclick='editCreditCard(/*, TODO: $CCNumber, CCExpiry*/)'>Edit</button>" .
+            "       <button class = 'btn btn-info' onclick='editCreditCard(/*, TODO: $CCNumber, CCExpiry*/)'>Edit</button>" .
             "       <button class = 'btn btn-danger'>Delete</button>" .
             "   </div>";
     } else {
