@@ -34,6 +34,17 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
         echo "$tab<br>";
 
+        switch ($tab) {     //Make Account Settings navbar visible
+
+            case "viewAccountSettings":
+            case "viewContactInfo":
+            case "viewPaymentInfo":
+            case "viewAccBalance":
+            case "viewPasswordChange":
+                echo "<script>document.getElementById('accSettingsNavbar').classList.remove('d-none');</script>";
+                break;
+        }
+
         switch ($tab) {
             case "viewJobs":  // view posted jobs
                 $postedJobsData = getPostedJobsData();
@@ -45,9 +56,19 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
             case "viewApplications":
                 showApplications();
                 break;
-            case "viewAccountSettings":
-                showAccountSettings();
+            case "viewContactInfo":
+                showContactInfo();
                 break;
+            case "viewPaymentInfo":
+                showPaymentInfo();
+                break;
+            case "viewAccBalance":
+                showAccBalance();
+                break;
+            case "viewPasswordChange":
+                showPasswordChange();
+                break;
+
         }
     }
 }
@@ -274,7 +295,7 @@ function showPostedJobs($postedJobsData) {
 
         $html .=
             "<div class='row align-items-center justify-content-center'>" .
-            "    <div class='col-8 border'>" .
+            "    <div class='col-8 border border-dark rounded'>" .
             "       <p class='jobTitle'><b>" . $postedJobsData[$i]['title'] . "</b></p><br>" .
             "       <p><b>Job ID: </b>" . $postedJobsData[$i]['jobID'] . "</p>" .
             "       <p><b>Date Posted: </b>" . $postedJobsData[$i]['datePosted'] . "</p>" .
@@ -283,6 +304,7 @@ function showPostedJobs($postedJobsData) {
             "       <p><b># Openings: </b>" . $postedJobsData[$i]['numOfOpenings'] . "</p>" .
             "       <p><a href='employerDash.php?tab=viewApplications&jobID=$ID'># Applications: " .
                         $postedJobsData[$i]['numOfApplications'] . "</a></p>" .
+            "       <p><b># Hires: </b>" . /*TODO: $postedJobsData[$i]['numOfHires']" */ "To do". "</p>" .
             "    </div>" .
             "    <div class='col-2 d-flex justify-content-center '>" .
             "    <form action='" . $_SERVER['PHP_SELF'] . "?tab=viewJobs' method='post' onsubmit='return deleteJob(" . $ID . ")'>" .
@@ -348,165 +370,306 @@ function viewAllApplications($jobs)
     }
     return $html;
 }
+function showPaymentInfo() {
 
-function showAccountSettings() {
-
-    $html ="";
-    $html = showBalance($html);
-    $html = showContactInfo($html);
-    $html = showPaymentInfo($html);
-    $html .=
-        "<form>".
-        "<div class = 'row justify-content-center'>" .
-        "   <div class = 'col-10'>" .
-        "      <div class='badge badge-primary'>Change Password:</div>" .
-        "   </div>" .
-        "</div>".
-        "<div class = 'row justify-content-center'>".
-        "   <div class = 'col-10'>".
-        "         <div class='form-group'>" .
-        "            <label for='prevPass'<b>Previous Password</b></label> " .
-        "            <input type='password' class='form-control' placeholder='Enter previous password' id='prevPass' name='prevPass' value=''>" .
-        "         </div>" .
-        "         <div class='form-group'>" .
-        "            <label for='newPass'<b>New Password</b></label> " .
-        "            <input type='password' class='form-control' placeholder='Enter new password' id='newPass' name='newPass' value=''>" .
-        "         </div>" .
-        "         <div class='form-group'>" .
-        "            <label for='conNewPass'<b>Confirm New Password</b></label> " .
-        "            <input type='password' class='form-control' placeholder='Confirm password' id='conNewPass' name='conNewPass' value=''>" .
-        "         </div>" .
-        "   </div>".
-        "</div>".
-        "</form>".
-        "<h1>not yet completed<h1>";
-    echo "<script>document.getElementById('accountSettings').innerHTML = \"". $html ."\"</script>";
-}
-
-function showPaymentInfo(string $html): string
-{
-    $html .=
-        "<div class = 'row justify-content-center'>" .
-        "   <div class = 'col-10'>" .
-        "      <div class='badge badge-primary'>Payment Information (Default in green):</div>" .
-        "   </div>" .
-        "</div>";
+    $html = "";
 
     for($i = 0; $i < 5 /*TODO: count of payment methods*/; $i++) {
 
-        if(/*TODO: credit card*/ $i%2==0) {
-            $html = showCreditCardInfo($html);
+        if(/*TODO: if credit card*/ $i<4) {
+
+            $html = showCreditCardInfo($html/*, TODO: $CCNumber, CCExpiry*/);
+
         } else {
-            $html = showDebitCardInfo($html);
+
+            $html = showDebitCardInfo($html /*, TODO: $bankAccountNumber*/);
         }
     }
 
-    return $html;
+    echo "<script>document.getElementById('accountSettings').innerHTML = \"". $html ."\"</script>";
 }
 
-function showDebitCardInfo(string $html): string
+function showDebitCardInfo(string $html/*, TODO: $bankAccountNumber*/): string
 {
-    $html .=
-        "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>" .
-        "   <div class = 'col-8 border border-primary rounded'>" . /*TODO: border-primary is card not default, border-success if card default*/
-        "           <form class = '''>" .
-        "              <div class='form-group'>" .
-        "                  <label for='baNumber'><b>Account number</b></label> " .
-        "                  <input type='text' class='form-control' placeholder='Enter account number' id='baNumber' name='baNumber' value=''>" .
-        "              </div>" .
-        "              <div class='form-group'>" .
-        "                   <label for='transitNumber'><b>Transit Number</b></label>" .
-        "                   <input type='text' class='form-control' placeholder='Enter transit number' id='transitNumber' name='transitNumber' value=''>" .
-        "              </div>" .
-        "           </form>" .
-        "</div>" .
-        "   <div class = 'col-2'>" .
-        "       <button class = 'btn btn-primary'>Set Default</button>" .
-        "   </div>" .
-        "</div>";
-    return $html;
-}
+    $isDefault = /*TODO: getDefaultPaymentMethod()*/ true;
+    $bankAccountNumber = -1;
+    $bankTransitNumber = -1;
 
-function showCreditCardInfo(string $html): string
-{
     $html .=
-        "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>" .
-        "   <div class = 'col-8 border border-primary rounded'>" . /*TODO: border-primary is card not default, border-success if card default*/
-        "           <form class = ''>" .
-        "              <div class='form-group'>" .
-        "                  <label for='ccName'><b>Name</b></label>" .
-        "                  <input type='text' class='form-control' placeholder='Enter name' id='ccName' name='ccName' value=''>" .
-        "              </div>" .
-        "              <div class='form-group'>" .
-        "                   <label for='ccNumber'><b>Credit card number</b></label>" .
-        "                   <input type='text' class='form-control' placeholder='Enter card number' id='ccNumber' name='ccNumber' value=''>" .
-        "              </div>" .
-        "              <div class='form-group'>" .
-        "                   <label for='ccExpiration'><b>Expiration(MMYYYY)</b></label>" .
-        "                   <input type='text' class='form-control' placeholder='Enter expiration' id='ccExpiration' name='ccExpiration'value=''>" .
-        "              </div>" .
-        "           </form>" .
-        "</div>" .
-        "   <div class = 'col-2'>" .
-        "       <button class = 'btn btn-primary'>Set Default</button>" .
-        "   </div>" .
+        "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>";
+
+    if($isDefault == true) { // Make green border
+
+        $html .=
+            "<div class = 'col-8 border border-success rounded'>";
+    } else { //make grey border
+
+        $html .=
+            "<div class = 'col-8 border rounded'>";
+    }
+    $html .=
+        "     <p><b>Bank Account Number: </b>$bankAccountNumber</p>".
+        "     <p><b>Bank Transit Number: </b>$bankTransitNumber</p>".
         "</div>";
 
+//    $html .=
+//        "              <div class='form-group'>" .
+//        "                  <label for='baNumber'><b>Account number</b></label> " .
+//        "                  <input type='text' class='form-control' placeholder='Enter account number' id='baNumber' name='baNumber' value=''>" .
+//        "              </div>" .
+//        "              <div class='form-group'>" .
+//        "                   <label for='transitNumber'><b>Transit Number</b></label>" .
+//        "                   <input type='text' class='form-control' placeholder='Enter transit number' id='transitNumber' name='transitNumber' value=''>" .
+//        "              </div>" .
+//        "   </div>";
+
+    if($isDefault == false) {
+
+        $html .=
+            "<div class = 'col-2 text-center'>" .
+            "     <button class = 'btn btn-primary'>Set Default</button>" .
+            "      <button class = 'btn btn-info' onclick='editDebitCard(/*TODO: $bankAccountNumber*/)'>Edit</button>" .
+            "      <button class = 'btn btn-danger'>Delete</button>" .
+            "</div>";
+    } else {
+
+        $html .=
+            "<div class = 'col-2 text-center'>" .
+            "     <button class = 'btn btn-info' onclick='editDebitCard(/*TODO: $bankAccountNumber*/)'>Edit</button>" .
+            "</div>";
+    }
+
+    $html .=
+        "</div>";
+
     return $html;
 }
 
-function showContactInfo(string $html): string
+function showCreditCardInfo(string $html/*, TODO: $CCNumber, CCExpiry*/): string
 {
+    $isDefault = /*TODO: getDefaultPaymentMethod()*/ false;
+    $CCName = "To do";
+    $CCNumber = -1;
+    $CCExpiry = -1;
+
     $html .=
+        "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>";
+
+    if($isDefault == true) {  // Make green border
+
+        $html .=
+            "<div class = 'col-8 border border-success rounded'>";
+    } else { // Make grey border
+
+        $html .=
+            "<div class = 'col-8 border rounded'>";
+    }
+
+    $html .=
+        "     <p><b>Name on Card: </b>$CCName</p>".
+        "     <p><b>Credit Card Number: </b>$CCNumber</p>".
+        "     <p><b>Expiry Date: </b>$CCExpiry</p>".
+        "</div>";
+
+//    $html .=
+//        "              <div class='form-group'>" .
+//        "                  <label for='ccName'><b>Name</b></label>" .
+//        "                  <input type='text' class='form-control' placeholder='Enter name' id='ccName' name='ccName' value=''>" .
+//        "              </div>" .
+//        "              <div class='form-group'>" .
+//        "                   <label for='ccNumber'><b>Credit card number</b></label>" .
+//        "                   <input type='text' class='form-control' placeholder='Enter card number' id='ccNumber' name='ccNumber' value=''>" .
+//        "              </div>" .
+//        "              <div class='form-group'>" .
+//        "                   <label for='ccExpiration'><b>Expiration(MMYYYY)</b></label>" .
+//        "                   <input type='text' class='form-control' placeholder='Enter expiration' id='ccExpiration' name='ccExpiration'value=''>" .
+//        "              </div>" .
+//        "</div>";
+
+    if ($isDefault == false) {
+
+        $html .=
+            "   <div class = 'col-2 text-center'>" .
+            "       <button class = 'btn btn-primary'>Set Default</button>" .
+            "      <button class = 'btn btn-info' onclick='editCreditCard(/*, TODO: $CCNumber, CCExpiry*/)'>Edit</button>" .
+            "       <button class = 'btn btn-danger'>Delete</button>" .
+            "   </div>";
+    } else {
+
+        $html .=
+            "<div class = 'col-2 text-center'>" .
+            "     <button class = 'btn btn-info' onclick='editCreditCard(/*, TODO: $CCNumber, CCExpiry*/)'>Edit</button>" .
+            "</div>";
+    }
+
+    $html .=
+        "</div>";
+
+    return $html;
+}
+
+function showContactInfo() {
+
+    /* TODO: populate form */
+    $html =
         "<div class = 'row justify-content-center'>" .
-        "  <div class = 'col-10'>" .
-        "      <div class='badge badge-primary '>Contact Information:</div>" .
+        "  <div class = 'col-8'>" .
         "           <form>" .
         "              <div class='form-group'>" .
-        "                  <label for='eName'>Employer Name</label>" .
+        "                  <label for='eName'><b>Employer Name</b></label>" .
         "                  <input type='text' class='form-control' id='eName' placeholder='Enter employer name'>" .
         "              </div>" .
         "              <div class='form-group'>" .
-        "                  <label for='name'>Representative Name</label>" .
+        "                  <label for='name'><b>Representative Name</b></label>" .
         "                  <input type='text' class='form-control' id='name' placeholder='Enter representative name'>" .
         "              </div>" .
         "              <div class='form-group'>" .
-        "                  <label for='email'>Representative email</label>" .
+        "                  <label for='email'><b>Representative email</b></label>" .
         "                  <input type='email' class='form-control' id='email' placeholder='Enter email'>" .
         "              </div>" .
         "              <div class='form-group'>" .
-        "                  <label for='number'>Representative number</label>" .
+        "                  <label for='number'><b>Representative number</b></label>" .
         "                  <input type='text' class='form-control' id='number' placeholder='Enter phone number'>" .
         "              </div>" .
+        "              <input class='btn btn-primary' type='submit' value='Submit'>".
         "           </form>" .
         "       </div>" .
         "  </div>" .
         "</div>";
-    return $html;
+
+    echo "<script>document.getElementById('accountSettings').innerHTML = \"". $html ."\"</script>";
 }
 
-function showBalance(string $html): string
+function showAccBalance() {
+
+    $balance = 5; /*TODO: get balance*/
+
+    $html = getBalanceHTML($balance);
+    $html = getMonthlyPaymentRadioButtonsHTML($html);
+    $html = getEmployerCategoryHTML($html);
+
+    echo "<script>document.getElementById('accountSettings').innerHTML = \"". $html ."\"</script>";
+}
+
+/**
+ * @param string $html
+ * @return string
+ */
+function getEmployerCategoryHTML(string $html): string
 {
-    $balance = -5; /*TODO: get balance*/
+    $toolTipEmpPrime = "You can post up to five jobs. A monthly charge of $50 will be applied.";
+    $toolTipEmpGold = "You can post as many jobs as you like. A monthly charge of $100 will be applied";
 
     $html .=
         "<div class = 'row justify-content-center'>" .
-        "<div class = 'col-10'>" .
-        "<div><span class=\'badge badge-primary\'>Account Balance </span>   $$balance</div>";
+        "     <div class = 'col-8'>" .
+        "          <div><b>Employer Category</b></div>" .
+        "          <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
+        "               <label class='btn btn-secondary' data-toggle='tooltip' data-placement='top' title='$toolTipEmpPrime'>" .
+        "                    <input type='radio' name='options' id='employerPrime' autocomplete='off'> Employer Prime" .
+        "               </label>" .
+        "               <label class='btn btn-warning' data-toggle='tooltip' data-placement='top' title='$toolTipEmpGold'>" .
+        "                    <input type='radio' name='options' id='employerGold' autocomplete='off'> Employer Gold" .
+        "               </label>" .
+        "          </div>" .
+        "     </div>" .
+        "</div>";
+    return $html;
+}
 
-    if ($balance >= 0) {
-        $html .=
-            "<div>Your account is in good standing.</div>";
-    } else {
-        $html .=
-            "<div>Your account limited. Make a payment to gain full access</div>";
-    }
-
+/**
+ * @param string $html
+ * @return string
+ */
+function getMonthlyPaymentRadioButtonsHTML(string $html): string
+{
     $html .=
-        "</div>" .
+        "<div class = 'row justify-content-center'>" .
+        "     <div class = 'col-8'>" .
+        "          <div><b>Payment Method</b></div>" .
+        "          <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
+        "               <label class='btn btn-info'>" .
+        "                    <input type='radio' name='options' id='autoPayMonth' autocomplete='off'> Auto Monthly" .
+        "               </label>" .
+        "               <label class='btn btn-info'>" .
+        "                    <input type='radio' name='options' id='manualPayMonth' autocomplete='off'> Manual Monthly" .
+        "               </label>" .
+        "          </div>" .
+        "     </div>" .
         "</div>";
 
     return $html;
+}
+
+/**
+ * @param float $balance
+ * @return string
+ */
+function getBalanceHTML(float $balance): string
+{
+    $payment = /* TODO: get monthly payment */ 50;
+
+    $html =
+        "<div class = 'row justify-content-center'>" .
+        "     <div class = 'col-6'>";
+
+
+    if ($balance >= 0) {
+
+        $html .=
+            "     <div><b>Account Balance:</b> $$balance</div>" .
+            "     <div>Your account is in good standing.</div>".
+            "</div>".
+            "<div class ='col-2'>";
+    } else {
+
+        $html .=
+            "     <div><span class='badge badge-danger'>Account Balance </span>$$balance</div>" .
+            "     <div>Your account limited. Make a payment to gain full access</div>".
+            "</div>".
+            "<div class ='col-2'>";
+    }
+
+    if($balance < 0  || true /*TODO: || payment method == monthly manual*/) {
+
+        $html .=
+            "          <button class='btn btn-success' onclick = 'paymentApplied()'> Make Payment $$payment </button>".
+            "     </div>".
+            "</div>";
+    } else { // balance in good standing and auto monthly payment
+
+        $html .=
+            "     </div>" .
+            "</div>";
+    }
+
+    return $html;
+}
+
+function showPasswordChange() {
+
+    $html =
+        "<form>".
+        "     <div class = 'row justify-content-center'>".
+        "        <div class = 'col-8'>".
+        "             <div class='form-group'>" .
+        "                  <label for='prevPass'><b>Previous Password</b></label> " .
+        "                  <input type='password' class='form-control' placeholder='Enter previous password' id='prevPass' name='prevPass' value=''>" .
+        "              </div>" .
+        "              <div class='form-group'>" .
+        "                   <label for='newPass'><b>New Password</b></label> " .
+        "                   <input type='password' class='form-control' placeholder='Enter new password' id='newPass' name='newPass' value=''>" .
+        "              </div>" .
+        "              <div class='form-group'>" .
+        "                   <label for='conNewPass'><b>Confirm New Password</b></label> " .
+        "                   <input type='password' class='form-control' placeholder='Confirm password' id='conNewPass' name='conNewPass' value=''>" .
+        "              </div>" .
+        "                   <input class='btn btn-primary' type='submit' value='Submit'>".
+        "         </div>".
+        "    </div>".
+        "</form>";
+
+    echo "<script>document.getElementById('accountSettings').innerHTML = \"". $html ."\"</script>";
 }
 
 function goToPage($url) {

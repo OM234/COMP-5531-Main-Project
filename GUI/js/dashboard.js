@@ -83,3 +83,60 @@ function validateForm() {
         return false;
     }
 }
+
+function paymentApplied() {
+    alert("Payment Applied");
+    location.reload();
+}
+
+function editDebitCard(/*TODO: $bankAccountNumber*/) {
+
+    var html =
+        "<div class='row justify-content-center'>" +
+        "    <div class='col-8'>" +
+        "        <form>" +
+        "            <div class='form-group'>" +
+        "                <label for='baNumber'><b>Account number</b></label>" +
+        "                <input type='text' class='form-control' placeholder='Enter account number' id='baNumber' name='baNumber'" +
+        "                       value=''>" +
+        "            </div>" +
+        "            <div class='form-group'>" +
+        "                <label for='transitNumber'><b>Transit Number</b></label>" +
+        "                <input type='text' class='form-control' placeholder='Enter transit number' id='transitNumber'" +
+        "                       name='transitNumber' value=''>" +
+        "            </div>" +
+        "            <input class='btn btn-primary' type='submit' value='Submit'>" +
+        "        </form>" +
+        "    </div>" +
+        "</div> "
+
+    document.getElementById('accountSettings').innerHTML = html;
+}
+
+function editCreditCard(/*, TODO: $CCNumber, CCExpiry*/) {
+
+    var html =
+        "<div class='row justify-content-center'>" +
+        "    <div class='col-8'>" +
+        "        <form>" +
+        "            <div class='form-group'>" +
+        "                <label for='ccName'><b>Name</b></label>" +
+        "                <input type='text' class='form-control' placeholder='Enter name' id='ccName' name='ccName' value=''>" +
+        "            </div>" +
+        "            <div class='form-group'>" +
+        "                <label for='ccNumber'><b>Credit card number</b></label>" +
+        "                <input type='text' class='form-control' placeholder='Enter card number' id='ccNumber' name='ccNumber'" +
+        "                       value=''>" +
+        "            </div>" +
+        "            <div class='form-group'>" +
+        "                <label for='ccExpiration'><b>Expiration(MMYYYY)</b></label>" +
+        "                <input type='text' class='form-control' placeholder='Enter expiration' id='ccExpiration'" +
+        "                       name='ccExpiration' value=''>" +
+        "            </div>" +
+        "        </form>" +
+        "        <input class='btn btn-primary' type='submit' value='Submit'>" +
+        "    </div>" +
+        "</div>"
+
+    document.getElementById('accountSettings').innerHTML = html;
+}
