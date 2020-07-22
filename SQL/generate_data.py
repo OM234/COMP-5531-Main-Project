@@ -18,7 +18,7 @@ for x in range(100):
         else:
             phoneNumber += str(r.randrange(10))
     phoneNumberList[x] = phoneNumber
-#   print(phoneNumberList[x])
+#    print(phoneNumberList[x])
     phoneNumber = ''
 
 # First Names, Last Names
@@ -62,7 +62,7 @@ for k in range(100):
 
 emailList = []
 emailString = ""
-emailDomain = ['hotmail.com', 'gmail.ca', 'yahoo.com']
+emailDomain = ['coldmail.com', 'hmail.ca', 'zahoo.com']
 
 for i in range(100):
     emailString += firstNameList[i] + lastNameList[i] + str(r.randrange(10)) + str(r.randrange(10)) + "@" +\
