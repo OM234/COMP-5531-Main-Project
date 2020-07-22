@@ -368,35 +368,28 @@ function viewAllApplications($jobs)
 }
 function showPaymentInfo() {
 
-    $html =
-        "<form class = ''>";
+    $html = "";
 
     for($i = 0; $i < 5 /*TODO: count of payment methods*/; $i++) {
 
         if(/*TODO: if credit card*/ $i<4) {
 
-            $html = showCreditCardInfo($html);
+            $html = showCreditCardInfo($html/*, TODO: $CCNumber, CCExpiry*/);
 
         } else {
 
-            $html = showDebitCardInfo($html);
+            $html = showDebitCardInfo($html /*, TODO: $bankAccountNumber*/);
         }
     }
-
-    $html .=
-        "     <div class = 'row justify-content-center'>" .
-        "          <div class = 'col-10'>" .
-        "               <input class='btn btn-primary' type='submit' value='Submit'>".
-        "          </div>".
-        "     </div>".
-        "</form>";
 
     echo "<script>document.getElementById('accountSettings').innerHTML = \"". $html ."\"</script>";
 }
 
-function showDebitCardInfo(string $html): string
+function showDebitCardInfo(string $html/*, TODO: $bankAccountNumber*/): string
 {
     $isDefault = /*TODO: getDefaultPaymentMethod()*/ true;
+    $bankAccountNumber = -1;
+    $bankTransitNumber = -1;
 
     $html .=
         "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>";
@@ -410,36 +403,50 @@ function showDebitCardInfo(string $html): string
         $html .=
             "<div class = 'col-8 border rounded'>";
     }
-
     $html .=
-        "              <div class='form-group'>" .
-        "                  <label for='baNumber'><b>Account number</b></label> " .
-        "                  <input type='text' class='form-control' placeholder='Enter account number' id='baNumber' name='baNumber' value=''>" .
-        "              </div>" .
-        "              <div class='form-group'>" .
-        "                   <label for='transitNumber'><b>Transit Number</b></label>" .
-        "                   <input type='text' class='form-control' placeholder='Enter transit number' id='transitNumber' name='transitNumber' value=''>" .
-        "              </div>" .
-        "   </div>";
+        "     <p><b>Bank Account Number: </b>$bankAccountNumber</p>".
+        "     <p><b>Bank Transit Number: </b>$bankTransitNumber</p>".
+        "</div>";
+
+//    $html .=
+//        "              <div class='form-group'>" .
+//        "                  <label for='baNumber'><b>Account number</b></label> " .
+//        "                  <input type='text' class='form-control' placeholder='Enter account number' id='baNumber' name='baNumber' value=''>" .
+//        "              </div>" .
+//        "              <div class='form-group'>" .
+//        "                   <label for='transitNumber'><b>Transit Number</b></label>" .
+//        "                   <input type='text' class='form-control' placeholder='Enter transit number' id='transitNumber' name='transitNumber' value=''>" .
+//        "              </div>" .
+//        "   </div>";
 
     if($isDefault == false) {
 
         $html .=
-            "   <div class = 'col-2 text-center'>" .
-            "       <button class = 'btn btn-primary'>Set Default</button>" .
-            "       <button class = 'btn btn-danger'>Delete</button>" .
-            "   </div>";
+            "<div class = 'col-2 text-center'>" .
+            "     <button class = 'btn btn-primary'>Set Default</button>" .
+            "      <button class = 'btn btn-info' onclick='editDebitCard(/*TODO: $bankAccountNumber*/)'>Edit</button>" .
+            "      <button class = 'btn btn-danger'>Delete</button>" .
+            "</div>";
+    } else {
+
+        $html .=
+            "<div class = 'col-2 text-center'>" .
+            "     <button class = 'btn btn-info' onclick='editDebitCard(/*TODO: $bankAccountNumber*/)'>Edit</button>" .
+            "</div>";
     }
 
     $html .=
-        "</div>    ";
+        "</div>";
 
     return $html;
 }
 
-function showCreditCardInfo(string $html): string
+function showCreditCardInfo(string $html/*, TODO: $CCNumber, CCExpiry*/): string
 {
     $isDefault = /*TODO: getDefaultPaymentMethod()*/ false;
+    $CCName = "To do";
+    $CCNumber = -1;
+    $CCExpiry = -1;
 
     $html .=
         "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>";
@@ -455,27 +462,40 @@ function showCreditCardInfo(string $html): string
     }
 
     $html .=
-        "              <div class='form-group'>" .
-        "                  <label for='ccName'><b>Name</b></label>" .
-        "                  <input type='text' class='form-control' placeholder='Enter name' id='ccName' name='ccName' value=''>" .
-        "              </div>" .
-        "              <div class='form-group'>" .
-        "                   <label for='ccNumber'><b>Credit card number</b></label>" .
-        "                   <input type='text' class='form-control' placeholder='Enter card number' id='ccNumber' name='ccNumber' value=''>" .
-        "              </div>" .
-        "              <div class='form-group'>" .
-        "                   <label for='ccExpiration'><b>Expiration(MMYYYY)</b></label>" .
-        "                   <input type='text' class='form-control' placeholder='Enter expiration' id='ccExpiration' name='ccExpiration'value=''>" .
-        "              </div>" .
+        "     <p><b>Name on Card: </b>$CCName</p>".
+        "     <p><b>Credit Card Number: </b>$CCNumber</p>".
+        "     <p><b>Expiry Date: </b>$CCExpiry</p>".
         "</div>";
+
+//    $html .=
+//        "              <div class='form-group'>" .
+//        "                  <label for='ccName'><b>Name</b></label>" .
+//        "                  <input type='text' class='form-control' placeholder='Enter name' id='ccName' name='ccName' value=''>" .
+//        "              </div>" .
+//        "              <div class='form-group'>" .
+//        "                   <label for='ccNumber'><b>Credit card number</b></label>" .
+//        "                   <input type='text' class='form-control' placeholder='Enter card number' id='ccNumber' name='ccNumber' value=''>" .
+//        "              </div>" .
+//        "              <div class='form-group'>" .
+//        "                   <label for='ccExpiration'><b>Expiration(MMYYYY)</b></label>" .
+//        "                   <input type='text' class='form-control' placeholder='Enter expiration' id='ccExpiration' name='ccExpiration'value=''>" .
+//        "              </div>" .
+//        "</div>";
 
     if ($isDefault == false) {
 
         $html .=
             "   <div class = 'col-2 text-center'>" .
             "       <button class = 'btn btn-primary'>Set Default</button>" .
+            "      <button class = 'btn btn-info' onclick='editCreditCard(/*, TODO: $CCNumber, CCExpiry*/)'>Edit</button>" .
             "       <button class = 'btn btn-danger'>Delete</button>" .
             "   </div>";
+    } else {
+
+        $html .=
+            "<div class = 'col-2 text-center'>" .
+            "     <button class = 'btn btn-info' onclick='editCreditCard(/*, TODO: $CCNumber, CCExpiry*/)'>Edit</button>" .
+            "</div>";
     }
 
     $html .=
