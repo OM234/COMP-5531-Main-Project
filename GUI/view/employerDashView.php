@@ -103,7 +103,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="description"><b>Description (Max 250 characters)</b></label>
+                    <label for="description"><b>Description (Max 50 characters)</b></label>
                     <textarea class="form-control" type="text" id="description" name="description" required></textarea>
                 </div>
                 <div class="form-group">
