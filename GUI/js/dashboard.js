@@ -145,3 +145,11 @@ function jobApplyAlert() {
 
     alert("You have applied for job");
 }
+
+function withdrawConfirm() {
+    confirm("Are you sure you want to withdraw?");
+}
+
+function acceptOfferAlert() {
+    alert ("Offer accepted, awaiting final hire decision");
+}

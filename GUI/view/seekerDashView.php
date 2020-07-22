@@ -71,6 +71,7 @@
         </div>
     </div>
     <div id="viewJobs"> </div>
+    <div id="accountSettings" class="container"></div>
 </div>
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/popper.js"></script>

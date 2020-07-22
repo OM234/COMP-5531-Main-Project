@@ -549,7 +549,7 @@ function showAccBalance() {
 
     $html = getBalanceHTML($balance);
     $html = getMonthlyPaymentRadioButtonsHTML($html);
-    $html = getEmployerCategoryHTML($html);
+    $html = getSeekerCategoryHTML($html);
 
     echo "<script>document.getElementById('accountSettings').innerHTML = \"". $html ."\"</script>";
 }
