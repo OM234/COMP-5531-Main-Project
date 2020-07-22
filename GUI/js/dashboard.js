@@ -140,3 +140,8 @@ function editCreditCard(/*, TODO: $CCNumber, CCExpiry*/) {
 
     document.getElementById('accountSettings').innerHTML = html;
 }
+
+function jobApplyAlert() {
+
+    alert("You have applied for job");
+}

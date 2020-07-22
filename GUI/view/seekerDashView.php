@@ -20,7 +20,6 @@
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
@@ -40,6 +39,37 @@
             </ul>
         </div>
     </nav>
+    <div class="row justify-content-center m-1 d-none" id ="accSettingsNavbar">
+        <div class='col-8'>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="#">Account Settings</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?php echo $_SERVER['PHP_SELF'] . "?tab=viewContactInfo"; ?>">Contact
+                                Info</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF'] . "?tab=viewPaymentInfo"; ?>>Payment
+                                Info</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF'] . "?tab=viewAccBalance"; ?>>Account
+                                Balance</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF'] . "?tab=viewPasswordChange"; ?>>Password</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
     <div id="viewJobs"> </div>
 </div>
 <script src="assets/js/jquery.min.js"></script>
