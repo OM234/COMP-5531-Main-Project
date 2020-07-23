@@ -76,3 +76,28 @@ function changePrice() {
             break;
     }
 }
+
+function makeCompanyAppear(){
+
+    var categories = document.getElementsByName('accountType');
+    var category;
+
+    for (i = 0; i < categories.length; i++) {
+        if (categories[i].checked) {
+            category = categories[i];
+            break;
+        }
+    }
+
+    switch (category.value) {
+        case 'employerPrime':
+        case 'employerGold':
+            document.getElementById('companyNameField').classList.remove('d-none');
+            break;
+        case 'seekerBasic':
+        case 'seekerPrime':
+        case 'seekerGold':
+            document.getElementById('companyNameField').classList.add('d-none');
+            break;
+    }
+}

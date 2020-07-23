@@ -6,6 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Sigh Up</title>
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="css/signup.css" rel="stylesheet">
     <script src="js/scripts.js"></script>
 </head>
@@ -181,90 +182,143 @@ function createAccount() {
 
 ?>
 
-
-<div class="form">
-    <h2 class="topBanner">Sign up for new account</h2>
-    <p class="fillIn"><b>Please fill in this form to create an account</b></p>
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-        <label for="email"><p><b>Email</b></p></label>
-        <input type="text" placeholder="Enter email" id="email" name="email" value="<?php echo $email; ?>">
-        <span class="error">* <?php echo $emailErr; ?></span>
-
-        <label for="username"><p><b>Username</b></p></label>
-        <input type="text" placeholder="Enter username" id="username" name="username" value="<?php echo $username; ?>">
-        <span class="error">* <?php echo $usernameErr; ?></span>
-
-        <label for="password"><p><b>Password</b></p></label>
-        <input type="password" placeholder="Enter password" id="password" name="password"
-               value="<?php echo $password; ?>">
-        <span class="error">* <?php echo $passwordErr; ?></span>
-
-        <br/>
-        <p style="display: inline-block"><b>Account type</b></p>
-        <span class="error">* <?php echo $accountTypeErr; ?></span>
-        <div onclick="changePrice()" class="account-toolbar">
-            <input type="radio" id="employerPrime" name="accountType" value="employerPrime">
-            <label for="employerPrime">Employer - Prime</label>
-            <input type="radio" id="employerGold" name="accountType" value="employerGold">
-            <label for="employerGold">Employer - Gold</label>
-            <br>
-            <input type="radio" id="seekerBasic" name="accountType" value="seekerBasic">
-            <label for="seekerBasic">Job Seeker - Basic</label>
-            <input type="radio" id="seekerPrime" name="accountType" value="seekerPrime">
-            <label for="seekerPrime">Job Seeker - Prime</label>
-            <input type="radio" id="seekerGold" name="accountType" value="seekerGold">
-            <label for="seekerGold">Job Seeker - Gold</label>
-        </div>
-        <p id="cost"><b>Monthly cost $ </b></p>
-
-        <p><b>How would you like to pay?</b></p>
-        <span class="error">* <?php echo $paymentErr; ?></span>
-        <div class="row">
-            <!-- Credit Card column-->
-            <div class="column">
-                <input type="radio" id="creditRadio" name="paymentRadio" value="creditCard"
-                    <?php if (isset($payment) && $payment == "creditCard") echo "checked"; ?>>
-                <label for="creditRadio">Credit Card</label>
-
-                <label for="ccName"><p><b>Name</b></p></label>
-                <span class="error">* <?php echo $ccNameErr; ?></span>
-                <input type="text" placeholder="Enter name" id="ccName" name="ccName" value="<?php echo $ccName; ?>">
-
-                <label for="ccNumber"><p><b>Credit card number</b></p></label>
-                <span class="error">* <?php echo $ccNumberErr; ?></span>
-                <input type="text" placeholder="Enter card number" id="ccNumber" name="ccNumber"
-                       value="<?php echo $ccNumber; ?>">
-
-                <label for="ccExpiration"><p><b>Expiration(MMYYYY)</b></p></label>
-                <span class="error">* <?php echo $ccExpirationErr; ?></span>
-                <input type="text" placeholder="Enter expiration" id="ccExpiration" name="ccExpiration"
-                       value="<?php echo $ccExpiration; ?>">
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <span class="navbar-text">
+            <h4>Sign Up for a New Account<h4>
+        </span>
+    </nav>
+    <div class="form">
+        <form id = "signUpForm" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+            <div class='form-group d-none' id ='companyNameField'>
+                <label for='companyName'><b>Company Name</b></label>
+                <input type='text' class='form-control' id='companyName' placeholder='Enter Company Name'>
+                <span class="error"></span>
             </div>
-
-            <!-- Bank Account Column -->
-            <div class="column">
-                <input type="radio" id="bankAccount" name="paymentRadio" value="bankAccount"
-                    <?php if (isset($payment) && $payment == "bankAccount") echo "checked"; ?>>
-                <label for="bankAccount">Bank Account</label>
-
-                <label for="baNumber"><p><b>Account number</b></p></label>
-                <span class="error">* <?php echo $baNumberErr; ?></span>
-                <input type="text" placeholder="Enter account number" id="baNumber" name="baNumber"
-                       value="<?php echo $baNumber; ?>">
-
-                <label for="transitNumber"><p><b>Transit Number</b></p></label>
-                <span class="error">* <?php echo $transitNumberErr; ?></span>
-                <input type="text" placeholder="Enter transit number" id="transitNumber" name="transitNumber"
-                       value="<?php echo $transitNumber ?>">
+            <div class='form-group'>
+                <label for='firstName'><b>First Name</b></label>
+                <input type='text' class='form-control' id='firstName' placeholder='Enter first name' required>
+                <span class="error"></span>
             </div>
-        </div>
+            <div class='form-group'>
+                <label for='lastName'><b>Last Name</b></label>
+                <input type='text' class='form-control' id='lastName' placeholder='Enter last name' required>
+                <span class="error"></span>
+            </div>
+            <div class='form-group'>
+                <label for='number'><b>Number</b></label>
+                <input type='text' class='form-control' id='number' placeholder='Enter phone number'required>
+                <span class="error"></span>
+            </div>
+            <div class = "form-group">
+                <label for="email"><b>Email</b></label>
+                <input type="text" class='form-control' placeholder="Enter email" id="email" name="email" value="<?php echo $email; ?>" required>
+                <span class="error"> <?php echo $emailErr; ?></span>
+            </div>
+            <div class="form-group">
+                <label for="username"><b>Username</b></label>
+                <input type="text" class='form-control' placeholder="Enter username" id="username" name="username"
+                       value="<?php echo $username; ?>" required>
+                <span class="error"> <?php echo $usernameErr; ?></span>
+            </div>
+            <div class="form-group">
+                <label for="password"><b>Password</b></label>
+                <input type="password" class='form-control' placeholder="Enter password" id="password" name="password"
+                       value="<?php echo $password; ?>" required>
+                <span class="error"> <?php echo $passwordErr; ?></span>
+            </div>
+            <div class="form-group">
+                <label for="confirmPass"><b>Re-enter password</b></label>
+                <input type="password" class='form-control' placeholder="Re-enter password" id="confirmPass" name="confirmPass"
+                       value="" required>
+                <span class="error"></span>
+            </div>
+            <b>Account type</b>
+            <span class="error"> <?php echo $accountTypeErr; ?></span>
+            <div onclick="changePrice(); makeCompanyAppear();" class="account-toolbar btn-group btn-group-toggle" data-toggle='buttons'>
+                <label class="btn btn-secondary">
+                    <input type="radio" id="employerPrime" name="accountType" value="employerPrime" required>
+                    Employer - Prime
+                </label>
+                <label class="btn btn-warning">
+                    <input type="radio" id="employerGold" name="accountType" value="employerGold">
+                    Employer - Gold
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" id="seekerBasic" name="accountType" value="seekerBasic"> Job
+                    Seeker - Basic
+                </label>
+                <label class="btn btn-success">
+                    <input type="radio" id="seekerPrime" name="accountType" value="seekerPrime"> Job
+                    Seeker - Prime
+                </label>
+                <label class="btn btn-warning">
+                    <input type="radio" id="seekerGold" name="accountType" value="seekerGold"> Job
+                    Seeker - Gold
+                </label>
+            </div>
+            <p id="cost"><b>Monthly cost $ </b></p>
+            <p><b>How would you like to pay?</b></p>
+            <span class="error"> <?php echo $paymentErr; ?></span>
+            <div class="row">
+                <!-- Credit Card column-->
+                <div class="column">
+                    <div class="radio">
+                        <label><input type="radio" id="creditRadio" name="paymentRadio" value="creditCard"
+                                <?php if (isset($payment) && $payment == "creditCard") echo "checked"; ?>>Credit Card</label>
+                    </div>
 
-        <!--        cancel the input values, and reload page with get request-->
-        <input type="button" onclick="location.href=location.href" value="Cancel" class="cancel">
-        <!--        submit input values, reload page with post request-->
-        <input type="submit" value="Make Account" class="make">
-    </form>
+                    <div class="form-group">
+                        <label for="ccName"><p><b>Cardholder Name</b></p></label>
+                        <input type="text" class='form-control' placeholder="Enter name" id="ccName" name="ccName"
+                               value="<?php echo $ccName; ?>">
+                        <span class="error"> <?php echo $ccNameErr; ?></span>
+                    </div>
 
+                    <div class="form-group">
+                        <label for="ccNumber"><p><b>Credit card number</b></p></label>
+                        <input type="text" class='form-control' placeholder="Enter card number" id="ccNumber" name="ccNumber"
+                               value="<?php echo $ccNumber; ?>">
+                        <span class="error"> <?php echo $ccNumberErr; ?></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ccExpiration"><p><b>Expiration(MMYYYY)</b></p></label>
+                        <input type="text" class='form-control' placeholder="Enter expiration" id="ccExpiration" name="ccExpiration"
+                               value="<?php echo $ccExpiration; ?>">
+                        <span class="error"> <?php echo $ccExpirationErr; ?></span>
+                    </div>
+
+                </div>
+                <!-- Bank Account Column -->
+                <div class="column">
+                    <div class="radio">
+                        <label><input type="radio" id="bankAccount" name="paymentRadio" value="bankAccount"
+                                <?php if (isset($payment) && $payment == "bankAccount") echo "checked"; ?>>Bank Account</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="baNumber"><p><b>Account number</b></p></label>
+                        <input type="text" class='form-control' placeholder="Enter account number" id="baNumber" name="baNumber"
+                               value="<?php echo $baNumber; ?>">
+                        <span class="error"> <?php echo $baNumberErr; ?></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="transitNumber"><p><b>Transit Number</b></p></label>
+                        <input type="text" class='form-control' placeholder="Enter transit number" id="transitNumber" name="transitNumber"
+                               value="<?php echo $transitNumber ?>">
+                        <span class="error"> <?php echo $transitNumberErr; ?></span>
+                    </div>
+                </div>
+            </div>
+            <!--        cancel the input values, and reload page with get request-->
+            <input class='btn btn-danger cancel' type='submit' value='Cancel' onclick="location.href=location.href">
+            <!--        submit input values, reload page with post request-->
+            <input class='btn btn-primary make' type='submit' value='Make Account'>
+        </form>
+    </div>
 </div>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/popper.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
 </body>
-
+</html>
