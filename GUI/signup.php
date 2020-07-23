@@ -188,84 +188,104 @@ function createAccount() {
             <h4>Sign Up for a New Account<h4>
         </span>
     </nav>
+
     <div class="form">
-        <form id = "signUpForm" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-            <div class='form-group d-none' id ='companyNameField'>
-                <label for='companyName'><b>Company Name</b></label>
-                <input type='text' class='form-control' id='companyName' placeholder='Enter Company Name'>
-                <span class="error"></span>
+        <form id="signUpForm" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+            <div class="row justify-content-center" style="margin-top: 50px">
+                <div class="col-8">
+                    <div class='form-group d-none' id='companyNameField'>
+                        <label for='companyName'><b>Company Name</b></label>
+                        <input type='text' class='form-control' id='companyName' placeholder='Enter Company Name'>
+                        <span class="error"></span>
+                    </div>
+                    <div class='form-group'>
+                        <label for='firstName'><b>First Name</b></label>
+                        <input type='text' class='form-control' id='firstName' placeholder='Enter first name' required>
+                        <span class="error"></span>
+                    </div>
+                    <div class='form-group'>
+                        <label for='lastName'><b>Last Name</b></label>
+                        <input type='text' class='form-control' id='lastName' placeholder='Enter last name' required>
+                        <span class="error"></span>
+                    </div>
+                    <div class='form-group'>
+                        <label for='number'><b>Number</b></label>
+                        <input type='text' class='form-control' id='number' placeholder='Enter phone number' required>
+                        <span class="error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="email"><b>Email</b></label>
+                        <input type="text" class='form-control' placeholder="Enter email" id="email" name="email"
+                               value="<?php echo $email; ?>" required>
+                        <span class="error"> <?php echo $emailErr; ?></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="username"><b>Username</b></label>
+                        <input type="text" class='form-control' placeholder="Enter username" id="username"
+                               name="username"
+                               value="<?php echo $username; ?>" required>
+                        <span class="error"> <?php echo $usernameErr; ?></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="password"><b>Password</b></label>
+                        <input type="password" class='form-control' placeholder="Enter password" id="password"
+                               name="password"
+                               value="<?php echo $password; ?>" required>
+                        <span class="error"> <?php echo $passwordErr; ?></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPass"><b>Re-enter password</b></label>
+                        <input type="password" class='form-control' placeholder="Re-enter password" id="confirmPass"
+                               name="confirmPass"
+                               value="" required>
+                        <span class="error"></span>
+                    </div>
+                </div>
             </div>
-            <div class='form-group'>
-                <label for='firstName'><b>First Name</b></label>
-                <input type='text' class='form-control' id='firstName' placeholder='Enter first name' required>
-                <span class="error"></span>
+            <div class="row justify-content-center" style="margin-top: 50px">
+                <div class="col-8">
+                    <b>Account type</b>
+                    <span class="error"> <?php echo $accountTypeErr; ?></span>
+                    <div onclick="changePrice(); makeCompanyAppear();"
+                         class="account-toolbar btn-group btn-group-toggle"
+                         data-toggle='buttons'>
+                        <label class="btn btn-secondary">
+                            <input type="radio" id="employerPrime" name="accountType" value="employerPrime" required>
+                            Employer - Prime
+                        </label>
+                        <label class="btn btn-warning">
+                            <input type="radio" id="employerGold" name="accountType" value="employerGold">
+                            Employer - Gold
+                        </label>
+                        <label class="btn btn-secondary">
+                            <input type="radio" id="seekerBasic" name="accountType" value="seekerBasic"> Job
+                            Seeker - Basic
+                        </label>
+                        <label class="btn btn-success">
+                            <input type="radio" id="seekerPrime" name="accountType" value="seekerPrime"> Job
+                            Seeker - Prime
+                        </label>
+                        <label class="btn btn-warning">
+                            <input type="radio" id="seekerGold" name="accountType" value="seekerGold"> Job
+                            Seeker - Gold
+                        </label>
+                    </div>
+                    <p id="cost"><b>Monthly cost $ </b></p>
+                </div>
             </div>
-            <div class='form-group'>
-                <label for='lastName'><b>Last Name</b></label>
-                <input type='text' class='form-control' id='lastName' placeholder='Enter last name' required>
-                <span class="error"></span>
+            <div class="row justify-content-center" style="margin-top: 50px;">
+                <div class="col-8">
+                    <p><b>How would you like to pay?</b></p>
+                </div>
             </div>
-            <div class='form-group'>
-                <label for='number'><b>Number</b></label>
-                <input type='text' class='form-control' id='number' placeholder='Enter phone number'required>
-                <span class="error"></span>
-            </div>
-            <div class = "form-group">
-                <label for="email"><b>Email</b></label>
-                <input type="text" class='form-control' placeholder="Enter email" id="email" name="email" value="<?php echo $email; ?>" required>
-                <span class="error"> <?php echo $emailErr; ?></span>
-            </div>
-            <div class="form-group">
-                <label for="username"><b>Username</b></label>
-                <input type="text" class='form-control' placeholder="Enter username" id="username" name="username"
-                       value="<?php echo $username; ?>" required>
-                <span class="error"> <?php echo $usernameErr; ?></span>
-            </div>
-            <div class="form-group">
-                <label for="password"><b>Password</b></label>
-                <input type="password" class='form-control' placeholder="Enter password" id="password" name="password"
-                       value="<?php echo $password; ?>" required>
-                <span class="error"> <?php echo $passwordErr; ?></span>
-            </div>
-            <div class="form-group">
-                <label for="confirmPass"><b>Re-enter password</b></label>
-                <input type="password" class='form-control' placeholder="Re-enter password" id="confirmPass" name="confirmPass"
-                       value="" required>
-                <span class="error"></span>
-            </div>
-            <b>Account type</b>
-            <span class="error"> <?php echo $accountTypeErr; ?></span>
-            <div onclick="changePrice(); makeCompanyAppear();" class="account-toolbar btn-group btn-group-toggle" data-toggle='buttons'>
-                <label class="btn btn-secondary">
-                    <input type="radio" id="employerPrime" name="accountType" value="employerPrime" required>
-                    Employer - Prime
-                </label>
-                <label class="btn btn-warning">
-                    <input type="radio" id="employerGold" name="accountType" value="employerGold">
-                    Employer - Gold
-                </label>
-                <label class="btn btn-secondary">
-                    <input type="radio" id="seekerBasic" name="accountType" value="seekerBasic"> Job
-                    Seeker - Basic
-                </label>
-                <label class="btn btn-success">
-                    <input type="radio" id="seekerPrime" name="accountType" value="seekerPrime"> Job
-                    Seeker - Prime
-                </label>
-                <label class="btn btn-warning">
-                    <input type="radio" id="seekerGold" name="accountType" value="seekerGold"> Job
-                    Seeker - Gold
-                </label>
-            </div>
-            <p id="cost"><b>Monthly cost $ </b></p>
-            <p><b>How would you like to pay?</b></p>
             <span class="error"> <?php echo $paymentErr; ?></span>
-            <div class="row">
+            <div class="row justify-content-center">
                 <!-- Credit Card column-->
-                <div class="column">
+                <div class="col-4">
                     <div class="radio">
                         <label><input type="radio" id="creditRadio" name="paymentRadio" value="creditCard"
-                                <?php if (isset($payment) && $payment == "creditCard") echo "checked"; ?>>Credit Card</label>
+                                <?php if (isset($payment) && $payment == "creditCard") echo "checked"; ?>>Credit
+                            Card</label>
                     </div>
 
                     <div class="form-group">
@@ -277,45 +297,58 @@ function createAccount() {
 
                     <div class="form-group">
                         <label for="ccNumber"><p><b>Credit card number</b></p></label>
-                        <input type="text" class='form-control' placeholder="Enter card number" id="ccNumber" name="ccNumber"
+                        <input type="text" class='form-control' placeholder="Enter card number" id="ccNumber"
+                               name="ccNumber"
                                value="<?php echo $ccNumber; ?>">
                         <span class="error"> <?php echo $ccNumberErr; ?></span>
                     </div>
 
                     <div class="form-group">
                         <label for="ccExpiration"><p><b>Expiration(MMYYYY)</b></p></label>
-                        <input type="text" class='form-control' placeholder="Enter expiration" id="ccExpiration" name="ccExpiration"
+                        <input type="text" class='form-control' placeholder="Enter expiration" id="ccExpiration"
+                               name="ccExpiration"
                                value="<?php echo $ccExpiration; ?>">
                         <span class="error"> <?php echo $ccExpirationErr; ?></span>
                     </div>
 
                 </div>
                 <!-- Bank Account Column -->
-                <div class="column">
+                <div class="col-4">
                     <div class="radio">
                         <label><input type="radio" id="bankAccount" name="paymentRadio" value="bankAccount"
                                 <?php if (isset($payment) && $payment == "bankAccount") echo "checked"; ?>>Bank Account</label>
                     </div>
                     <div class="form-group">
                         <label for="baNumber"><p><b>Account number</b></p></label>
-                        <input type="text" class='form-control' placeholder="Enter account number" id="baNumber" name="baNumber"
+                        <input type="text" class='form-control' placeholder="Enter account number" id="baNumber"
+                               name="baNumber"
                                value="<?php echo $baNumber; ?>">
                         <span class="error"> <?php echo $baNumberErr; ?></span>
                     </div>
                     <div class="form-group">
                         <label for="transitNumber"><p><b>Transit Number</b></p></label>
-                        <input type="text" class='form-control' placeholder="Enter transit number" id="transitNumber" name="transitNumber"
+                        <input type="text" class='form-control' placeholder="Enter transit number" id="transitNumber"
+                               name="transitNumber"
                                value="<?php echo $transitNumber ?>">
                         <span class="error"> <?php echo $transitNumberErr; ?></span>
                     </div>
                 </div>
             </div>
-            <!--        cancel the input values, and reload page with get request-->
-            <input class='btn btn-danger cancel' type='submit' value='Cancel' onclick="location.href=location.href">
-            <!--        submit input values, reload page with post request-->
-            <input class='btn btn-primary make' type='submit' value='Make Account'>
-        </form>
+            <div class="row justify-content-center" style="margin-top: 50px;">
+                <div class="col-8">
+                    <!--        cancel the input values, and reload page with get request-->
+                    <input class='btn btn-danger cancel' type='submit' value='Cancel'
+                           onclick="location.href=location.href">
+                    <!--        submit input values, reload page with post request-->
+                    <input class='btn btn-primary make' type='submit' value='Make Account'>
+                </div>
+            </div>
     </div>
+</div>
+</form>
+</div>
+</div>
+</div>
 </div>
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/popper.js"></script>
