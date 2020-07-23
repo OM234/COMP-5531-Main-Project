@@ -14,8 +14,8 @@ $username = $_SESSION['username'];      // currently logged in user
 $accountType = $_SESSION['accountType'];  // current user account type
 $userCategory = getUserCategory($username);  // current user's category, gold, prime
 $autoPay = getAutoOrManual($username);    // auto payment or maunal payment, true for auto.
-//$accountStatus = getAccountStatus($username);  // get account status, true(active), false(not active)
-$accountStatus = false;
+$accountStatus = getAccountStatus($username);  // get account status, true(active), false(not active)
+//$accountStatus = false;
 
 echo "username: $username &nbsp&nbsp&nbsp&nbsp";
 echo "category: $userCategory&nbsp&nbsp&nbsp&nbsp";
@@ -136,6 +136,29 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             changeApplicationStatus();  /* TODO: change application status */
 //            header("Location: /GUI/employerDash.php?tab=viewApplications");
             break;
+
+        case "viewAccBalance":
+            if (isset($_POST['upgrade'])) echo "upgrade to: ". $_POST['upgrade'] . "<br>" ;
+            if (isset($_POST['downgrade'])) echo "downgrade to: ". $_POST['downgrade'] . "<br>" ;
+            if (isset($_POST['auto'])) echo "Change auto payment to auto? : ". $_POST['auto'] . "<br>" ;
+            break;
+
+        case "passwordChange":
+            echo "previous Password: ". $_POST['prevPass'] . "<br>";
+            echo "new Password: ". $_POST['newPass'] . "<br>";
+            break;
+
+        case "addCreditCard":
+            echo "ccName: " .$_POST['ccName'] . "<br>";
+            echo "ccNumber: " .$_POST['ccNumber'] . "<br>";
+            echo "ccvNumber: " .$_POST['ccvNumber'] . "<br>";
+            echo "ccExpiration: " .$_POST['ccExpiration'] . "<br>";
+            break;
+
+        case "addDebitCard":
+            echo "baNumber: " .$_POST['baNumber'] . "<br>";
+            echo "transitNumber: " .$_POST['transitNumber'] . "<br>";
+
     }
 
 }
@@ -163,13 +186,13 @@ function getAccountStatus($username) {
 function getPostedJobsData() {
     $data = array();
     $job1 = array("jobID" =>100, "title"=>"Job1", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description1", "numOfOpenings"=>1, "numOfApplications"=>3,);
+        "description"=>"Description1", "numOfOpenings"=>1, "numOfApplications"=>3, "numOfHires"=>1, "jobStatus"=>"open");
     $job2 = array("jobID" =>200, "title"=>"Job2", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description2", "numOfOpenings"=>2, "numOfApplications"=>3);
+        "description"=>"Description2", "numOfOpenings"=>2, "numOfApplications"=>3, "numOfHires"=>1, "jobStatus"=>"open");
     $job3 = array("jobID" =>300, "title"=>"Job3", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description3", "numOfOpenings"=>3, "numOfApplications"=>3);
+        "description"=>"Description3", "numOfOpenings"=>3, "numOfApplications"=>3, "numOfHires"=>1, "jobStatus"=>"open");
     $job4 = array("jobID" =>400, "title"=>"Job4", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description4", "numOfOpenings"=>4, "numOfApplications"=>3);
+        "description"=>"Description4", "numOfOpenings"=>4, "numOfApplications"=>3, "numOfHires"=>1, "jobStatus"=>"open");
     array_push($data, $job1);
     array_push($data, $job2);
     array_push($data, $job3);
@@ -193,7 +216,7 @@ function getPostedJobsData() {
  */
 function getJobByID($jobID) {
     $job1 = array("jobID" =>100, "title"=>"Job1", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description1", "numOfOpenings"=>1, "numOfApplications"=>3,);
+        "description"=>"Description1", "numOfOpenings"=>1, "numOfApplications"=>3, "numOfHires"=>1, "jobStatus"=>"open");
     return $job1;
 }
 
@@ -209,6 +232,8 @@ function getJobByID($jobID) {
  *  "description": "description...",
  *  "numOfOpenings": 3,
  *  "numOfApplications": 3,
+ *  "numOfHires" : 1,
+ *  "jobStatus": open/close,
  *  "applications":
  *   [
  *      {
@@ -255,6 +280,7 @@ function getAllApplications() {
  *  "description": "description...",
  *  "numOfOpenings": 3,
  *  "numOfApplications": 3,
+ *  "numOfHires" : 1,
  *  "applications":
  *    [
  *      {
@@ -418,8 +444,8 @@ function showPostedJobs($postedJobsData) {
             "       <p><b># Openings: </b>" . $postedJobsData[$i]['numOfOpenings'] . "</p>" .
             "       <p><a href='employerDash.php?tab=viewApplications&jobID=$ID'># Applications: " .
                         $postedJobsData[$i]['numOfApplications'] . "</a></p>" .
-            "       <p><b># Hires: </b>" . /*TODO: $postedJobsData[$i]['numOfHires']" */ "To do". "</p>" .
-            "       <p><b>Job Status: </b>" . /*TODO: openOrClosed" */ "To do: open or closed". "</p>" .
+            "       <p><b># Hires: </b>" . $postedJobsData[$i]['numOfHires'] . "</p>" .
+            "       <p><b>Job Status: </b>" . $postedJobsData[$i]['jobStatus']. "</p>" .
             "    </div>" .
             "    <div class='col-2 justify-content-center text-center'>" .
             "         <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
@@ -494,6 +520,8 @@ function viewAllApplications($jobs)
     return $html;
 }
 function showPaymentInfo($paymentInfo) {
+    $addCreditCardUrl = $_SERVER['PHP_SELF'] ."tab=addCreditCard";
+    $addDebitCardUrl= $_SERVER['PHP_SELF'] ."tab=addDebitCardUrl";
 
     $creditCardInfo = $paymentInfo[0];
     $debitCardInfo = $paymentInfo[1];
@@ -501,8 +529,8 @@ function showPaymentInfo($paymentInfo) {
     $html =
         "<div class = 'row justify-content-center align-items-center'>".
         "     <div class = 'col-8 text-center'>".
-        "          <button class = 'btn btn-success' onclick='editCreditCard(/* null */)'>Add Credit Card</button>" .
-        "          <button class = 'btn btn-success' onclick='editDebitCard(/*null*/)'>Add Bank Card</button>" .
+        "          <button class = 'btn btn-success' onclick='editCreditCard()'>Add Credit Card</button>" .
+        "          <button class = 'btn btn-success' onclick='editDebitCard()'>Add Bank Card</button>" .
         "     </div>".
         "</div>";
 
@@ -704,7 +732,7 @@ function getEmployerCategoryHTML(string $html): string
     $html .=
         "<div class = 'row justify-content-center'>" .
         "     <div class = 'col-8'>" .
-        "          <div><b>Employer Category</b></div>" .
+        "          <div><b>Employer Category: $userCategory</b></div>" .
         "          <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
         "               <label class='btn btn-secondary' data-toggle='tooltip' data-placement='top' title='$toolTipEmpPrime'>" .
         "                    <input type='radio' name='options' id='employerPrime' autocomplete='off' $isPrime> Employer Prime" .
@@ -712,8 +740,16 @@ function getEmployerCategoryHTML(string $html): string
         "               <label class='btn btn-warning' data-toggle='tooltip' data-placement='top' title='$toolTipEmpGold'>" .
         "                    <input type='radio' name='options' id='employerGold' autocomplete='off' $isGold> Employer Gold" .
         "               </label>" .
-        "          </div>" .
+        "          </div> <br>" .
         "     </div>" .
+        "</div>".
+        "<div class = 'row justify-content-center mt-3'>".
+        "    <div class='col-8'>".
+        "       <form action='".$_SERVER['PHP_SELF']."?tab=viewAccBalance' method='post'>".
+        "          <button type='submit' class='btn-primary' name='downgrade' value='prime'>Downgrade to Prime</button>".
+        "          <button type='submit' class='btn-primary' name='upgrade' value='gold'>Upgrade to Gold</button>".
+        "       </form>".
+        "    </div>".
         "</div>";
     return $html;
 }
@@ -725,12 +761,13 @@ function getEmployerCategoryHTML(string $html): string
 function getMonthlyPaymentRadioButtonsHTML(string $html): string
 {
     global $autoPay;
+    $paymentMethod = $autoPay ? "Auto" : "Manual";
     $isAuto = $autoPay ? "checked" : "";
     $isManual = $autoPay ? "" : "checked";
     $html .=
         "<div class = 'row justify-content-center'>" .
         "     <div class = 'col-8'>" .
-        "          <div><b>Payment Method</b></div>" .
+        "          <div><b>Payment Method : $paymentMethod</b></div>" .
         "          <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
         "               <label class='btn btn-info'>" .
         "                    <input type='radio' name='options' id='autoPayMonth' autocomplete='off' $isAuto> Auto Monthly" .
@@ -740,6 +777,14 @@ function getMonthlyPaymentRadioButtonsHTML(string $html): string
         "               </label>" .
         "          </div>" .
         "     </div>" .
+        "</div>" .
+        "<div class='row justify-content-center mt-3'>".
+        "   <div class='col-8'>".
+        "       <form action='".$_SERVER['PHP_SELF']."?tab=viewAccBalance' method='post'>".
+        "          <button type='submit' class='btn-primary' name='auto' value='true'>Change to Auto payment</button>".
+        "          <button type='submit' class='btn-primary' name='auto' value='false'>Change to Manual payment</button>".
+        "       </form>".
+        "   </div>".
         "</div>";
 
     return $html;
@@ -793,20 +838,20 @@ function getBalanceHTML(float $balance): string
 function showPasswordChange() {
 
     $html =
-        "<form>".
+        "<form action='".$_SERVER['PHP_SELF']."?tab=passwordChange' method='post' onsubmit='return confirmPassword()'>".
         "     <div class = 'row justify-content-center'>".
         "        <div class = 'col-8'>".
         "             <div class='form-group'>" .
         "                  <label for='prevPass'><b>Previous Password</b></label> " .
-        "                  <input type='password' class='form-control' placeholder='Enter previous password' id='prevPass' name='prevPass' value=''>" .
+        "                  <input type='password' class='form-control' placeholder='Enter previous password' id='prevPass' name='prevPass' value='' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                   <label for='newPass'><b>New Password</b></label> " .
-        "                   <input type='password' class='form-control' placeholder='Enter new password' id='newPass' name='newPass' value=''>" .
+        "                   <input type='password' class='form-control' placeholder='Enter new password' id='newPass' name='newPass' value='' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                   <label for='conNewPass'><b>Confirm New Password</b></label> " .
-        "                   <input type='password' class='form-control' placeholder='Confirm password' id='conNewPass' name='conNewPass' value=''>" .
+        "                   <input type='password' class='form-control' placeholder='Confirm password' id='conNewPass' name='conNewPass' value='' required>" .
         "              </div>" .
         "                   <input class='btn btn-primary' type='submit' value='Submit'>".
         "         </div>".

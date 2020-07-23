@@ -94,7 +94,7 @@ function editDebitCard(/*TODO: $bankAccountNumber*/) {
     var html =
         "<div class='row justify-content-center'>" +
         "    <div class='col-8'>" +
-        "        <form>" +
+        "        <form action='/GUI/employerDash.php?tab=addDebitCard' method='post'>" +
         "            <div class='form-group'>" +
         "                <label for='baNumber'><b>Account number</b></label>" +
         "                <input type='text' class='form-control' placeholder='Enter account number' id='baNumber' name='baNumber'" +
@@ -113,33 +113,32 @@ function editDebitCard(/*TODO: $bankAccountNumber*/) {
     document.getElementById('accountSettings').innerHTML = html;
 }
 
-function editCreditCard(/*, TODO: $CCNumber, CCExpiry*/) {
-
+function editCreditCard() {
     var html =
         "<div class='row justify-content-center'>" +
         "    <div class='col-8'>" +
-        "        <form>" +
+        "        <form action='/GUI/employerDash.php?tab=addCreditCard' method='post'>" +
         "            <div class='form-group'>" +
         "                <label for='ccName'><b>Name</b></label>" +
-        "                <input type='text' class='form-control' placeholder='Enter name' id='ccName' name='ccName' value=''>" +
+        "                <input type='text' class='form-control' placeholder='Enter name' id='ccName' name='ccName' value='' required>" +
         "            </div>" +
         "            <div class='form-group'>" +
         "                <label for='ccNumber'><b>Credit card number</b></label>" +
         "                <input type='text' class='form-control' placeholder='Enter card number' id='ccNumber' name='ccNumber'" +
-        "                       value=''>" +
+        "                       value='' required>" +
         "            </div>" +
         "            <div class='form-group'>" +
         "                <label for='cvvNumber'><b>CVV (3 digits)</b></label>" +
         "                <input type='text' class='form-control' placeholder='Enter CVV' id='ccvNumber' name='ccvNumber'" +
-        "                       value=''>" +
+        "                       value='' required>" +
         "            </div>" +
         "            <div class='form-group'>" +
         "                <label for='ccExpiration'><b>Expiration(MMYYYY)</b></label>" +
         "                <input type='text' class='form-control' placeholder='Enter expiration' id='ccExpiration'" +
-        "                       name='ccExpiration' value=''>" +
+        "                       name='ccExpiration' value='' required>" +
         "            </div>" +
-        "        </form>" +
         "        <input class='btn btn-primary' type='submit' value='Submit'>" +
+        "        </form>" +
         "    </div>" +
         "</div>"
 
@@ -157,4 +156,20 @@ function withdrawConfirm() {
 
 function acceptOfferAlert() {
     alert ("Offer accepted, awaiting final hire decision");
+}
+
+function confirmPassword() {
+    let prevPass = document.getElementById('prevPass').value;
+    let newPass = document.getElementById('newPass').value;
+    let conNewPass = document.getElementById('conNewPass').value;
+    console.log(prevPass);
+    console.log(newPass);
+    console.log(conNewPass);
+    if (prevPass === newPass) {
+        alert("new password is the same with previous password!");
+        return false;
+    }
+    return newPass === conNewPass;
+    // return false;
+
 }
