@@ -189,7 +189,12 @@ function createAccount() {
         </span>
     </nav>
     <div class="form">
-        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+        <form id = "signUpForm" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+            <div class='form-group d-none' id ='companyNameField'>
+                <label for='companyName'><b>Company Name</b></label>
+                <input type='text' class='form-control' id='companyName' placeholder='Enter Company Name'>
+                <span class="error"></span>
+            </div>
             <div class='form-group'>
                 <label for='firstName'><b>First Name</b></label>
                 <input type='text' class='form-control' id='firstName' placeholder='Enter first name' required>
@@ -222,10 +227,15 @@ function createAccount() {
                        value="<?php echo $password; ?>" required>
                 <span class="error"> <?php echo $passwordErr; ?></span>
             </div>
-
+            <div class="form-group">
+                <label for="confirmPass"><b>Re-enter password</b></label>
+                <input type="password" class='form-control' placeholder="Re-enter password" id="confirmPass" name="confirmPass"
+                       value="" required>
+                <span class="error"></span>
+            </div>
             <b>Account type</b>
             <span class="error"> <?php echo $accountTypeErr; ?></span>
-            <div onclick="changePrice()" class="account-toolbar btn-group btn-group-toggle" data-toggle='buttons'>
+            <div onclick="changePrice(); makeCompanyAppear();" class="account-toolbar btn-group btn-group-toggle" data-toggle='buttons'>
                 <label class="btn btn-secondary">
                     <input type="radio" id="employerPrime" name="accountType" value="employerPrime" required>
                     Employer - Prime
