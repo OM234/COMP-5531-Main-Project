@@ -15,12 +15,15 @@ $accountType = $_SESSION['accountType'];  // current user account type
 $userCategory = getUserCategory($username);  // current user's category, gold, prime
 $autoPay = getAutoOrManual($username);    // auto payment or maunal payment, true for auto.
 $accountStatus = getAccountStatus($username);  // get account status, true(active), false(not active)
+$accountBalance = getAccountBalance($username); // get account balance
+$monthlyCharge= getMonthlyCharge($userCategory);
 //$accountStatus = false;
 
 echo "username: $username &nbsp&nbsp&nbsp&nbsp";
 echo "category: $userCategory&nbsp&nbsp&nbsp&nbsp";
 echo "autoPayment: $autoPay&nbsp&nbsp&nbsp&nbsp";
 echo "accountStatus: $accountStatus&nbsp&nbsp&nbsp&nbsp";
+echo "<br>";
 
 /************** End of data models ************************************************************************/
 
@@ -51,6 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         }
 
         switch ($tab) {
+            case "signout":
+                session_destroy();
+                break;
             case "viewJobs":  // view posted jobs
                 if ($accountStatus) {
                     $postedJobsData = getPostedJobsData();
@@ -137,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 //            header("Location: /GUI/employerDash.php?tab=viewApplications");
             break;
 
-        case "viewAccBalance":
+        case "changeAccBalance":
             if (isset($_POST['upgrade'])) echo "upgrade to: ". $_POST['upgrade'] . "<br>" ;
             if (isset($_POST['downgrade'])) echo "downgrade to: ". $_POST['downgrade'] . "<br>" ;
             if (isset($_POST['auto'])) echo "Change auto payment to auto? : ". $_POST['auto'] . "<br>" ;
@@ -158,6 +164,20 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         case "addDebitCard":
             echo "baNumber: " .$_POST['baNumber'] . "<br>";
             echo "transitNumber: " .$_POST['transitNumber'] . "<br>";
+            break;
+
+        case "changeContactInfo":
+            echo "eName: " .$_POST['eName'] . "<br>";
+            echo "firstName: " .$_POST['firstName'] . "<br>";
+            echo "lastName: " .$_POST['lastName'] . "<br>";
+            echo "email: " .$_POST['email'] . "<br>";
+            echo "number: " .$_POST['number'] . "<br>";
+            break;
+
+        case "makePayment":
+            echo "payment Amount: " .$_POST['amount'] ."<br>";
+            // TODO: add account balance, sql query.
+            break;
 
     }
 
@@ -181,6 +201,21 @@ function getAutoOrManual($username) {
 function getAccountStatus($username) {
     return true;
 }
+
+// TODO: get account balance
+function getAccountBalance($username) {
+    return 50;
+}
+
+// TODO: get monthly payment for different user category
+function getMonthlyCharge($userCategory) {
+    if ($userCategory === 'gold') {
+        return 100;
+    } else if ($userCategory === 'prime') {
+        return 50;
+    }
+}
+
 
 // TODO: get posted jobs data from database
 function getPostedJobsData() {
@@ -520,8 +555,6 @@ function viewAllApplications($jobs)
     return $html;
 }
 function showPaymentInfo($paymentInfo) {
-    $addCreditCardUrl = $_SERVER['PHP_SELF'] ."tab=addCreditCard";
-    $addDebitCardUrl= $_SERVER['PHP_SELF'] ."tab=addDebitCardUrl";
 
     $creditCardInfo = $paymentInfo[0];
     $debitCardInfo = $paymentInfo[1];
@@ -672,31 +705,32 @@ function showCreditCardInfo(string $html, $data): string
 }
 
 function showContactInfo() {
+    $url = $_SERVER['PHP_SELF']."?tab=changeContactInfo";
 
     /* TODO: populate form */
     $html =
         "<div class = 'row justify-content-center'>" .
         "  <div class = 'col-8'>" .
-        "           <form>" .
+        "           <form action='$url' method='post'>" .
         "              <div class='form-group'>" .
         "                  <label for='eName'><b>Employer Name</b></label>" .
-        "                  <input type='text' class='form-control' id='eName' placeholder='Enter employer name' required>" .
+        "                  <input type='text' class='form-control' id='eName' name='eName' placeholder='Enter employer name' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                  <label for='name'><b>Representative First Name</b></label>" .
-        "                  <input type='text' class='form-control' id='firstName' placeholder='Enter representative name' required>" .
+        "                  <input type='text' class='form-control' id='firstName' name='firstName' placeholder='Enter representative name' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                  <label for='name'><b>Representative Last Name</b></label>" .
-        "                  <input type='text' class='form-control' id='lastName' placeholder='Enter representative name' required>" .
+        "                  <input type='text' class='form-control' id='lastName' name='lastName' placeholder='Enter representative name' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                  <label for='email'><b>Representative email</b></label>" .
-        "                  <input type='email' class='form-control' id='email' placeholder='Enter email' required>" .
+        "                  <input type='email' class='form-control' id='email' name='email' placeholder='Enter email' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                  <label for='number'><b>Representative number</b></label>" .
-        "                  <input type='text' class='form-control' id='number' placeholder='Enter phone number' required>" .
+        "                  <input type='text' class='form-control' id='number' name='number' placeholder='Enter phone number' required>" .
         "              </div>" .
         "              <input class='btn btn-primary' type='submit' value='Submit'>".
         "           </form>" .
@@ -709,9 +743,9 @@ function showContactInfo() {
 
 function showAccBalance() {
 
-    $balance = 5; /*TODO: get balance*/
+    global $accountBalance;
 
-    $html = getBalanceHTML($balance);
+    $html = getBalanceHTML($accountBalance);
     $html = getMonthlyPaymentRadioButtonsHTML($html);
     $html = getEmployerCategoryHTML($html);
 
@@ -745,7 +779,7 @@ function getEmployerCategoryHTML(string $html): string
         "</div>".
         "<div class = 'row justify-content-center mt-3'>".
         "    <div class='col-8'>".
-        "       <form action='".$_SERVER['PHP_SELF']."?tab=viewAccBalance' method='post'>".
+        "       <form action='".$_SERVER['PHP_SELF']."?tab=changeAccBalance' method='post'>".
         "          <button type='submit' class='btn-primary' name='downgrade' value='prime'>Downgrade to Prime</button>".
         "          <button type='submit' class='btn-primary' name='upgrade' value='gold'>Upgrade to Gold</button>".
         "       </form>".
@@ -780,7 +814,7 @@ function getMonthlyPaymentRadioButtonsHTML(string $html): string
         "</div>" .
         "<div class='row justify-content-center mt-3'>".
         "   <div class='col-8'>".
-        "       <form action='".$_SERVER['PHP_SELF']."?tab=viewAccBalance' method='post'>".
+        "       <form action='".$_SERVER['PHP_SELF']."?tab=changeAccBalance' method='post'>".
         "          <button type='submit' class='btn-primary' name='auto' value='true'>Change to Auto payment</button>".
         "          <button type='submit' class='btn-primary' name='auto' value='false'>Change to Manual payment</button>".
         "       </form>".
@@ -796,7 +830,7 @@ function getMonthlyPaymentRadioButtonsHTML(string $html): string
  */
 function getBalanceHTML(float $balance): string
 {
-    $payment = /* TODO: get monthly payment */ 50;
+    global $monthlyCharge;
 
     $html =
         "<div class = 'row justify-content-center'>" .
@@ -822,7 +856,9 @@ function getBalanceHTML(float $balance): string
     if($balance < 0  || true /*TODO: || payment method == monthly manual*/) {
 
         $html .=
-            "          <button class='btn btn-success' onclick = 'paymentApplied()'> Make Payment $$payment </button>".
+            "          <form action='".$_SERVER['PHP_SELF']."?tab=makePayment' method='post' onsubmit='return confirmPayment()'>".
+            "          <button class='btn btn-success' type='submit' name='amount' value='$monthlyCharge'>Make Payment $$monthlyCharge </button>".
+            "          </form>" .
             "     </div>".
             "</div>";
     } else { // balance in good standing and auto monthly payment

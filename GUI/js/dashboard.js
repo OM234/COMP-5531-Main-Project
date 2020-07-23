@@ -84,9 +84,8 @@ function validateForm() {
     }
 }
 
-function paymentApplied() {
-    alert("Payment Applied");
-    location.reload();
+function confirmPayment() {
+    return confirm("Are you sure to make payment?");
 }
 
 function editDebitCard(/*TODO: $bankAccountNumber*/) {

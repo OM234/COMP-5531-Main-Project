@@ -44,7 +44,7 @@
                         Settings</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"> Sign out</a> <?php /* TODO: sign out*/ ?>
+                    <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF'] . "?tab=signout"; ?>> Sign out</a>
                 </li>
             </ul>
         </div>
