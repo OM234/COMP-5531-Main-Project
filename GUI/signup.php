@@ -289,14 +289,14 @@ function createAccount() {
                     </div>
 
                     <div class="form-group">
-                        <label for="ccName"><p><b>Cardholder Name</b></p></label>
+                        <label for="ccName"><b>Cardholder Name</b></label>
                         <input type="text" class='form-control' placeholder="Enter name" id="ccName" name="ccName"
                                value="<?php echo $ccName; ?>">
                         <span class="error"> <?php echo $ccNameErr; ?></span>
                     </div>
 
                     <div class="form-group">
-                        <label for="ccNumber"><p><b>Credit card number</b></p></label>
+                        <label for="ccNumber"><b>Credit card number</b></label>
                         <input type="text" class='form-control' placeholder="Enter card number" id="ccNumber"
                                name="ccNumber"
                                value="<?php echo $ccNumber; ?>">
@@ -304,7 +304,7 @@ function createAccount() {
                     </div>
 
                     <div class="form-group">
-                        <label for="ccExpiration"><p><b>Expiration(MMYYYY)</b></p></label>
+                        <label for="ccExpiration"><b>Expiration(MMYYYY)</b></label>
                         <input type="text" class='form-control' placeholder="Enter expiration" id="ccExpiration"
                                name="ccExpiration"
                                value="<?php echo $ccExpiration; ?>">
@@ -319,14 +319,14 @@ function createAccount() {
                                 <?php if (isset($payment) && $payment == "bankAccount") echo "checked"; ?>>Bank Account</label>
                     </div>
                     <div class="form-group">
-                        <label for="baNumber"><p><b>Account number</b></p></label>
+                        <label for="baNumber"><b>Account number</b></label>
                         <input type="text" class='form-control' placeholder="Enter account number" id="baNumber"
                                name="baNumber"
                                value="<?php echo $baNumber; ?>">
                         <span class="error"> <?php echo $baNumberErr; ?></span>
                     </div>
                     <div class="form-group">
-                        <label for="transitNumber"><p><b>Transit Number</b></p></label>
+                        <label for="transitNumber"><b>Transit Number</b></label>
                         <input type="text" class='form-control' placeholder="Enter transit number" id="transitNumber"
                                name="transitNumber"
                                value="<?php echo $transitNumber ?>">
