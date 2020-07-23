@@ -190,19 +190,34 @@ function createAccount() {
     </nav>
     <div class="form">
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+            <div class='form-group'>
+                <label for='firstName'><b>First Name</b></label>
+                <input type='text' class='form-control' id='firstName' placeholder='Enter first name' required>
+                <span class="error"></span>
+            </div>
+            <div class='form-group'>
+                <label for='lastName'><b>Last Name</b></label>
+                <input type='text' class='form-control' id='lastName' placeholder='Enter last name' required>
+                <span class="error"></span>
+            </div>
+            <div class='form-group'>
+                <label for='number'><b>Number</b></label>
+                <input type='text' class='form-control' id='number' placeholder='Enter phone number'required>
+                <span class="error"></span>
+            </div>
             <div class = "form-group">
-                <label for="email"><p><b>Email</b></p></label>
+                <label for="email"><b>Email</b></label>
                 <input type="text" class='form-control' placeholder="Enter email" id="email" name="email" value="<?php echo $email; ?>" required>
                 <span class="error"> <?php echo $emailErr; ?></span>
             </div>
             <div class="form-group">
-                <label for="username"><p><b>Username</b></p></label>
+                <label for="username"><b>Username</b></label>
                 <input type="text" class='form-control' placeholder="Enter username" id="username" name="username"
                        value="<?php echo $username; ?>" required>
                 <span class="error"> <?php echo $usernameErr; ?></span>
             </div>
             <div class="form-group">
-                <label for="password"><p><b>Password</b></p></label>
+                <label for="password"><b>Password</b></label>
                 <input type="password" class='form-control' placeholder="Enter password" id="password" name="password"
                        value="<?php echo $password; ?>" required>
                 <span class="error"> <?php echo $passwordErr; ?></span>
@@ -285,7 +300,6 @@ function createAccount() {
                     </div>
                 </div>
             </div>
-
             <!--        cancel the input values, and reload page with get request-->
             <input class='btn btn-danger cancel' type='submit' value='Cancel' onclick="location.href=location.href">
             <!--        submit input values, reload page with post request-->

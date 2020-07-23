@@ -82,19 +82,19 @@ function showContactInfo() {
         "           <form>" .
         "              <div class='form-group'>" .
         "                  <label for='eName'><b>First Name</b></label>" .
-        "                  <input type='text' class='form-control' id='firstName' placeholder='Enter first name'>" .
+        "                  <input type='text' class='form-control' id='firstName' placeholder='Enter first name' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                  <label for='name'><b>Last Name</b></label>" .
-        "                  <input type='text' class='form-control' id='lastName' placeholder='Enter last name'>" .
+        "                  <input type='text' class='form-control' id='lastName' placeholder='Enter last name' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                  <label for='email'><b>Email</b></label>" .
-        "                  <input type='email' class='form-control' id='email' placeholder='Enter email'>" .
+        "                  <input type='email' class='form-control' id='email' placeholder='Enter email' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                  <label for='number'><b>Number</b></label>" .
-        "                  <input type='text' class='form-control' id='number' placeholder='Enter phone number'>" .
+        "                  <input type='text' class='form-control' id='number' placeholder='Enter phone number' required>" .
         "              </div>" .
         "              <input class='btn btn-primary' type='submit' value='Submit'>".
         "           </form>" .

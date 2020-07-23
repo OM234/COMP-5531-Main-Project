@@ -619,23 +619,23 @@ function showContactInfo() {
         "           <form>" .
         "              <div class='form-group'>" .
         "                  <label for='eName'><b>Employer Name</b></label>" .
-        "                  <input type='text' class='form-control' id='eName' placeholder='Enter employer name'>" .
+        "                  <input type='text' class='form-control' id='eName' placeholder='Enter employer name' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                  <label for='name'><b>Representative First Name</b></label>" .
-        "                  <input type='text' class='form-control' id='firstName' placeholder='Enter representative name'>" .
+        "                  <input type='text' class='form-control' id='firstName' placeholder='Enter representative name' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                  <label for='name'><b>Representative Last Name</b></label>" .
-        "                  <input type='text' class='form-control' id='lastName' placeholder='Enter representative name'>" .
+        "                  <input type='text' class='form-control' id='lastName' placeholder='Enter representative name' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                  <label for='email'><b>Representative email</b></label>" .
-        "                  <input type='email' class='form-control' id='email' placeholder='Enter email'>" .
+        "                  <input type='email' class='form-control' id='email' placeholder='Enter email' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                  <label for='number'><b>Representative number</b></label>" .
-        "                  <input type='text' class='form-control' id='number' placeholder='Enter phone number'>" .
+        "                  <input type='text' class='form-control' id='number' placeholder='Enter phone number' required>" .
         "              </div>" .
         "              <input class='btn btn-primary' type='submit' value='Submit'>".
         "           </form>" .
