@@ -212,68 +212,84 @@ function createAccount() {
             <span class="error"> <?php echo $accountTypeErr; ?></span>
             <div onclick="changePrice()" class="account-toolbar btn-group btn-group-toggle" data-toggle='buttons'>
                 <label class="btn btn-secondary">
-                    <input type="radio" id="employerPrime" name="accountType" value="employerPrime" autocomplete='off'> Employer - Prime
+                    <input type="radio" id="employerPrime" name="accountType" value="employerPrime" required>
+                    Employer - Prime
+                </label>
+                <label class="btn btn-warning">
+                    <input type="radio" id="employerGold" name="accountType" value="employerGold">
+                    Employer - Gold
                 </label>
                 <label class="btn btn-secondary">
-                    <input type="radio" id="employerGold" name="accountType" value="employerGold" autocomplete='off'> Employer - Gold
+                    <input type="radio" id="seekerBasic" name="accountType" value="seekerBasic"> Job
+                    Seeker - Basic
                 </label>
-                <br>
-                <input type="radio" id="seekerBasic" name="accountType" value="seekerBasic">
-                <label for="seekerBasic">Job Seeker - Basic</label>
-                <input type="radio" id="seekerPrime" name="accountType" value="seekerPrime">
-                <label for="seekerPrime">Job Seeker - Prime</label>
-                <input type="radio" id="seekerGold" name="accountType" value="seekerGold">
-                <label for="seekerGold">Job Seeker - Gold</label>
+                <label class="btn btn-success">
+                    <input type="radio" id="seekerPrime" name="accountType" value="seekerPrime"> Job
+                    Seeker - Prime
+                </label>
+                <label class="btn btn-warning">
+                    <input type="radio" id="seekerGold" name="accountType" value="seekerGold"> Job
+                    Seeker - Gold
+                </label>
             </div>
             <p id="cost"><b>Monthly cost $ </b></p>
-
             <p><b>How would you like to pay?</b></p>
-            <span class="error">* <?php echo $paymentErr; ?></span>
+            <span class="error"> <?php echo $paymentErr; ?></span>
             <div class="row">
                 <!-- Credit Card column-->
                 <div class="column">
-                    <input type="radio" id="creditRadio" name="paymentRadio" value="creditCard"
-                        <?php if (isset($payment) && $payment == "creditCard") echo "checked"; ?>>
-                    <label for="creditRadio">Credit Card</label>
+                    <div class="radio">
+                        <label><input type="radio" id="creditRadio" name="paymentRadio" value="creditCard"
+                                <?php if (isset($payment) && $payment == "creditCard") echo "checked"; ?>>Credit Card</label>
+                    </div>
 
-                    <label for="ccName"><p><b>Name</b></p></label>
-                    <span class="error">* <?php echo $ccNameErr; ?></span>
-                    <input type="text" placeholder="Enter name" id="ccName" name="ccName"
-                           value="<?php echo $ccName; ?>">
+                    <div class="form-group">
+                        <label for="ccName"><p><b>Cardholder Name</b></p></label>
+                        <input type="text" class='form-control' placeholder="Enter name" id="ccName" name="ccName"
+                               value="<?php echo $ccName; ?>">
+                        <span class="error"> <?php echo $ccNameErr; ?></span>
+                    </div>
 
-                    <label for="ccNumber"><p><b>Credit card number</b></p></label>
-                    <span class="error">* <?php echo $ccNumberErr; ?></span>
-                    <input type="text" placeholder="Enter card number" id="ccNumber" name="ccNumber"
-                           value="<?php echo $ccNumber; ?>">
+                    <div class="form-group">
+                        <label for="ccNumber"><p><b>Credit card number</b></p></label>
+                        <input type="text" class='form-control' placeholder="Enter card number" id="ccNumber" name="ccNumber"
+                               value="<?php echo $ccNumber; ?>">
+                        <span class="error"> <?php echo $ccNumberErr; ?></span>
+                    </div>
 
-                    <label for="ccExpiration"><p><b>Expiration(MMYYYY)</b></p></label>
-                    <span class="error">* <?php echo $ccExpirationErr; ?></span>
-                    <input type="text" placeholder="Enter expiration" id="ccExpiration" name="ccExpiration"
-                           value="<?php echo $ccExpiration; ?>">
+                    <div class="form-group">
+                        <label for="ccExpiration"><p><b>Expiration(MMYYYY)</b></p></label>
+                        <input type="text" class='form-control' placeholder="Enter expiration" id="ccExpiration" name="ccExpiration"
+                               value="<?php echo $ccExpiration; ?>">
+                        <span class="error"> <?php echo $ccExpirationErr; ?></span>
+                    </div>
+
                 </div>
-
                 <!-- Bank Account Column -->
                 <div class="column">
-                    <input type="radio" id="bankAccount" name="paymentRadio" value="bankAccount"
-                        <?php if (isset($payment) && $payment == "bankAccount") echo "checked"; ?>>
-                    <label for="bankAccount">Bank Account</label>
-
-                    <label for="baNumber"><p><b>Account number</b></p></label>
-                    <span class="error">* <?php echo $baNumberErr; ?></span>
-                    <input type="text" placeholder="Enter account number" id="baNumber" name="baNumber"
-                           value="<?php echo $baNumber; ?>">
-
-                    <label for="transitNumber"><p><b>Transit Number</b></p></label>
-                    <span class="error">* <?php echo $transitNumberErr; ?></span>
-                    <input type="text" placeholder="Enter transit number" id="transitNumber" name="transitNumber"
-                           value="<?php echo $transitNumber ?>">
+                    <div class="radio">
+                        <label><input type="radio" id="bankAccount" name="paymentRadio" value="bankAccount"
+                                <?php if (isset($payment) && $payment == "bankAccount") echo "checked"; ?>>Bank Account</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="baNumber"><p><b>Account number</b></p></label>
+                        <input type="text" class='form-control' placeholder="Enter account number" id="baNumber" name="baNumber"
+                               value="<?php echo $baNumber; ?>">
+                        <span class="error"> <?php echo $baNumberErr; ?></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="transitNumber"><p><b>Transit Number</b></p></label>
+                        <input type="text" class='form-control' placeholder="Enter transit number" id="transitNumber" name="transitNumber"
+                               value="<?php echo $transitNumber ?>">
+                        <span class="error"> <?php echo $transitNumberErr; ?></span>
+                    </div>
                 </div>
             </div>
 
             <!--        cancel the input values, and reload page with get request-->
-            <input type="button" onclick="location.href=location.href" value="Cancel" class="cancel">
+            <input class='btn btn-danger cancel' type='submit' value='Cancel' onclick="location.href=location.href">
             <!--        submit input values, reload page with post request-->
-            <input type="submit" value="Make Account" class="make">
+            <input class='btn btn-primary make' type='submit' value='Make Account'>
         </form>
     </div>
 </div>
