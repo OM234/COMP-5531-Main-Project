@@ -14,10 +14,13 @@ $username = $_SESSION['username'];      // currently logged in user
 $accountType = $_SESSION['accountType'];  // current user account type
 $userCategory = getUserCategory($username);  // current user's category, gold, prime
 $autoPay = getAutoOrManual($username);    // auto payment or maunal payment, true for auto.
+//$accountStatus = getAccountStatus($username);  // get account status, true(active), false(not active)
+$accountStatus = false;
 
-echo "username: " . $username . "<br>";
-echo "category: " . $userCategory . "<br>";
-echo "autoPayment: " . $autoPay . "<br>";
+echo "username: $username &nbsp&nbsp&nbsp&nbsp";
+echo "category: $userCategory&nbsp&nbsp&nbsp&nbsp";
+echo "autoPayment: $autoPay&nbsp&nbsp&nbsp&nbsp";
+echo "accountStatus: $accountStatus&nbsp&nbsp&nbsp&nbsp";
 
 /************** End of data models ************************************************************************/
 
@@ -49,14 +52,26 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
         switch ($tab) {
             case "viewJobs":  // view posted jobs
-                $postedJobsData = getPostedJobsData();
-                showPostedJobs($postedJobsData);
+                if ($accountStatus) {
+                    $postedJobsData = getPostedJobsData();
+                    showPostedJobs($postedJobsData);
+                } else {
+                    echo "<script>alert('Your account has been deactivated, please go to Account Settings to reactive!')</script>";
+                }
                 break;
             case "postJob":  // post a job
-                showPostJobForm();
+                if ($accountStatus) {
+                    showPostJobForm();
+                } else {
+                    echo "<script>alert('Your account has been deactivated, please go to Account Settings to reactive!')</script>";
+                }
                 break;
             case "viewApplications":
-                showApplications();
+                if ($accountStatus) {
+                    showApplications();
+                } else {
+                    echo "<script>alert('Your account has been deactivated, please go to Account Settings to reactive!')</script>";
+                }
                 break;
             case "viewContactInfo":
                 showContactInfo();
@@ -136,6 +151,11 @@ function getUserCategory($username) {
 
 // TODO: get user's payment method, auto or manual, return true for auto, false for manual.
 function getAutoOrManual($username) {
+    return true;
+}
+
+// TODO: get user's account status, true for active, false for freeze
+function getAccountStatus($username) {
     return true;
 }
 
