@@ -129,6 +129,11 @@ function editCreditCard(/*, TODO: $CCNumber, CCExpiry*/) {
         "                       value=''>" +
         "            </div>" +
         "            <div class='form-group'>" +
+        "                <label for='cvvNumber'><b>CVV (3 digits)</b></label>" +
+        "                <input type='text' class='form-control' placeholder='Enter CVV' id='ccvNumber' name='ccvNumber'" +
+        "                       value=''>" +
+        "            </div>" +
+        "            <div class='form-group'>" +
         "                <label for='ccExpiration'><b>Expiration(MMYYYY)</b></label>" +
         "                <input type='text' class='form-control' placeholder='Enter expiration' id='ccExpiration'" +
         "                       name='ccExpiration' value=''>" +

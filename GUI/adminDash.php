@@ -61,6 +61,7 @@ function showPostedJobs() {
             "       <p><b># Openings: </b>" /*. $postedJobsData[$i]['numOfOpenings'] */. "</p>" .
             "       <p><a href=''># Applications: " /*.$postedJobsData[$i]['numOfApplications'] */. "</a></p>" .
             "       <p><b># Hires: </b>" . /*TODO: $postedJobsData[$i]['numOfHires']" */ "To do". "</p>" .
+            "       <p><b>Job Status: </b>" . /*TODO: openOrClosed" */ "To do: open or closed". "</p>" .
             "    </div>" .
             "    <div class='col-2 d-flex justify-content-center '>" .
             "         <form action='' method='' onsubmit=''>" .

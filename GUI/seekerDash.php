@@ -88,6 +88,7 @@ function showPostedJobs() {
             "       <p><b>Category: </b>" /*. $postedJobsData[$i]['category'] */. "</p>" .
             "       <p><b>Description: </b>" /*. $postedJobsData[$i]['description'] */. "</p>" .
             "       <p><b># Openings: </b>" /*. $postedJobsData[$i]['numOfOpenings'] */. "</p>" .
+            "       <p><b>Job Status: </b>" . /*TODO: openOrClosed" */ "To do: open or closed". "</p>" .
             "    </div>" .
             "    <div class='col-2 d-flex justify-content-center '>" .
             "    <form>" .
@@ -234,6 +235,7 @@ function showCreditCardInfo(string $html/*, TODO: $CCNumber, CCExpiry*/): string
     $CCName = "To do";
     $CCNumber = -1;
     $CCExpiry = -1;
+    $CVVCode = -1; //3-digit code
 
     $html .=
         "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>";
@@ -251,6 +253,7 @@ function showCreditCardInfo(string $html/*, TODO: $CCNumber, CCExpiry*/): string
     $html .=
         "     <p><b>Name on Card: </b>$CCName</p>".
         "     <p><b>Credit Card Number: </b>$CCNumber</p>".
+        "     <p><b>CVV: </b>$CVVCode</p>".
         "     <p><b>Expiry Date: </b>$CCExpiry</p>".
         "</div>";
 
@@ -328,7 +331,10 @@ function showAccBalance() {
     $balance = 5; /*TODO: get balance*/
 
     $html = getBalanceHTML($balance);
-    $html = getMonthlyPaymentRadioButtonsHTML($html);
+
+    if(/*TODO: not a basic seeker */ false) {
+        $html = getMonthlyPaymentRadioButtonsHTML($html);
+    }
     $html = getSeekerCategoryHTML($html);
 
     echo "<script>document.getElementById('accountSettings').innerHTML = \"". $html ."\"</script>";

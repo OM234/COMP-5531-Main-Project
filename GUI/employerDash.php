@@ -386,8 +386,17 @@ function showPostedJobs($postedJobsData) {
             "       <p><a href='employerDash.php?tab=viewApplications&jobID=$ID'># Applications: " .
                         $postedJobsData[$i]['numOfApplications'] . "</a></p>" .
             "       <p><b># Hires: </b>" . /*TODO: $postedJobsData[$i]['numOfHires']" */ "To do". "</p>" .
+            "       <p><b>Job Status: </b>" . /*TODO: openOrClosed" */ "To do: open or closed". "</p>" .
             "    </div>" .
-            "    <div class='col-2 d-flex justify-content-center '>" .
+            "    <div class='col-2 justify-content-center text-center'>" .
+            "         <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
+            "              <label class='btn btn-success'>" .
+            "                   <input type='radio' name='options' id='openJob' autocomplete='off'> Open" .
+            "              </label>" .
+            "              <label class='btn btn-warning'>" .
+            "                   <input type='radio' name='options' id='closeJob' autocomplete='off'> Close" .
+            "              </label>" .
+            "         </div>" .
             "    <form action='" . $_SERVER['PHP_SELF'] . "?tab=viewJobs' method='post' onsubmit='return deleteJob(" . $ID . ")'>" .
             "       <button type='submit' name='deleteJobID' value='" . $ID . "' class='btn btn-danger'> Delete </button>" .
             "    </form>" .
@@ -542,6 +551,7 @@ function showCreditCardInfo(string $html, $data): string
     $CCName = $data["CCName"];
     $CCNumber = $data["CCNumber"];
     $CCExpiry = $data["CCExpiry"];
+    $CVVCode = "-1 " /* TODO */; //3-digit code
 
     $html .=
         "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>";
@@ -559,6 +569,7 @@ function showCreditCardInfo(string $html, $data): string
     $html .=
         "     <p><b>Name on Card: </b>$CCName</p>".
         "     <p><b>Credit Card Number: </b>$CCNumber</p>".
+        "     <p><b>CVV: </b>$CVVCode</p>".
         "     <p><b>Expiry Date: </b>$CCExpiry</p>".
         "</div>";
 
