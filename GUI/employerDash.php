@@ -12,10 +12,12 @@ if (!isset($_SESSION['isLogin']) || $_SESSION['isLogin'] == false) {
 
 $username = $_SESSION['username'];      // currently logged in user
 $accountType = $_SESSION['accountType'];  // current user account type
-echo "username: " . $username . "<br>";
+$userCategory = getUserCategory($username);  // current user's category, gold, prime
+$autoPay = getAutoOrManual($username);    // auto payment or maunal payment, true for auto.
 
-$postedJobsData = array();   // posted Job data
-$jobsWithApplications = array();  // posted Job with application data
+echo "username: " . $username . "<br>";
+echo "category: " . $userCategory . "<br>";
+echo "autoPayment: " . $autoPay . "<br>";
 
 /************** End of data models ************************************************************************/
 
@@ -127,6 +129,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 
 /************* Data access part *****************************************************************************/
+// TODO: get user's category
+function getUserCategory($username) {
+    return "gold";
+}
+
+// TODO: get user's payment method, auto or manual, return true for auto, false for manual.
+function getAutoOrManual($username) {
+    return true;
+}
+
 // TODO: get posted jobs data from database
 function getPostedJobsData() {
     $data = array();
@@ -261,6 +273,7 @@ function getApplicationsByJobID($jobID) {
  *      "CCNumber" : "123456",
  *      "CCExpiry" : "2020-8-1",
  *      "CCName" : "Alice",
+ *      "CCV": "123",
  *      "isDefault" : false
  *   },
  *   {
@@ -286,9 +299,9 @@ function getApplicationsByJobID($jobID) {
 function getPaymentInfo() {
     $creditCardInfo = array();
     array_push($creditCardInfo, array("CCNumber"=>"654321", "CCExpiry"=>date("Y-m-d"),
-        "CCName"=>"Alice", "isDefault"=>false));
+        "CCName"=>"Alice", "CCV"=>"123", "isDefault"=>false));
     array_push($creditCardInfo, array("CCNumber"=>"123456", "CCExpiry"=>date("Y-m-d"),
-        "CCName"=>"Alice", "isDefault"=>false));
+        "CCName"=>"Alice", "CCV"=>"123", "isDefault"=>false));
 
 
     $debitCardInfo = array();
@@ -551,7 +564,7 @@ function showCreditCardInfo(string $html, $data): string
     $CCName = $data["CCName"];
     $CCNumber = $data["CCNumber"];
     $CCExpiry = $data["CCExpiry"];
-    $CVVCode = "-1 " /* TODO */; //3-digit code
+    $CVVCode = $data["CCV"];
 
     $html .=
         "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>";
@@ -665,17 +678,19 @@ function getEmployerCategoryHTML(string $html): string
 {
     $toolTipEmpPrime = "You can post up to five jobs. A monthly charge of $50 will be applied.";
     $toolTipEmpGold = "You can post as many jobs as you like. A monthly charge of $100 will be applied";
-
+    global $userCategory;
+    $isGold = ($userCategory==='gold') ? "checked" : "";
+    $isPrime = ($userCategory==='prime') ? "checked" : "";
     $html .=
         "<div class = 'row justify-content-center'>" .
         "     <div class = 'col-8'>" .
         "          <div><b>Employer Category</b></div>" .
         "          <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
         "               <label class='btn btn-secondary' data-toggle='tooltip' data-placement='top' title='$toolTipEmpPrime'>" .
-        "                    <input type='radio' name='options' id='employerPrime' autocomplete='off'> Employer Prime" .
+        "                    <input type='radio' name='options' id='employerPrime' autocomplete='off' $isPrime> Employer Prime" .
         "               </label>" .
         "               <label class='btn btn-warning' data-toggle='tooltip' data-placement='top' title='$toolTipEmpGold'>" .
-        "                    <input type='radio' name='options' id='employerGold' autocomplete='off'> Employer Gold" .
+        "                    <input type='radio' name='options' id='employerGold' autocomplete='off' $isGold> Employer Gold" .
         "               </label>" .
         "          </div>" .
         "     </div>" .
@@ -689,16 +704,19 @@ function getEmployerCategoryHTML(string $html): string
  */
 function getMonthlyPaymentRadioButtonsHTML(string $html): string
 {
+    global $autoPay;
+    $isAuto = $autoPay ? "checked" : "";
+    $isManual = $autoPay ? "" : "checked";
     $html .=
         "<div class = 'row justify-content-center'>" .
         "     <div class = 'col-8'>" .
         "          <div><b>Payment Method</b></div>" .
         "          <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
         "               <label class='btn btn-info'>" .
-        "                    <input type='radio' name='options' id='autoPayMonth' autocomplete='off'> Auto Monthly" .
+        "                    <input type='radio' name='options' id='autoPayMonth' autocomplete='off' $isAuto> Auto Monthly" .
         "               </label>" .
         "               <label class='btn btn-info'>" .
-        "                    <input type='radio' name='options' id='manualPayMonth' autocomplete='off'> Manual Monthly" .
+        "                    <input type='radio' name='options' id='manualPayMonth' autocomplete='off' $isManual> Manual Monthly" .
         "               </label>" .
         "          </div>" .
         "     </div>" .
