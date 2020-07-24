@@ -128,13 +128,15 @@ for i in range(100):
 
 # Employer Boolean
 
-employerBool = [None] * len(employerBalance)
+employerBoolStatus = [None] * len(employerBalance)
 
-for i in range(len(employerBool)):
+for i in range(len(employerBoolStatus)):
     if(employerBalance[i] < 0):
-        employerBool[i] = 0
+        employerBoolStatus[i] = 0
     else:
-        employerBool[i] = 1
+        employerBoolStatus[i] = 1
 
 # for each in employerBool:
 #     print(each)
+
+# Applicant

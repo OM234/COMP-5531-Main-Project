@@ -15,7 +15,8 @@ CREATE TABLE Employer
 (
     UserName VARCHAR(30) NOT NULL,
     EmployerName VARCHAR(100) NOT NULL,
-    AccStatus BOOL NOT NULL,
+    AccStatus BOOL NOT NULL, # activated / deactivated
+    Category ENUM('prime', 'gold'),
     BALANCE DOUBLE(100,100) NOT NULL,
     PRIMARY KEY(UserName),
     FOREIGN KEY (UserName) REFERENCES User (UserName) ON DELETE CASCADE
@@ -24,7 +25,8 @@ CREATE TABLE Employer
 CREATE TABLE Applicant
 (
     UserName VARCHAR(30) NOT NULL,
-    AccStatus BOOL NOT NULL,
+    AccStatus BOOL NOT NULL, # activated / deactivated
+    Category ENUM('basic', 'prime', 'gold'),
     PRIMARY KEY(UserName),
     FOREIGN KEY (UserName) REFERENCES User (UserName) ON DELETE CASCADE
 );
@@ -36,20 +38,6 @@ CREATE TABLE Admin
     FOREIGN KEY (UserName) REFERENCES User (UserName) ON DELETE CASCADE
 );
 
-CREATE TABLE EmployerCategory
-(
-    Category ENUM('prime', 'gold'),
-    MonthlyCharge DOUBLE(100, 100),
-    PRIMARY KEY(Category)
-);
-
-CREATE TABLE ApplicantCategory
-(
-    Category ENUM('basic', 'prime', 'gold'),
-    MonthlyCharge DOUBLE(100, 100),
-    PRIMARY KEY(Category)
-);
-
 CREATE TABLE Job
 (
     JobID INT,
@@ -59,40 +47,29 @@ CREATE TABLE Job
     Description VARCHAR(50),
     Category VARCHAR(30),
     JobStatus BOOL, # open, closed (t, f)
-    EmpNeeded INT,
+    EmpNeeded INT, # Positions to be filled
     PRIMARY KEY(JobID),
     FOREIGN KEY (EmployerUserName) REFERENCES Employer (UserName)
 );
-
-#CREATE TABLE DefaultMOP
-#(
- #   CardNumber VARCHAR(16),
-#    Auto_Manual BOOL, #
-#    PRIMARY KEY(CardNumber)
-#);
 
 CREATE TABLE CreditCardInfo
 (
     CCNumber VARCHAR(16),
     ExpireDate DATE,
-    UserName VARCHAR(30),
     CCBNumber VARCHAR(3),
     IsDefault BOOL,
     Auto_Manual BOOL,
-    PRIMARY KEY(CCnumber, ExpireDate),
-    FOREIGN KEY(UserName) REFERENCES User(UserName)
+    PRIMARY KEY(CCnumber, ExpireDate)
 );
 
 CREATE TABLE PADInfo
 (
     AccountNumber VARCHAR(7),
-    UserName VARCHAR(30),
     InstituteNumber VARCHAR(3),
     BranchNumber VARCHAR(3),
     IsDefault BOOL,
     Auto_Manual BOOL,
-    PRIMARY KEY(AccountNumber),
-    FOREIGN KEY(UserName) REFERENCES User(UserName)
+    PRIMARY KEY(AccountNumber)
 );
 
 CREATE TABLE ApplicantBalance
@@ -103,35 +80,6 @@ CREATE TABLE ApplicantBalance
   FOREIGN KEY (ApplicantUserName) REFERENCES User(UserName)
 );
 
-#CREATE TABLE Payment
-#(
-#    CardNumber VARCHAR(16),
-#    PaymentDate DATE,
-#    Amount DOUBLE(100,100),
-#   PRIMARY KEY (CardNumber, PaymentDate),
-#    FOREIGN KEY (CardNumber) REFERENCES CreditCardInfo (CCNumber)
-#);
-
-# CREATE TABLE SelectEmployerCategory
-# (
-#     EmployerUserName VARCHAR(100),
-#     StartDate DATE,
-#     Charge Double(100,100),
-#     EmployerCategory VARCHAR(100), # enum prime, gold
-#     PRIMARY KEY (EmployerUserName, StartDate),
-#     FOREIGN KEY (EmployerCategory) REFERENCES EmployerCategory(Category) ON DELETE CASCADE
-# );
-
-# CREATE TABLE SelectApplicantCategory
-# (
-#     ApplicantUserName VARCHAR(100),
-#     StarDate DATE,
-#     Charge DOUBLE(100,100),
-#     ApplicantCategory VARCHAR(100),
-#     PRIMARY KEY(ApplicantUserName, StarDate),
-#     FOREIGN KEY (ApplicantCategory) REFERENCES ApplicantCategory(Category) ON DELETE CASCADE
-# );
-
 CREATE TABLE Application
 (
     ApplicantUserName VARCHAR(30),
@@ -141,4 +89,40 @@ CREATE TABLE Application
     PRIMARY KEY(ApplicantUserName, JobID),
     FOREIGN KEY (JobID) REFERENCES Job(JobID),
     FOREIGN KEY(ApplicantUserName) REFERENCES Applicant(UserName)
+);
+
+CREATE TABLE EmployerCC
+(
+  EmployerUserName VARCHAR(30),
+  CCNumber VARCHAR(16),
+  PRIMARY KEY(EmployerUserName, CCNumber),
+  FOREIGN KEY(EmployerUserName) REFERENCES Employer(UserName) ON DELETE CASCADE,
+  FOREIGN KEY(CCNumber) REFERENCES CreditCardInfo(CCNumber) ON DELETE CASCADE
+);
+
+CREATE TABLE EmployerPAD
+(
+    EmployerUserName VARCHAR(30),
+    AccountNumber VARCHAR(7),
+    PRIMARY KEY (EmployerUserName, AccountNumber),
+    FOREIGN KEY (EmployerUserName) REFERENCES Employer(UserName) ON DELETE CASCADE,
+    FOREIGN KEY(AccountNumber) REFERENCES PADInfo(AccountNumber) ON DELETE CASCADE
+);
+
+CREATE TABLE ApplicantCC
+(
+  ApplicantUserName VARCHAR(30),
+  CCNumber VARCHAR(16),
+  PRIMARY KEY(ApplicantUserName, CCNumber),
+  FOREIGN KEY(ApplicantUserName) REFERENCES Applicant(UserName) ON DELETE CASCADE,
+  FOREIGN KEY (CCNumber) REFERENCES CreditCardInfo(CCNumber) ON DELETE CASCADE
+);
+
+CREATE TABLE ApplicantPAD
+(
+  ApplicantUserName VARCHAR(30),
+  AccountNumber VARCHAR(7),
+  PRIMARY KEY(ApplicantUserName, AccountNumber),
+  FOREIGN KEY (ApplicantUserName) REFERENCES Applicant(UserName) ON DELETE CASCADE,
+  FOREIGN KEY(AccountNumber) REFERENCES PADInfo(AccountNumber) ON DELETE CASCADE
 );
