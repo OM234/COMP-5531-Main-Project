@@ -44,7 +44,7 @@
                         Settings</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"> Sign out</a> <?php /* TODO: sign out*/ ?>
+                    <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF'] . "?tab=signout"; ?>> Sign out</a>
                 </li>
             </ul>
         </div>
@@ -103,7 +103,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="description"><b>Description (Max 250 characters)</b></label>
+                    <label for="description"><b>Description (Max 50 characters)</b></label>
                     <textarea class="form-control" type="text" id="description" name="description" required></textarea>
                 </div>
                 <div class="form-group">
