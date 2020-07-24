@@ -2,18 +2,18 @@ USE cxc55311;
 
 CREATE TABLE User
 (
-    UserName VARCHAR(100) NOT NULL,
-    FirstName VARCHAR(50) NOT NULL,
-    LastName VARCHAR(50) NOT NULL,
-    Email VARCHAR(100) NOT NULL,
+    UserName VARCHAR(30) NOT NULL,
+    FirstName VARCHAR(30) NOT NULL,
+    LastName VARCHAR(30) NOT NULL,
+    Email VARCHAR(50) NOT NULL,
     ContactNumber CHAR(12) NOT NULL,
-    Password VARCHAR(100) NOT NULL,
+    Password VARCHAR(50) NOT NULL,
     PRIMARY KEY(UserName)
 );
 
 CREATE TABLE Employer
 (
-    UserName VARCHAR(100) NOT NULL,
+    UserName VARCHAR(30) NOT NULL,
     EmployerName VARCHAR(100) NOT NULL,
     AccStatus BOOL NOT NULL,
     BALANCE DOUBLE(100,100) NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE Employer
 
 CREATE TABLE Applicant
 (
-    UserName VARCHAR(100) NOT NULL,
+    UserName VARCHAR(30) NOT NULL,
     AccStatus BOOL NOT NULL,
     PRIMARY KEY(UserName),
     FOREIGN KEY (UserName) REFERENCES User (UserName) ON DELETE CASCADE
@@ -31,21 +31,21 @@ CREATE TABLE Applicant
 
 CREATE TABLE Admin
 (
-    UserName VARCHAR(100) NOT NULL,
+    UserName VARCHAR(30) NOT NULL,
     PRIMARY KEY(UserName),
     FOREIGN KEY (UserName) REFERENCES User (UserName) ON DELETE CASCADE
 );
 
 CREATE TABLE EmployerCategory
 (
-    Category VARCHAR(100), # enum prime, gold
+    Category ENUM('prime', 'gold'),
     MonthlyCharge DOUBLE(100, 100),
     PRIMARY KEY(Category)
 );
 
 CREATE TABLE ApplicantCategory
 (
-    Category VARCHAR(100), # enum basic, prime, gold
+    Category ENUM('basic', 'prime', 'gold'),
     MonthlyCharge DOUBLE(100, 100),
     PRIMARY KEY(Category)
 );
@@ -53,11 +53,11 @@ CREATE TABLE ApplicantCategory
 CREATE TABLE Job
 (
     JobID INT,
-    EmployerUserName VARCHAR(100),
-    Title VARCHAR(100),
+    EmployerUserName VARCHAR(30),
+    Title VARCHAR(30),
     DatePosted DATE,
     Description VARCHAR(50),
-    Category VARCHAR(100),
+    Category VARCHAR(30),
     JobStatus BOOL, # open, closed (t, f)
     EmpNeeded INT,
     PRIMARY KEY(JobID),
@@ -75,7 +75,7 @@ CREATE TABLE CreditCardInfo
 (
     CCNumber VARCHAR(16),
     ExpireDate DATE,
-    UserName VARCHAR(100),
+    UserName VARCHAR(30),
     CCBNumber VARCHAR(3),
     IsDefault BOOL,
     Auto_Manual BOOL,
@@ -86,7 +86,7 @@ CREATE TABLE CreditCardInfo
 CREATE TABLE PADInfo
 (
     AccountNumber VARCHAR(7),
-    UserName VARCHAR(100),
+    UserName VARCHAR(30),
     InstituteNumber VARCHAR(3),
     BranchNumber VARCHAR(3),
     IsDefault BOOL,
@@ -97,7 +97,7 @@ CREATE TABLE PADInfo
 
 CREATE TABLE ApplicantBalance
 (
-  ApplicantUserName VARCHAR(100),
+  ApplicantUserName VARCHAR(30),
   BALANCE DOUBLE(100,100),
   PRIMARY KEY(ApplicantUserName),
   FOREIGN KEY (ApplicantUserName) REFERENCES User(UserName)
@@ -134,9 +134,9 @@ CREATE TABLE ApplicantBalance
 
 CREATE TABLE Application
 (
-    ApplicantUserName VARCHAR(100),
-    JobID VARCHAR(100),
-    ApplicationStatus VARCHAR(100), #enum: denied, review, sent, accepted, hired
+    ApplicantUserName VARCHAR(30),
+    JobID INT,
+    ApplicationStatus ENUM('denied', 'review', 'sent', 'accepted', 'hired'),
     ApplicationDate DATE,
     PRIMARY KEY(ApplicantUserName, JobID),
     FOREIGN KEY (JobID) REFERENCES Job(JobID),

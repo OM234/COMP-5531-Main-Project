@@ -116,4 +116,25 @@ for p in range(100):
 #for each in employerList:
 #    print(each)
 
+# Employer Balance
 
+employerBalance = []
+
+for i in range(100):
+    employerBalance.append(round(r.uniform(-100.5, 300.5), 2))
+
+#for each in employerBalance:
+#    print(each)
+
+# Employer Boolean
+
+employerBool = [None] * len(employerBalance)
+
+for i in range(len(employerBool)):
+    if(employerBalance[i] < 0):
+        employerBool[i] = 0
+    else:
+        employerBool[i] = 1
+
+# for each in employerBool:
+#     print(each)
