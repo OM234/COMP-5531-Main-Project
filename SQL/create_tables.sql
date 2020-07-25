@@ -17,7 +17,7 @@ CREATE TABLE Employer
     EmployerName VARCHAR(100) NOT NULL,
     AccStatus BOOL NOT NULL, # activated / deactivated
     Category ENUM('prime', 'gold'),
-    BALANCE DOUBLE(100,100) NOT NULL,
+    Balance DECIMAL(10,2) NOT NULL,
     PRIMARY KEY(UserName),
     FOREIGN KEY (UserName) REFERENCES User (UserName) ON DELETE CASCADE
 );
@@ -27,6 +27,7 @@ CREATE TABLE Applicant
     UserName VARCHAR(30) NOT NULL,
     AccStatus BOOL NOT NULL, # activated / deactivated
     Category ENUM('basic', 'prime', 'gold'),
+    Balance DECIMAL(10,2) NOT NULL,
     PRIMARY KEY(UserName),
     FOREIGN KEY (UserName) REFERENCES User (UserName) ON DELETE CASCADE
 );
@@ -42,10 +43,10 @@ CREATE TABLE Job
 (
     JobID INT,
     EmployerUserName VARCHAR(30),
-    Title VARCHAR(30),
+    Title VARCHAR(50),
     DatePosted DATE,
     Description VARCHAR(50),
-    Category VARCHAR(30),
+    Category VARCHAR(50),
     JobStatus BOOL, # open, closed (t, f)
     EmpNeeded INT, # Positions to be filled
     PRIMARY KEY(JobID),
@@ -70,14 +71,6 @@ CREATE TABLE PADInfo
     IsDefault BOOL,
     Auto_Manual BOOL,
     PRIMARY KEY(AccountNumber)
-);
-
-CREATE TABLE ApplicantBalance
-(
-  ApplicantUserName VARCHAR(30),
-  BALANCE DOUBLE(100,100),
-  PRIMARY KEY(ApplicantUserName),
-  FOREIGN KEY (ApplicantUserName) REFERENCES User(UserName)
 );
 
 CREATE TABLE Application

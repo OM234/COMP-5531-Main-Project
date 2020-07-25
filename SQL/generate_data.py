@@ -6,18 +6,18 @@ r = random
 numRegex1 = re.compile('^\\d\\d\\d$')
 numRegex2 = re.compile('^\\d\\d\\d-\\d\\d\\d$')
 
-phoneNumberList = [''] * 100
+phoneNumberList = []
 areaCodeList = ['514', '438', '450']
 phoneNumber = ''
 
-for x in range(100):
+for x in range(150):
     phoneNumber += areaCodeList[r.randrange(3)]
     for y in range(7):
         if numRegex1.match(phoneNumber) or numRegex2.match(phoneNumber):
             phoneNumber += "-" + str(r.randrange(10))
         else:
             phoneNumber += str(r.randrange(10))
-    phoneNumberList[x] = phoneNumber
+    phoneNumberList.append(phoneNumber)
 #    print(phoneNumberList[x])
     phoneNumber = ''
 
@@ -80,7 +80,9 @@ passwordList = []
 
 with open('nouns.txt', 'r') as nounFile:
     for line in nounFile:
-        nounList.append(line.strip())
+        noun = line.strip()
+        noun = noun.replace('\'', '')
+        nounList.append(noun)
 
 for u in range(150):
     passwordList.append(nounList[r.randrange(len(nounList))] + str(r.randrange(10)) + str(r.randrange(10)) + str(r.randrange(10)))
@@ -95,7 +97,9 @@ employerList = []
 
 with open('business_names.txt', 'r') as businessFile:
     for line in businessFile:
-        businessList.append(line.strip())
+        business = line.strip()
+        business = business.replace('\'', '')
+        businessList.append(business)
 
 for p in range(150):
     employerList.append(businessList[r.randrange(len(businessList))])
@@ -203,7 +207,7 @@ iJ = 0;
 while iJ < 150:
     tempJobID = r.randrange(2000)+1000
     if tempJobID not in jobIDList:
-        jobIDList.append(r.randrange(2000)+1000)
+        jobIDList.append(tempJobID)
         iJ = iJ + 1
 
 # for each in jobIDList:
@@ -216,7 +220,9 @@ titleData = []
 
 with open('titles_combined.txt') as titleFile:
     for line in titleFile:
-        titleData.append(line.strip())
+        titleName = line.strip()
+        titleName = titleName.replace('\'', '')
+        titleData.append(titleName)
 
 for i in range(150):
     jobTitleList.append(titleData[r.randrange(len(titleData))])
@@ -274,10 +280,14 @@ while px < 150:
 # Job Category
 
 jobCategoryList = []
+jobCatFullList = []
 
 with open('job_categories.txt', 'r') as jobCatFile:
     for line in jobCatFile:
         jobCategoryList.append(line.strip())
+
+for j in range(len(jobIDList)):
+    jobCatFullList.append(jobCategoryList[r.randrange(len(jobCategoryList))])
 
 # Job Status List
 
@@ -395,14 +405,17 @@ for t in range(150):
 PADDefault = []
 
 for h in range(150):
-    PADDefault.append(r.randrange(2))
+    if ccDefList[h] == 0:
+        PADDefault.append(1)
+    else:
+        PADDefault.append(0)
 
 # PADInfo Auto Manual List
 
 PADAutoManual = []
 
 for i in range(150):
-    PADDefault.append(r.randrange(2))
+    PADAutoManual.append(r.randrange(2))
 
 # Application Status List
 
@@ -422,3 +435,135 @@ applicationDateList = []
 
 for o in range(150):
     applicationDateList.append("2020-"+str(r.randrange(12)+1)+"-"+str(r.randrange(29)+1))
+
+# SQL Insert Data
+
+with open('insert_data.sql', 'w') as sqlFile:
+    sqlFile.write('USE cxc55311;\n\n')
+    sqlFile.write('INSER'+'T INTO User(UserName, FirstName, LastName, Email, ContactNumber, Password)\n')
+    sqlFile.write('VALUES ')
+    count = 0
+    for (a, b, c, d, e, f) in zip(userNameList, firstNameList, lastNameList, emailList, phoneNumberList, passwordList):
+        if count == len(userNameList) - 1:
+            sqlFile.write('(\''+a+'\', \''+b+'\', \''+c+'\', \''+d+'\', \''+e+'\', \''+f+'\');\n')
+        else:
+            sqlFile.write('(\''+a+'\', \''+b+'\', \''+c+'\', \''+d+'\', \''+e+'\', \''+f+'\'),\n')
+            count = count + 1
+
+    sqlFile.write('\nINSER'+'T INTO Employer(UserName, EmployerName, AccStatus, Category, Balance)\n')
+    sqlFile.write('VALUES ')
+    count = 0
+    for (p, q, u, s, t) in zip(employerUserNames, employerList, employerBoolStatus, employerCategory, employerBalance):
+        if count == len(employerUserNames) - 1:
+            sqlFile.write('(\''+p+'\', \''+q+'\', \''+str(u)+'\', \''+s+'\', \''+str(t)+'\');\n')
+        else:
+            sqlFile.write('(\''+p+'\', \''+q+'\', \''+str(u)+'\', \''+s+'\', \''+str(t)+'\'),\n')
+            count = count + 1
+
+    sqlFile.write('\nINSER'+'T INTO Applicant(UserName, AccStatus, Category, Balance)\n')
+    sqlFile.write('VALUES ')
+    count = 0
+    for (a, b, c, d) in zip(applicantUserNames, applicantAccountBool, applicantCategory, applicantBalance):
+        if count == len(applicantUserNames) - 1:
+            sqlFile.write('(\''+a+'\', \''+str(b)+'\', \''+c+'\', \''+str(d)+'\');\n')
+        else:
+            sqlFile.write('(\''+a+'\', \''+str(b)+'\', \''+c+'\', \''+str(d)+'\'),\n')
+            count = count + 1
+
+    sqlFile.write('\nINSER'+'T INTO Admin(UserName)\n')
+    sqlFile.write('VALUES ')
+    count = 0
+    for each in adminUserNames:
+        if count == len(adminUserNames) - 1:
+            sqlFile.write('(\''+each+'\');\n')
+        else:
+            sqlFile.write('(\''+each+'\'),\n')
+            count = count + 1
+
+    sqlFile.write('\nINSER'+'T INTO Job(JobID, EmployerUserName, Title, DatePosted, Description, Category, '
+                            'JobStatus, EmpNeeded)\n')
+    sqlFile.write('VALUES ')
+    count = 0
+    for y in range(len(jobIDList)):
+        if y == len(jobIDList) - 1:
+            sqlFile.write('(\''+str(jobIDList[y])+'\', \''+employerUserNames[r.randrange(len(employerUserNames))]+'\', '
+                          '\''+jobTitleList[y]+'\', \''+str(jobDateList[y])+'\', \''+jobDescriptionList[y]+'\', '
+                           ' \''+jobCatFullList[y]+'\', \''+str(jobStatusList[y])+'\', \''+str(empNeededList[y])+'\');\n')
+        else:
+            sqlFile.write('(\''+str(jobIDList[y])+'\', \''+employerUserNames[r.randrange(len(employerUserNames))]+'\', '
+                          '\''+jobTitleList[y]+'\', \''+str(jobDateList[y])+'\', \''+jobDescriptionList[y]+'\', \''
+                          +jobCatFullList[y]+'\', \''+str(jobStatusList[y])+'\', \''+str(empNeededList[y])+'\'),\n')
+
+    sqlFile.write('\nINSER'+'T INTO CreditCardInfo(CCNumber, ExpireDate, CCBNumber, IsDefault, Auto_Manual)\n')
+    sqlFile.write('VALUES ')
+    count = 0
+    for (a, b, c, d, e) in zip(ccList, ccExpireList, CCBNumberList, ccDefList, ccAutoManualList):
+        if count == len(ccList) - 1:
+            sqlFile.write('(\''+a+'\', \''+str(b)+'\', \''+c+'\', \''+str(d)+'\', \''+str(e)+'\');\n')
+        else:
+            sqlFile.write('(\''+a+'\', \''+str(b)+'\', \''+c+'\', \''+str(d)+'\', \''+str(e)+'\'),\n')
+            count = count + 1
+
+    sqlFile.write('\nINSER'+'T INTO PADInfo(AccountNumber, InstituteNumber, BranchNumber, IsDefault, Auto_Manual)\n')
+    sqlFile.write('VALUES ')
+    count = 0
+    for (a, b, c, d, e) in zip(accountNumberList, bankList, branchNumberList, PADDefault, PADAutoManual):
+        if count == len(accountNumberList) - 1:
+            sqlFile.write('(\''+a+'\', \''+b+'\', \''+c+'\', \''+str(d)+'\', \''+str(e)+'\');\n')
+        else:
+            sqlFile.write('(\''+a+'\', \''+b+'\', \''+c+'\', \''+str(d)+'\', \''+str(e)+'\'),\n')
+            count = count + 1
+
+    sqlFile.write('\nINSER'+'T INTO Application(ApplicantUserName, JobID, ApplicationStatus, ApplicationDate)\n')
+    sqlFile.write('VALUES ')
+    count = 0
+    for (a, b, c, d) in zip(applicantUserNames, jobIDList, appStatusList, applicationDateList):
+        if count == len(applicantUserNames) - 1:
+            sqlFile.write('(\''+a+'\', \''+str(b)+'\', \''+c+'\', \''+str(d)+'\');\n')
+        else:
+            sqlFile.write('(\''+a+'\', \''+str(b)+'\', \''+c+'\', \''+str(d)+'\'),\n')
+            count = count + 1
+
+    sqlFile.write('\nINSER'+'T INTO EmployerCC(EmployerUserName, CCNumber)\n')
+    sqlFile.write('VALUES ')
+    count = 0
+    for(a, b) in zip(employerUserNames, ccList):
+        if count == len(employerUserNames) - 1:
+            sqlFile.write('(\''+a+'\', \''+b+'\');\n')
+        else:
+            sqlFile.write('(\''+a+'\', \''+b+'\'),\n')
+            count = count + 1
+
+    sqlFile.write('\nINSER'+'T INTO EmployerPAD(EmployerUserName, AccountNumber)\n')
+    sqlFile.write('VALUES ')
+    count = 0
+    for(a, b) in zip(employerUserNames, accountNumberList):
+        if count == len(employerUserNames) - 1:
+            sqlFile.write('(\''+a+'\', \''+b+'\');\n')
+        else:
+            sqlFile.write('(\''+a+'\', \''+b+'\'),\n')
+            count = count + 1
+
+    sqlFile.write('\nINSER'+'T INTO ApplicantCC(ApplicantUserName, CCNumber)\n')
+    sqlFile.write('VALUES ')
+    count = 0
+    start = 60
+    for a in applicantUserNames:
+        if count == len(applicantUserNames) - 1:
+            sqlFile.write('(\''+a+'\', \''+ccList[start]+'\');\n')
+        else:
+            sqlFile.write('(\''+a+'\', \''+ccList[start]+'\'),\n')
+            count = count + 1
+        start = start + 1
+
+    sqlFile.write('\nINSER'+'T INTO ApplicantPAD(ApplicantUserName, AccountNumber)\n')
+    sqlFile.write('VALUES ')
+    count = 0
+    start = 60
+    stop = 140
+    for (a, b) in zip(applicantUserNames, accountNumberList[start:stop]):
+        if count == len(applicantUserNames) - 1:
+            sqlFile.write('(\''+a+'\', \''+b+'\');\n')
+        else:
+            sqlFile.write('(\''+a+'\', \''+b+'\'),\n')
+            count = count + 1
