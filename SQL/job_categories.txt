@@ -1,6 +1,6 @@
 Agriculture and Natural Resources
 Architecture and Construction
-Arts, Audio/Video and Communications
+Arts, Audio/Video, and Communications
 Business Management and Administration
 Education and Training
 Finance
@@ -12,5 +12,5 @@ Information Technology
 Law, Public Safety, Corrections and Security
 Manufacturing
 Marketing, Sales and Service
-Science, Technology, Engineering and Mathematics
+Science, Technology, Engineering, and Mathematics
 Transportation, Distribution and Logistics

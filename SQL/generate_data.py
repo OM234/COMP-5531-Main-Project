@@ -236,13 +236,48 @@ for h in range(150):
 # for each in jobDateList:
 #     print(each)
 
+
+# Job Description
+
+adjRegex = re.compile('\\D+y')
+
+jobDescriptionList = []
+adjList = []
+
+yearsExperienceList = ['1', '2', '3', '4', '5']
+maxAdjSize = len("dependable")
+
+with open('positive_adjectives.txt', 'r') as adjFile:
+    for line in adjFile:
+        adj = line.strip()
+        if adjRegex.match(adj) or len(adj) > maxAdjSize:
+            pass
+        else:
+            adjList.append(adj)
+
+# for each in adjList:
+#     print(each)
+
+px = 0
+
+while px < 150:
+    jobDesc = "Looking for "+adjList[r.randrange(len(adjList))]+" person. "+yearsExperienceList[r.randrange(5)]+"" \
+     " years experience."
+    if len(jobDesc) <= 50:
+        jobDescriptionList.append(jobDesc)
+        px = px + 1
+
+# for each in jobDescriptionList:
+#     print(each)
+#     print(len(each))
+
 # Job Category
 
 jobCategoryList = []
 
-# Job Description
-
-jobDescriptionList = []
+with open('job_categories.txt', 'r') as jobCatFile:
+    for line in jobCatFile:
+        jobCategoryList.append(line.strip())
 
 # Job Status List
 
@@ -332,7 +367,7 @@ while a < 150:
 
 bankData = []
 
-with open('bankCodes.txt') as bankFile:
+with open('bankCodes.txt', 'r') as bankFile:
     for line in bankFile:
         numeric = filter(str.isdigit, line.strip())
         bankData.append("".join(numeric))
