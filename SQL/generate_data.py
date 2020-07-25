@@ -42,22 +42,6 @@ for i in range(len(lastNameList)):
     lastNameList[i] = lastNameList[i].capitalize()
 #    print(lastNameList[i])
 
-# Credit Card Numbers
-
-ccList = []
-
-ccNumber = ""
-
-for k in range(150):
-    for h in range(16):
-        ccNumber += str(r.randrange(10))
-
-    ccList.append(ccNumber)
-    ccNumber = ""
-
-#for i in range(len(ccList)):
-#    print(ccList[i])
-
 # Emails
 
 emailList = []
@@ -239,3 +223,167 @@ for i in range(150):
 
 # for each in jobTitleList:
 #     print(each)
+
+# Job Date List
+
+jobDateList = []
+
+for h in range(150):
+    date = "2020-"+str(r.randrange(12)+1)+"-"+str(r.randrange(29)+1)
+    jobDateList.append(date)
+    date = ""
+
+# for each in jobDateList:
+#     print(each)
+
+# Job Category
+
+jobCategoryList = []
+
+# Job Description
+
+jobDescriptionList = []
+
+# Job Status List
+
+# 1 (True) Open, 0 (False) Closed
+jobStatusList = []
+
+for k in range(150):
+    jobStatusList.append(r.randrange(2))
+
+# Number of Positions to fill
+
+empNeededList = []
+
+for w in range(150):
+    empNeededList.append(r.randrange(5)+1)
+
+# Credit Card Numbers
+
+ccList = []
+
+ccNumber = ""
+k = 0
+while k < 150:
+    for h in range(16):
+        ccNumber += str(r.randrange(10))
+    if ccNumber not in ccList:
+        ccList.append(ccNumber)
+        k = k + 1
+    ccNumber = ""
+
+# for i in range(len(ccList)):
+#     print(ccList[i])
+
+# Credit Card Expire Date
+
+ccExpireList = []
+
+for q in range(150):
+    ccExpireList.append("202"+str(r.randrange(2)+1)+"-"+str(r.randrange(11)+1)+"-"+str(r.randrange(28)+1))
+
+# for each in ccExpireList:
+#     print(each)
+
+# Credit Card CCBNUmber List
+
+CCBNumberList = []
+
+for o in range(150):
+    CCBNumberList.append(str(r.randrange(10))+str(r.randrange(10))+str(r.randrange(10)))
+
+# for each in CCBNumberList:
+#     print(each)
+
+# Credit Card Default List
+
+ccDefList = []
+
+for u in range(150):
+    ccDefList.append(r.randrange(2))
+
+# Credit Card Auto_Manual List
+
+ccAutoManualList = []
+
+for y in range(150):
+    ccAutoManualList.append(r.randrange(2))
+
+# PAD INFO Account Number List
+
+accountNumberList = []
+accNumber = ""
+
+a = 0
+
+while a < 150:
+    for b in range(7):
+        accNumber += str(r.randrange(10))
+    if accNumber not in accountNumberList:
+        accountNumberList.append(accNumber)
+        a = a + 1
+    accNumber = ""
+
+# for each in accountNumberList:
+#     print(each)
+
+# Bank Institution Numbers
+
+bankData = []
+
+with open('bankCodes.txt') as bankFile:
+    for line in bankFile:
+        numeric = filter(str.isdigit, line.strip())
+        bankData.append("".join(numeric))
+
+bankList = []
+
+for g in range(150):
+    bankList.append(bankData[r.randrange(len(bankData))])
+
+# for each in bankList:
+#     print(each)
+
+# Bank Branch Numbers
+
+branchNumberList = []
+
+for t in range(150):
+    branchNumberList.append(str(r.randrange(99)+1))
+
+# for each in branchNumberList:
+#     print(each)
+
+# PADInfo Default List
+
+PADDefault = []
+
+for h in range(150):
+    PADDefault.append(r.randrange(2))
+
+# PADInfo Auto Manual List
+
+PADAutoManual = []
+
+for i in range(150):
+    PADDefault.append(r.randrange(2))
+
+# Application Status List
+
+applicationStatus = ['denied', 'review', 'sent', 'accepted', 'hired']
+
+appStatusList = []
+
+for x in range(150):
+    appStatusList.append(applicationStatus[r.randrange(len(applicationStatus))])
+
+# for each in appStatusList:
+#     print(each)
+
+# Application Date
+
+applicationDateList = []
+
+for o in range(150):
+    applicationDateList.append("2020-"+str(r.randrange(12)+1)+"-"+str(r.randrange(29)+1))
