@@ -239,7 +239,7 @@ while iH < len(bagJobID):
         applicantDict[randJobID].append(randAppUser)
         iH = iH + 1
 
-print(applicantDict)
+# print(applicantDict)
 
 dignifiedJobIDList = []
 dignifiedUserAppList = []
@@ -249,8 +249,8 @@ for each in applicantDict:
     for names in applicantDict[each]:
         dignifiedUserAppList.append(names)
 
-print(dignifiedJobIDList)
-print(dignifiedUserAppList)
+# print(dignifiedJobIDList)
+# print(dignifiedUserAppList)
 
 # Job Title List
 
