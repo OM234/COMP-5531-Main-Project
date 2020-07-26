@@ -147,14 +147,16 @@ function editCreditCard() {
 function jobApplyAlert() {
 
     alert("You have applied for job");
+    return true;
 }
 
 function withdrawConfirm() {
-    confirm("Are you sure you want to withdraw?");
+    return confirm("Are you sure you want to withdraw?");
 }
 
 function acceptOfferAlert() {
     alert ("Offer accepted, awaiting final hire decision");
+    return true;
 }
 
 function confirmPassword() {

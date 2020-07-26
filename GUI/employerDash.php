@@ -11,7 +11,7 @@ if (!isset($_SESSION['isLogin']) || $_SESSION['isLogin'] == false) {
 /*********** Data models variables ***********************************************************************/
 
 $username = $_SESSION['username'];      // currently logged in user
-$accountType = $_SESSION['accountType'];  // current user account type
+$accountType = $_SESSION['accountType'];  // current user account type, (job seeker, employer, admin)
 $userCategory = getUserCategory($username);  // current user's category, gold, prime
 $autoPay = getAutoOrManual($username);    // auto payment or maunal payment, true for auto.
 $accountStatus = getAccountStatus($username);  // get account status, true(active), false(not active)
