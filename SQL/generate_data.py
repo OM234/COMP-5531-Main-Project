@@ -1,6 +1,9 @@
 import random
 import re
 
+import random
+import re
+
 # Phone Numbers
 r = random
 numRegex1 = re.compile('^\\d\\d\\d$')
@@ -212,6 +215,42 @@ while iJ < 150:
 
 # for each in jobIDList:
 #     print(each)
+
+# Job ID & ApplicantUserName List
+
+applicantDict = {}
+bagJobID = []
+bagAppUserNames = []
+
+iH = 0
+while iH < len(jobIDList):
+    bagJobID.append(jobIDList[r.randrange(len(jobIDList))])
+    iH = iH + 1
+
+for each in bagJobID:
+    applicantDict[each] = [applicantUserNames[r.randrange(len(applicantUserNames))]]
+
+iH = 0
+
+while iH < len(bagJobID):
+    randAppUser = applicantUserNames[r.randrange(len(applicantUserNames))]
+    randJobID = bagJobID[r.randrange(len(bagJobID))]
+    if randAppUser not in applicantDict[randJobID]:
+        applicantDict[randJobID].append(randAppUser)
+        iH = iH + 1
+
+print(applicantDict)
+
+dignifiedJobIDList = []
+dignifiedUserAppList = []
+
+for each in applicantDict:
+    dignifiedJobIDList.append(each)
+    for names in applicantDict[each]:
+        dignifiedUserAppList.append(names)
+
+print(dignifiedJobIDList)
+print(dignifiedUserAppList)
 
 # Job Title List
 
@@ -439,7 +478,7 @@ for o in range(150):
 # SQL Insert Data
 
 with open('insert_data.sql', 'w') as sqlFile:
-    sqlFile.write('USE cxc55311;\n\n')
+    sqlFile.write('USE project;\n')
     sqlFile.write('INSER'+'T INTO User(UserName, FirstName, LastName, Email, ContactNumber, Password)\n')
     sqlFile.write('VALUES ')
     count = 0
@@ -517,12 +556,17 @@ with open('insert_data.sql', 'w') as sqlFile:
     sqlFile.write('\nINSER'+'T INTO Application(ApplicantUserName, JobID, ApplicationStatus, ApplicationDate)\n')
     sqlFile.write('VALUES ')
     count = 0
-    for (a, b, c, d) in zip(applicantUserNames, jobIDList, appStatusList, applicationDateList):
-        if count == len(applicantUserNames) - 1:
-            sqlFile.write('(\''+a+'\', \''+str(b)+'\', \''+c+'\', \''+str(d)+'\');\n')
-        else:
-            sqlFile.write('(\''+a+'\', \''+str(b)+'\', \''+c+'\', \''+str(d)+'\'),\n')
-            count = count + 1
+
+    for a in applicantDict:
+        for (x, b, c, d) in zip(applicantDict[a], jobIDList, appStatusList, applicationDateList):
+            if count == len(applicantDict) - 1:
+                if x == applicantDict[a][len(applicantDict[a]) - 1]:
+                    sqlFile.write('(\''+x+'\', \''+str(a)+'\', \''+c+'\', \''+str(d)+'\');\n')
+                else:
+                    sqlFile.write('(\''+x+'\', \''+str(a)+'\', \''+c+'\', \''+str(d)+'\'),\n')
+            else:
+                sqlFile.write('(\''+x+'\', \''+str(a)+'\', \''+c+'\', \''+str(d)+'\'),\n')
+        count = count + 1
 
     sqlFile.write('\nINSER'+'T INTO EmployerCC(EmployerUserName, CCNumber)\n')
     sqlFile.write('VALUES ')
