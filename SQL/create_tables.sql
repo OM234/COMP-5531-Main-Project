@@ -1,4 +1,4 @@
-USE cxc55311;
+use cxc55311;
 
 CREATE TABLE User
 (
@@ -90,7 +90,7 @@ CREATE TABLE EmployerCC
   CCNumber VARCHAR(16),
   PRIMARY KEY(EmployerUserName, CCNumber),
   FOREIGN KEY(EmployerUserName) REFERENCES Employer(UserName) ON DELETE CASCADE,
-  FOREIGN KEY(CCNumber) REFERENCES CreditCardInfo(CCNumber) ON DELETE CASCADE
+  FOREIGN KEY(CCNumber) REFERENCES CreditCardInfo(CCNumber) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE EmployerPAD
@@ -99,7 +99,7 @@ CREATE TABLE EmployerPAD
     AccountNumber VARCHAR(7),
     PRIMARY KEY (EmployerUserName, AccountNumber),
     FOREIGN KEY (EmployerUserName) REFERENCES Employer(UserName) ON DELETE CASCADE,
-    FOREIGN KEY(AccountNumber) REFERENCES PADInfo(AccountNumber) ON DELETE CASCADE
+    FOREIGN KEY(AccountNumber) REFERENCES PADInfo(AccountNumber) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE ApplicantCC
@@ -108,7 +108,7 @@ CREATE TABLE ApplicantCC
   CCNumber VARCHAR(16),
   PRIMARY KEY(ApplicantUserName, CCNumber),
   FOREIGN KEY(ApplicantUserName) REFERENCES Applicant(UserName) ON DELETE CASCADE,
-  FOREIGN KEY (CCNumber) REFERENCES CreditCardInfo(CCNumber) ON DELETE CASCADE
+  FOREIGN KEY (CCNumber) REFERENCES CreditCardInfo(CCNumber) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE ApplicantPAD
@@ -117,5 +117,5 @@ CREATE TABLE ApplicantPAD
   AccountNumber VARCHAR(7),
   PRIMARY KEY(ApplicantUserName, AccountNumber),
   FOREIGN KEY (ApplicantUserName) REFERENCES Applicant(UserName) ON DELETE CASCADE,
-  FOREIGN KEY(AccountNumber) REFERENCES PADInfo(AccountNumber) ON DELETE CASCADE
+  FOREIGN KEY(AccountNumber) REFERENCES PADInfo(AccountNumber) ON DELETE CASCADE ON UPDATE CASCADE
 );
