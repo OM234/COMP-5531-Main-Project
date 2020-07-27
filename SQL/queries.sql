@@ -166,15 +166,14 @@ DELETE FROM padinfo
 WHERE AccountNumber IN (SELECT applicantpad.accountnumber FROM applicantpad WHERE applicantpad.AccountNumber ='1895612'
                         AND applicantpad.ApplicantUserName = 'Frances_M45');
 
-# Foreign key error update
-UPDATE applicantcc
-SET CCnumber = '0729363628516973'
-WHERE ApplicantUserName = 'Frances_M45';
-
-# This seems to update the credit card in applicantcc table.
+# Update credit card in this creditcardinfo table first, then update in child table applicantcc
 UPDATE creditcardinfo
 SET CCnumber = '0729363628516973'
 WHERE CCNumber IN (SELECT applicantcc.CCNumber FROM applicantcc WHERE ApplicantUserName = 'Frances_M45');
+
+UPDATE applicantcc
+SET CCnumber = '0729363628516973'
+WHERE ApplicantUserName = 'Frances_M45';
 
 # 0729363628516973 original cc
 
