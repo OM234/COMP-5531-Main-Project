@@ -15,7 +15,7 @@ CREATE TABLE Employer
 (
     UserName VARCHAR(30) NOT NULL,
     EmployerName VARCHAR(100) NOT NULL,
-    AccStatus BOOL NOT NULL, # activated / deactivated
+    # AccStatus BOOL NOT NULL, # activated / deactivated
     Category ENUM('prime', 'gold'),
     Balance DECIMAL(10,2) NOT NULL,
     PRIMARY KEY(UserName),
@@ -25,7 +25,7 @@ CREATE TABLE Employer
 CREATE TABLE Applicant
 (
     UserName VARCHAR(30) NOT NULL,
-    AccStatus BOOL NOT NULL, # activated / deactivated
+    # AccStatus BOOL NOT NULL, # activated / deactivated
     Category ENUM('basic', 'prime', 'gold'),
     Balance DECIMAL(10,2) NOT NULL,
     PRIMARY KEY(UserName),

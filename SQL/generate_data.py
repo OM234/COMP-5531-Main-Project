@@ -1,3 +1,4 @@
+import os
 import random
 import re
 
@@ -621,11 +622,11 @@ with open('insert_data.sql', 'w') as sqlFile:
     sqlFile.write('VALUES ')
 
     for employer in listOfEmployers :
-        sqlFile.write('(\''+employer.username+'\', \''+employer.firstname+'\', \''+employer.lastname+'\', \''+employer.email+'\', \''+employer.phnumber+'\', \''+employer.password+'\');\n')
+        sqlFile.write('(\''+employer.username+'\', \''+employer.firstname+'\', \''+employer.lastname+'\', \''+employer.email+'\', \''+employer.phnumber+'\', \''+employer.password+'\'),\n')
     for seeker in listOfSeekers :
-        sqlFile.write('(\''+seeker.username+'\', \''+seeker.firstname+'\', \''+seeker.lastname+'\', \''+seeker.email+'\', \''+seeker.phnumber+'\', \''+seeker.password+'\');\n')
+        sqlFile.write('(\''+seeker.username+'\', \''+seeker.firstname+'\', \''+seeker.lastname+'\', \''+seeker.email+'\', \''+seeker.phnumber+'\', \''+seeker.password+'\'),\n')
     for admin in listOfAdmins :
-        sqlFile.write('(\''+admin.username+'\', \''+admin.firstname+'\', \''+admin.lastname+'\', \''+admin.email+'\', \''+admin.phnumber+'\', \''+admin.password+'\');\n')
+        sqlFile.write('(\''+admin.username+'\', \''+admin.firstname+'\', \''+admin.lastname+'\', \''+admin.email+'\', \''+admin.phnumber+'\', \''+admin.password+'\'),\n')
 
     # for (a, b, c, d, e, f) in zip(userNameList, firstNameList, lastNameList, emailList, phoneNumberList, passwordList):
     #     if count == len(userNameList) - 1:
@@ -637,7 +638,7 @@ with open('insert_data.sql', 'w') as sqlFile:
     sqlFile.write('\nINSER'+'T INTO Employer(UserName, EmployerName, Category, Balance)\n')
     sqlFile.write('VALUES ')
     for employer in listOfEmployers :
-        sqlFile.write('(\''+employer.username+'\', \''+employer.empname+'\', \''+employer.acategory+'\', \''+str(employer.balance)+'\');\n')
+        sqlFile.write('(\''+employer.username+'\', \''+employer.empname+'\', \''+employer.acategory+'\', \''+str(employer.balance)+'\'),\n')
     # count = 0
     # for (p, q, u, s, t) in zip(employerUserNames, employerList, employerBoolStatus, employerCategory, employerBalance):
     #     if count == len(employerUserNames) - 1:
@@ -649,7 +650,7 @@ with open('insert_data.sql', 'w') as sqlFile:
     sqlFile.write('\nINSER'+'T INTO Applicant(UserName, Category, Balance)\n')
     sqlFile.write('VALUES ')
     for seeker in listOfSeekers:
-        sqlFile.write('(\'' + seeker.username + '\', \'' + seeker.acategory + '\', \'' + str(seeker.balance) + '\');\n')
+        sqlFile.write('(\'' + seeker.username + '\', \'' + seeker.acategory + '\', \'' + str(seeker.balance) + '\'),\n')
     # count = 0
     # for (a, b, c, d) in zip(applicantUserNames, applicantAccountBool, applicantCategory, applicantBalance):
     #     if count == len(applicantUserNames) - 1:
@@ -661,7 +662,7 @@ with open('insert_data.sql', 'w') as sqlFile:
     sqlFile.write('\nINSER'+'T INTO Admin(UserName)\n')
     sqlFile.write('VALUES ')
     for admin in listOfAdmins:
-        sqlFile.write('(\'' + admin.username + '\');\n')
+        sqlFile.write('(\'' + admin.username + '\'),\n')
     # count = 0
     # for each in adminUserNames:
     #     if count == len(adminUserNames) - 1:
@@ -676,7 +677,7 @@ with open('insert_data.sql', 'w') as sqlFile:
     for job in listOfJobs:
         sqlFile.write('(\''+str(job.jobID)+'\', \''+job.empUserName+'\', '
                           '\''+job.title+'\', \''+str(job.date)+'\', \''+job.description+'\', '
-                           ' \''+job.category+'\', \''+str(job.status)+'\', \''+str(job.empNeeded)+'\');\n')
+                           ' \''+job.category+'\', \''+str(job.status)+'\', \''+str(job.empNeeded)+'\'),\n')
     # count = 0
     # for y in range(len(jobIDList)):
     #     if y == len(jobIDList) - 1:
@@ -691,7 +692,7 @@ with open('insert_data.sql', 'w') as sqlFile:
     sqlFile.write('\nINSER'+'T INTO CreditCardInfo(CCNumber, ExpireDate, CCBNumber, IsDefault, Auto_Manual)\n')
     sqlFile.write('VALUES ')
     for CC in listOfCreditCards:
-        sqlFile.write('(\'' + CC.CCNumber + '\', \'' + str(CC.expDate) + '\', \'' + CC.CCB + '\', \'' + str(CC.isDefault) + '\', \'' + str(CC.auto_manual) + '\');\n')
+        sqlFile.write('(\'' + CC.CCNumber + '\', \'' + str(CC.expDate) + '\', \'' + CC.CCB + '\', \'' + str(CC.isDefault) + '\', \'' + str(CC.auto_manual) + '\'),\n')
     # count = 0
     # for (a, b, c, d, e) in zip(ccList, ccExpireList, CCBNumberList, ccDefList, ccAutoManualList):
     #     if count == len(ccList) - 1:
@@ -703,7 +704,7 @@ with open('insert_data.sql', 'w') as sqlFile:
     sqlFile.write('\nINSER'+'T INTO PADInfo(AccountNumber, InstituteNumber, BranchNumber, IsDefault, Auto_Manual)\n')
     sqlFile.write('VALUES ')
     for pad in listOfPADs:
-        sqlFile.write('(\'' + pad.accNum + '\', \'' + pad.instNum + '\', \'' + pad.branch + '\', \'' + str(pad.isDefault) + '\', \'' + str(pad.auto_manual) + '\');\n')
+        sqlFile.write('(\'' + pad.accNum + '\', \'' + pad.instNum + '\', \'' + pad.branch + '\', \'' + str(pad.isDefault) + '\', \'' + str(pad.auto_manual) + '\'),\n')
 
     # count = 0
     # for (a, b, c, d, e) in zip(accountNumberList, bankList, branchNumberList, PADDefault, PADAutoManual):
@@ -721,7 +722,7 @@ with open('insert_data.sql', 'w') as sqlFile:
         for app in job.listOfApp:
             sqlFile.write(
                 '(\'' + app.appUserName + '\', \'' + str(job.jobID) + '\', \'' + str(app.appstatus) + '\', '
-                '\''+str(app.appdate)+'\');\n')
+                '\''+str(app.appdate)+'\'),\n')
 
     # for a in applicantDict:
     #     for x in applicantDict[a]:
@@ -741,7 +742,7 @@ with open('insert_data.sql', 'w') as sqlFile:
     sqlFile.write('VALUES ')
     for employer in listOfEmployers:
         for cc in userCreditCards[employer.username]:
-            sqlFile.write('(\'' + employer.username + '\', \'' + cc + '\');\n')
+            sqlFile.write('(\'' + employer.username + '\', \'' + cc + '\'),\n')
     # count = 0
     # for(a, b) in zip(employerUserNames, ccList):
     #     if count == len(employerUserNames) - 1:
@@ -754,7 +755,7 @@ with open('insert_data.sql', 'w') as sqlFile:
     sqlFile.write('VALUES ')
     for employer in listOfEmployers:
         for pad in userPADs[employer.username]:
-            sqlFile.write('(\'' + employer.username + '\', \'' + pad + '\');\n')
+            sqlFile.write('(\'' + employer.username + '\', \'' + pad + '\'),\n')
     # count = 0
     # for(a, b) in zip(employerUserNames, accountNumberList):
     #     if count == len(employerUserNames) - 1:
@@ -767,7 +768,7 @@ with open('insert_data.sql', 'w') as sqlFile:
     sqlFile.write('VALUES ')
     for applicant in listOfSeekers:
         for cc in userCreditCards[applicant.username]:
-            sqlFile.write('(\'' + applicant.username + '\', \'' + cc + '\');\n')
+            sqlFile.write('(\'' + applicant.username + '\', \'' + cc + '\'),\n')
     # count = 0
     # start = 60
     # for a in applicantUserNames:
@@ -782,7 +783,7 @@ with open('insert_data.sql', 'w') as sqlFile:
     sqlFile.write('VALUES ')
     for applicant in listOfSeekers:
         for pad in userPADs[applicant.username]:
-            sqlFile.write('(\'' + applicant.username + '\', \'' + pad + '\');\n')
+            sqlFile.write('(\'' + applicant.username + '\', \'' + pad + '\'),\n')
     # count = 0
     # start = 60
     # stop = 140
