@@ -67,7 +67,7 @@ CREATE TABLE PADInfo
 (
     AccountNumber VARCHAR(7),
     InstituteNumber VARCHAR(3),
-    BranchNumber VARCHAR(3),
+    BranchNumber VARCHAR(5),
     IsDefault BOOL,
     Auto_Manual BOOL,
     PRIMARY KEY(AccountNumber)
