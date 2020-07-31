@@ -119,7 +119,7 @@ function showApplications()
 
 
 
-// post jobs
+// post requests
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     $tab = $_REQUEST['tab'];
@@ -192,11 +192,22 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             break;
 
         case "changeContactInfo":
-            echo "eName: " .$_POST['eName'] . "<br>";
-            echo "firstName: " .$_POST['firstName'] . "<br>";
-            echo "lastName: " .$_POST['lastName'] . "<br>";
-            echo "email: " .$_POST['email'] . "<br>";
-            echo "number: " .$_POST['number'] . "<br>";
+            $employerName = $_POST['eName'];
+            $firstName = $_POST['firstName'];
+            $lastName = $_POST['lastName'];
+            $email = $_POST['email'];
+            $number = $_POST['number'];
+            echo "eName: " .$employerName. "<br>";
+            echo "firstName: " .$firstName . "<br>";
+            echo "lastName: " .$lastName . "<br>";
+            echo "email: " .$email . "<br>";
+            echo "number: " .$number . "<br>";
+            if (changeContactInfo($username, $employerName, $firstName, $lastName, $email, $number)) {
+                echo "operation success. <br>";
+            } else {
+                echo "operation failed. <br>";
+            }
+            echo "<a href='employerDash.php'>employer dash homepage</a>";
             break;
 
         case "makePayment":
@@ -495,7 +506,7 @@ function getDebitCardInfo($username) {
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             $dci = array("accountNumber"=>$row["AccountNumber"], "instituteNumber"=>$row["InstituteNumber"],
-                "branchNumber"=>$row["BranchNumber"], "isDefault"=>$row["isDefault"], "autoManual"=>$row["Auto_Manual"]);
+                "branchNumber"=>$row["BranchNumber"], "isDefault"=>$row["IsDefault"], "autoManual"=>$row["Auto_Manual"]);
             array_push($debitCardInfo, $dci);
         }
     }
@@ -592,6 +603,35 @@ function changeApplicationStatus($appName, $jobID, $operation) {
     if (mysqli_query($conn, $sql)) { return true; }
     else { return false; }
 }
+
+
+// change contact info
+function changeContactInfo($username, $employerName, $firstName, $lastName, $email, $number) {
+    if (updateEmployerName($username, $employerName) &&
+        updateRepresentativeInfo($username, $firstName, $lastName, $email, $number)) {
+        return true;
+    }
+    else { return false; }
+}
+
+// update employer name given username
+function updateEmployerName($username, $employerName) {
+    $conn = connectDB();
+    $sql = "update employer set EmployerName = '$employerName' where UserName = '$username'";
+    if (mysqli_query($conn, $sql)) {return true;}
+    else {return false;}
+}
+
+// update representative info given username
+function updateRepresentativeInfo($username, $firstName, $lastName, $email, $number) {
+    $conn = connectDB();
+    $sql = "update user 
+            set FirstName = '$firstName', LastName = '$lastName', Email = '$email', ContactNumber = '$number'
+            where UserName = '$username'";
+    if (mysqli_query($conn, $sql)) return true;
+    else return false;
+}
+
 
 
 /************************* End of data access *****************************************************/
