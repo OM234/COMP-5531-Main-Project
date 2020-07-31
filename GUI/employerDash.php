@@ -18,7 +18,8 @@ $autoPay = getAutoOrManual($username);    // auto payment or maunal payment, tru
 $accountStatus = getAccountStatus($username);  // get account status, true(active), false(not active)
 $accountBalance = getAccountBalance($username);  // get account balance
 $monthlyCharge= getMonthlyCharge($userCategory);
-//$accountStatus = false;
+$jobCategories = getJobCategoriesByUsername($username); // get job categories, Technical ...
+$_SESSION['jobcategories'] = $jobCategories;  // for cross file data transfer
 
 echo "username: $username &nbsp&nbsp&nbsp&nbsp";
 echo "category: $userCategory&nbsp&nbsp&nbsp&nbsp";
@@ -68,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
                 break;
             case "postJob":  // post a job
                 if ($accountStatus) {
+                    $categories = getJobCategoriesByUsername($username);
                     showPostJobForm();
                 } else {
                     echo "<script>alert('Your account has been deactivated, please go to Account Settings to reactive!')</script>";
@@ -128,12 +130,21 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 //            header("Location: /GUI/employerDash.php?tab=viewJobs");
             break;
         case "postJob":
+            $data = array();
+            $data["title"] = $_POST['title'];
+            $data["category"] = $_POST['category'];
+            $data["description"] = $_POST['description'];
+            $data["numOpenings"] = $_POST['numOpenings'];
             echo "title:" . $_POST['title'] . "<br>";
             echo "category" . $_POST['category'] . "<br>";
             echo "description" . $_POST['description'] . "<br>";
             echo "numOpenings" . $_POST['numOpenings'] . "<br>";
-            // TODO: database insert operation
-//            header("Location: /GUI/employerDash.php?tab=viewJobs");
+            if (insertJob($data)) {
+                echo "Insert successfully";
+            } else {
+                echo "Insert failed";
+            }
+            echo "<br><br><a href='/GUI/employerDash.php?tab=viewJobs'>view jobs</a>";
             break;
         case "viewApplications":
             $appName = $_REQUEST['appName'];
@@ -190,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 
 /************* Data access part *****************************************************************************/
-// Get user's category
+// Get user's category, gold/prime
 function getUserCategory($username) {
     $conn = connectDB();
     $sql = "select Category from employer where UserName = '$username'";
@@ -227,7 +238,7 @@ function getMonthlyCharge($userCategory) {
 }
 
 
-// TODO: get posted jobs data from database
+// get posted jobs data from database
 function getPostedJobsData() {
     global $username;
     $data = array();
@@ -272,7 +283,7 @@ function getNumOfHires($jobID) {
 }
 
 
-// TODO: get job by jobID, select * from Job where jobID = $jobID
+// get job by jobID, select * from Job where jobID = $jobID
 /**
  * @param $jobID
  * @return array, job information
@@ -308,7 +319,7 @@ function getJobByID($jobID) {
 }
 
 
-// TODO: get all applications
+// get all applications
 /**
  * return all jobs with applications information
  * {
@@ -351,7 +362,7 @@ function getAllApplications() {
     return $data;
 }
 
-// TODO: get applications by job ID.
+// get applications by job ID.
 /**
  * @param $jobID
  * @return
@@ -480,10 +491,41 @@ function getDebitCardInfo($username) {
     return $debitCardInfo;
 }
 
+// get all distinct job categories by username
+function getJobCategoriesByUsername($username) {
+    $categories = array();
 
-// should get default MOP by username, return the default card number.
-function getDefaultMOP() {
-    return "123456";
+    $conn = connectDB();
+    $sql = "select distinct Category from job where EmployerUserName = '$username'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            array_push($categories, $row["Category"]);
+        }
+    }
+    return $categories;
+}
+
+// insert a job into database, return true if insert successfully.
+function insertJob($data) {
+    global $username;
+    $title =$data["title"];
+    $description = $data["description"];
+    $dateposted = date("Y-m-d");
+    $category = $data["category"];
+    $jobStatus = 1;
+    $numOpenings = $data["numOpenings"];
+    $conn = connectDB();
+    $sql = "insert into job 
+            (EmployerUserName, Title, DatePosted, Description, Category, JobStatus, EmpNeeded) 
+            VALUES
+            ('$username', '$title', '$dateposted', '$description', '$category', $jobStatus, $numOpenings)";
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 

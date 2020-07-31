@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -98,8 +101,14 @@
                 <div class="form-group">
                     <label for="category"><b>Category</b></label>
                     <select id="category" class="form-control" name="category" required>
-                        <option selected>Technology</option>
-                        <option>...</option>
+                        <?php
+                        $jobcategories = $_SESSION['jobcategories'];
+                        for ($i = 0; $i < count($jobcategories); $i++) {
+                            $item = $jobcategories[$i];
+                            if ($i == 0) echo "<option selected>$item</option>";
+                            else echo "<option>$item</option>";
+                        }
+                        ?>
                     </select>
                 </div>
                 <div class="form-group">
