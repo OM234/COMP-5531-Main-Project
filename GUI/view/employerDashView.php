@@ -99,17 +99,29 @@ session_start();
                     <span id="titleError"></span>
                 </div>
                 <div class="form-group">
-                    <label for="category"><b>Category</b></label>
-                    <select id="category" class="form-control" name="category" required>
-                        <?php
-                        $jobcategories = $_SESSION['jobcategories'];
-                        for ($i = 0; $i < count($jobcategories); $i++) {
-                            $item = $jobcategories[$i];
-                            if ($i == 0) echo "<option selected>$item</option>";
-                            else echo "<option>$item</option>";
-                        }
-                        ?>
-                    </select>
+                    <label for="category" id = "catLabel"><b>Category</b></label>
+                    <div class="row justify-content-start align-items-center mt-1">
+                        <div class="col-8">
+                            <select id="category" class="form-control" name="category" required>
+                                <?php
+                                $jobcategories = $_SESSION['jobcategories'];
+                                for ($i = 0; $i < count($jobcategories); $i++) {
+                                    $item = $jobcategories[$i];
+                                    if ($i == 0) echo "<option selected>$item</option>";
+                                    else echo "<option>$item</option>";
+                                }
+                                ?>
+                            </select>
+                            <div class="form-group d-none" id ="newCategoryTextArea">
+                                <label for="newCategory"><b>New Category</b></label>
+                                <textarea class="form-control" placeholder="Enter new category" type="text"
+                                          id="newCategory" name="newCategory"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-4 text-right">
+                            <button class='btn btn-info' onclick = "addJobCategory(); return false">New Category</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="description"><b>Description (Max 50 characters)</b></label>

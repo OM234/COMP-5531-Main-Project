@@ -174,3 +174,8 @@ function confirmPassword() {
     // return false;
 
 }
+function addJobCategory() {
+    document.getElementById("newCategoryTextArea").classList.remove("d-none");
+    document.getElementById("category").classList.add("d-none");
+    document.getElementById("catLabel").classList.add("d-none");
+}
