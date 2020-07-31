@@ -1,4 +1,5 @@
 <?php
+include_once 'db/db_config.php';
 
 /**
  * index.php
@@ -36,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo "accountType: " .$accountType . "<br>";
 
     // if authenticate success, start session, and then set session attributes.
-    if (authenticate($username, $password)) {
+    if (authenticate($username, $password, $accountType)) {
         session_start();
         $_SESSION['isLogin'] = true;
         $_SESSION["username"] = $username;
@@ -49,11 +50,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 
-// TODO: query in database, selectPasswordByUsername();
-function authenticate($username, $password) {
-    if ($password == md5("1")) {
-        return true;
+// authenticate username and password
+function authenticate($username, $password, $accountType) {
+
+    if (checkUsername($username, $accountType)) {
+        $conn = connectDB();
+        $sql = "select Password from user where UserName = '$username'";
+        $result = $conn->query($sql);
+        $dbPassword = $result->fetch_assoc()['Password'];
+        if ($password == md5($dbPassword)) return true;
     }
+    return false;
+}
+
+// check username is in the accountType table? username is a employer, job seeker, admin
+function checkUsername($username, $accountType) {
+    $conn = connectDB();
+    if ($accountType === 'employer') {
+        $sql = "select UserName from employer where UserName = '$username'";
+        $result = $conn->query($sql);
+        if ($result->num_rows > 0) return true;
+    }
+    else if ($accountType === 'jobSeeker') {
+        $sql = "select UserName from applicant where UserName = '$username'";
+        $result = $conn->query($sql);
+        if ($result->num_rows > 0) return true;
+    }
+    else {
+        $sql = "select UserName from admin where UserName = '$username'";
+        $result = $conn->query($sql);
+        if ($result->num_rows > 0) return true;
+    }
+    $conn->close();
     return false;
 }
 

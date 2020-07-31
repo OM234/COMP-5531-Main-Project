@@ -1,11 +1,12 @@
 <?php
+include_once "db/db_config.php";
+
 session_start();
 
 // first check login status, if not logged in, go to login page
 if (!isset($_SESSION['isLogin']) || $_SESSION['isLogin'] == false) {
     goToPage("/GUI/index.php");
 }
-
 
 
 /*********** Data models variables ***********************************************************************/
@@ -15,7 +16,7 @@ $accountType = $_SESSION['accountType'];  // current user account type, (job see
 $userCategory = getUserCategory($username);  // current user's category, gold, prime
 $autoPay = getAutoOrManual($username);    // auto payment or maunal payment, true for auto.
 $accountStatus = getAccountStatus($username);  // get account status, true(active), false(not active)
-$accountBalance = getAccountBalance($username); // get account balance
+$accountBalance = getAccountBalance($username);  // get account balance
 $monthlyCharge= getMonthlyCharge($userCategory);
 //$accountStatus = false;
 
@@ -135,10 +136,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 //            header("Location: /GUI/employerDash.php?tab=viewJobs");
             break;
         case "viewApplications":
-            $appID = $_REQUEST['appID'];
+            $appName = $_REQUEST['appName'];
+            $jobID = $_REQUEST['jobID'];
             $operation = $_REQUEST['op'];
             echo "operation: " . $operation . "<br>";
-            echo "applicationID: " . $appID;
+            echo " application name: " . $appName;
+            echo " jobID: " . $jobID;
             changeApplicationStatus();  /* TODO: change application status */
 //            header("Location: /GUI/employerDash.php?tab=viewApplications");
             break;
@@ -187,9 +190,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 
 /************* Data access part *****************************************************************************/
-// TODO: get user's category
+// Get user's category
 function getUserCategory($username) {
-    return "gold";
+    $conn = connectDB();
+    $sql = "select Category from employer where UserName = '$username'";
+    $result = $conn->query($sql);
+    return $result->fetch_assoc()['Category'];
 }
 
 // TODO: get user's payment method, auto or manual, return true for auto, false for manual.
@@ -197,17 +203,21 @@ function getAutoOrManual($username) {
     return true;
 }
 
-// TODO: get user's account status, true for active, false for freeze
+// Get user's account status, true for active, false for freeze
 function getAccountStatus($username) {
-    return true;
+    $balance = getAccountBalance($username);
+    return $balance >= 0;
 }
 
-// TODO: get account balance
+// Get user's account balance
 function getAccountBalance($username) {
-    return 50;
+    $conn = connectDB();
+    $sql = "select Balance from employer where UserName = '$username'";
+    $result = $conn->query($sql);
+    return $result->fetch_assoc()['Balance'];
 }
 
-// TODO: get monthly payment for different user category
+// Get monthly payment for different user category
 function getMonthlyCharge($userCategory) {
     if ($userCategory === 'gold') {
         return 100;
@@ -219,21 +229,48 @@ function getMonthlyCharge($userCategory) {
 
 // TODO: get posted jobs data from database
 function getPostedJobsData() {
+    global $username;
     $data = array();
-    $job1 = array("jobID" =>100, "title"=>"Job1", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description1", "numOfOpenings"=>1, "numOfApplications"=>3, "numOfHires"=>1, "jobStatus"=>"open");
-    $job2 = array("jobID" =>200, "title"=>"Job2", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description2", "numOfOpenings"=>2, "numOfApplications"=>3, "numOfHires"=>1, "jobStatus"=>"open");
-    $job3 = array("jobID" =>300, "title"=>"Job3", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description3", "numOfOpenings"=>3, "numOfApplications"=>3, "numOfHires"=>1, "jobStatus"=>"open");
-    $job4 = array("jobID" =>400, "title"=>"Job4", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description4", "numOfOpenings"=>4, "numOfApplications"=>3, "numOfHires"=>1, "jobStatus"=>"open");
-    array_push($data, $job1);
-    array_push($data, $job2);
-    array_push($data, $job3);
-    array_push($data, $job4);
+
+    $conn = connectDB();
+    $sql = "select * from job where EmployerUserName = '$username'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $job = array("jobID" =>$row["JobID"], "title"=>$row["Title"], "datePosted"=>$row["DatePosted"], "category"=>$row["Category"],
+                "description"=>$row["Description"], "numOfOpenings"=>$row["EmpNeeded"]);
+            $jobStatus = ($row["JobStatus"] == 1) ? "open" : "closed";
+            $numOfApplications = getNumOfApplications($row["JobID"]);
+            $numOfHires = getNumOfHires($row["JobID"]);
+            $job["jobStatus"] = $jobStatus;
+            $job["numOfApplications"] = $numOfApplications;
+            $job["numOfHires"] = $numOfHires;
+            array_push($data, $job);
+        }
+    }
     return $data;
+
 }
+
+// get applications data of a job, given jobID
+
+
+// get number of applications of a job, given JobID
+function getNumOfApplications($jobID) {
+    $conn = connectDB();
+    $sql = "select count(*) as n from application where JobID = $jobID";
+    $result = $conn->query($sql);
+    return $result->fetch_assoc()["n"];
+}
+
+// get number of hires of a job, given JobID
+function getNumOfHires($jobID) {
+    $conn = connectDB();
+    $sql = "select count(*) as n from application where JobID = $jobID and ApplicationStatus = 'hired'";
+    $result = $conn->query($sql);
+    return $result->fetch_assoc()["n"];
+}
+
 
 // TODO: get job by jobID, select * from Job where jobID = $jobID
 /**
@@ -250,9 +287,24 @@ function getPostedJobsData() {
  * }
  */
 function getJobByID($jobID) {
-    $job1 = array("jobID" =>100, "title"=>"Job1", "datePosted"=>date("Y-m-d"), "category"=>"category1",
-        "description"=>"Description1", "numOfOpenings"=>1, "numOfApplications"=>3, "numOfHires"=>1, "jobStatus"=>"open");
-    return $job1;
+    global $username;
+    $job = array();
+    $conn = connectDB();
+    $sql = "select * from job where JobID = $jobID";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $job = array("jobID" => $row["JobID"], "title" => $row["Title"], "datePosted" => $row["DatePosted"], "category" => $row["Category"],
+                "description" => $row["Description"], "numOfOpenings" => $row["EmpNeeded"]);
+            $jobStatus = ($row["JobStatus"] == 1) ? "open" : "closed";
+            $numOfApplications = getNumOfApplications($row["JobID"]);
+            $numOfHires = getNumOfHires($row["JobID"]);
+            $job["jobStatus"] = $jobStatus;
+            $job["numOfApplications"] = $numOfApplications;
+            $job["numOfHires"] = $numOfHires;
+        }
+    }
+    return $job;
 }
 
 
@@ -289,19 +341,14 @@ function getJobByID($jobID) {
  * ...
  */
 function getAllApplications() {
-    $allJobsWithApplications = getPostedJobsData();
-    for ($i = 0; $i < count($allJobsWithApplications); $i++) {
-        $applications = array();
-        $application1 = array("appID"=>1, "appName"=>"Jack", "appDate"=>date("Y-m-d"), "appStatus"=>"Accepted");
-        $application2 = array("appID"=>2, "appName"=>"Alice", "appDate"=>date("Y-m-d"), "appStatus"=>"Accepted");
-        $application3 = array("appID"=>3, "appName"=>"Michael", "appDate"=>date("Y-m-d"), "appStatus"=>"Accepted");
-        array_push($applications, $application1);
-        array_push($applications, $application2);
-        array_push($applications, $application3);
-        $allJobsWithApplications[$i]["applications"] = $applications;
-        $allJobsWithApplications[$i]["numOfApplications"] = 3;
+    $jobs = getPostedJobsData();
+    $data = array();
+    for ($i = 0; $i < count($jobs); $i++) {
+        $jobID = $jobs[$i]["jobID"];
+        $job = getApplicationsByJobID($jobID);
+        array_push($data, $job);
     }
-    return $allJobsWithApplications;
+    return $data;
 }
 
 // TODO: get applications by job ID.
@@ -334,14 +381,17 @@ function getAllApplications() {
 function getApplicationsByJobID($jobID) {
     $job = getJobByID($jobID);
     $applications = array();
-    $application1 = array("appID"=>1, "appName"=>"Jack", "appDate"=>date("Y-m-d"), "appStatus"=>"Accepted");
-    $application2 = array("appID"=>2, "appName"=>"Alice", "appDate"=>date("Y-m-d"), "appStatus"=>"Accepted");
-    $application3 = array("appID"=>3, "appName"=>"Michael", "appDate"=>date("Y-m-d"), "appStatus"=>"Accepted");
-    array_push($applications, $application1);
-    array_push($applications, $application2);
-    array_push($applications, $application3);
+    $conn = connectDB();
+    $sql = "select * from application where JobID = $jobID";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $app = array("appName"=>$row["ApplicantUserName"], "appDate"=>$row["ApplicationDate"], "appStatus"=>$row["ApplicationStatus"]);
+            array_push($applications, $app);
+        }
+    }
     $job["applications"] = $applications;
-    $job["numOfApplications"] = 3;
+
     return $job;
 }
 
@@ -378,49 +428,58 @@ function getApplicationsByJobID($jobID) {
  */
 
 function getPaymentInfo() {
-    $creditCardInfo = array();
-    array_push($creditCardInfo, array("CCNumber"=>"654321", "CCExpiry"=>date("Y-m-d"),
-        "CCName"=>"Alice", "CCV"=>"123", "isDefault"=>false));
-    array_push($creditCardInfo, array("CCNumber"=>"123456", "CCExpiry"=>date("Y-m-d"),
-        "CCName"=>"Alice", "CCV"=>"123", "isDefault"=>false));
+    global $username;
 
+    $creditCardInfo = getCreditCardInfo($username);
 
-    $debitCardInfo = array();
-    array_push($debitCardInfo, array("bankAccountNumber"=>"123456789", "bankTransitNumber"=>"TDB",
-        "isDefault"=>false));
-    array_push($debitCardInfo, array("bankAccountNumber"=>"987654321", "bankTransitNumber"=>"TDB",
-        "isDefault"=>false));
-
-    // set one card to default
-    $flag = false;
-    $defaultCardNum = getDefaultMOP();
-    for ($i = 0; $i < count($creditCardInfo); $i++) {
-        if ($creditCardInfo[$i]["CCNumber"] === $defaultCardNum) {
-            if ($flag === false) {
-                $creditCardInfo[$i]["isDefault"] = true;
-                $flag = true;
-            } else {
-                echo "<script>alert('Default payment method already exist')</script>";
-            }
-        }
-    }
-    for ($i = 0; $i < count($debitCardInfo); $i++) {
-        if ($debitCardInfo[$i]["CCNumber"] === $defaultCardNum) {
-            if ($flag === false) {
-                $debitCardInfo[$i]["isDefault"] = true;
-                $flag = true;
-            } else {
-                echo "<script>alert('Default payment method already exist')</script>";
-            }
-        }
-    }
-
-    if ($flag === false) {
-        echo "<script>alert('Please select one default payment method')</script>";
-    }
+    $debitCardInfo = getDebitCardInfo($username);
 
     return [$creditCardInfo, $debitCardInfo];
 }
+
+// get credit card info
+function getCreditCardInfo($username) {
+    $creditCardInfo = array();
+
+    $conn = connectDB();
+    $sql = "select *
+            from
+            (select UserName, CCNumber
+            from employer, employercc
+            where employer.UserName = employercc.EmployerUserName) as T natural join creditcardinfo
+            where UserName = '$username'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $cci = array("CCNumber"=>$row["CCNumber"], "CCExpiry"=>$row["ExpireDate"], "CCBNumber"=>$row["CCBNumber"],
+                "isDefault"=>$row["IsDefault"], "autoManual"=>$row["Auto_Manual"]);
+            array_push($creditCardInfo, $cci);
+        }
+    }
+    return $creditCardInfo;
+}
+
+// get debit card info
+function getDebitCardInfo($username) {
+    $debitCardInfo = array();
+
+    $conn = connectDB();
+    $sql = "select * from
+            (select UserName, AccountNumber
+                from employer, employerpad
+                where employer.UserName = employerpad.EmployerUserName) as T natural join padinfo
+            where UserName = '$username'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $dci = array("accountNumber"=>$row["AccountNumber"], "instituteNumber"=>$row["InstituteNumber"],
+                "branchNumber"=>$row["BranchNumber"], "isDefault"=>$row["isDefault"], "autoManual"=>$row["Auto_Manual"]);
+            array_push($debitCardInfo, $dci);
+        }
+    }
+    return $debitCardInfo;
+}
+
 
 // should get default MOP by username, return the default card number.
 function getDefaultMOP() {
@@ -520,20 +579,18 @@ function viewApplicationsOfJob($job)
         "</div>";
 
     for ($i = 0; $i < $numOfApps; $i++) {
-        $appID = $apps[$i]['appID'];
         $appName = $apps[$i]['appName'];
         $appDate = $apps[$i]['appDate'];
         $appStatus = $apps[$i]['appStatus'];
         $html .=
             "<div class='row applicantRow justify-content-center'>" .
             "      <div class='col-6 border'>" .
-            "           <p><b>Applicant ID:</b> $appID</p>" .
             "           <p><b>Applicant Name:</b> $appName</p>" .
             "           <p><b>Application Date:</b> $appDate</p>" .
             "           <p><b>Status:</b> $appStatus</p>" .
             "     </div>" .
             "     <div class='col-4 text-center my-auto'>" .
-            "           <form action='". $_SERVER['PHP_SELF']."?tab=viewApplications&appID=$appID"."' method='post'>".
+            "           <form action='". $_SERVER['PHP_SELF']."?tab=viewApplications&appName=$appName&jobID=$jobID"."' method='post'>".
             "           <button type='submit' name='op' value='deny' class='btn btn-warning'>Deny</button>" .
             "           <button type='submit' name='op' value='review' class='btn btn-secondary'>Review</button>" .
             "           <button type='submit' name='op' value='sendOffer' class='btn btn-primary'>Send Offer</button>" .
@@ -586,8 +643,9 @@ function showPaymentInfo($paymentInfo) {
 function showDebitCardInfo(string $html, $data): string
 {
     $isDefault = $data["isDefault"];
-    $bankAccountNumber = $data["bankAccountNumber"];
-    $bankTransitNumber = $data["bankTransitNumber"];
+    $accountNumber = $data["accountNumber"];
+    $instituteNumber = $data["instituteNumber"];
+    $branchNumber = $data["branchNumber"];
 
     $html .=
         "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>";
@@ -602,8 +660,9 @@ function showDebitCardInfo(string $html, $data): string
             "<div class = 'col-8 border rounded'>";
     }
     $html .=
-        "     <p><b>Bank Account Number: </b>$bankAccountNumber</p>".
-        "     <p><b>Bank Transit Number: </b>$bankTransitNumber</p>".
+        "     <p><b>Bank Account Number: </b>$accountNumber</p>".
+        "     <p><b>Institute Number: </b>$instituteNumber</p>".
+        "     <p><b>Branch Number: </b>$branchNumber</p>".
         "</div>";
 
 //    $html .=
@@ -622,14 +681,14 @@ function showDebitCardInfo(string $html, $data): string
         $html .=
             "<div class = 'col-2 text-center'>" .
             "     <button class = 'btn btn-primary'>Set Default</button>" .
-            "      <button class = 'btn btn-info' onclick='editDebitCard(/*TODO: $bankAccountNumber*/)'>Edit</button>" .
+            "      <button class = 'btn btn-info' onclick='editDebitCard(/*TODO: $accountNumber*/)'>Edit</button>" .
             "      <button class = 'btn btn-danger'>Delete</button>" .
             "</div>";
     } else {
 
         $html .=
             "<div class = 'col-2 text-center'>" .
-            "     <button class = 'btn btn-info' onclick='editDebitCard(/*TODO: $bankAccountNumber*/)'>Edit</button>" .
+            "     <button class = 'btn btn-info' onclick='editDebitCard(/*TODO: $accountNumber*/)'>Edit</button>" .
             "</div>";
     }
 
@@ -642,10 +701,9 @@ function showDebitCardInfo(string $html, $data): string
 function showCreditCardInfo(string $html, $data): string
 {
     $isDefault = $data["isDefault"];
-    $CCName = $data["CCName"];
     $CCNumber = $data["CCNumber"];
     $CCExpiry = $data["CCExpiry"];
-    $CVVCode = $data["CCV"];
+    $CCBNumber = $data["CCBNumber"];
 
     $html .=
         "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>";
@@ -661,10 +719,9 @@ function showCreditCardInfo(string $html, $data): string
     }
 
     $html .=
-        "     <p><b>Name on Card: </b>$CCName</p>".
         "     <p><b>Credit Card Number: </b>$CCNumber</p>".
-        "     <p><b>CVV: </b>$CVVCode</p>".
         "     <p><b>Expiry Date: </b>$CCExpiry</p>".
+        "     <p><b>CCB Number: </b>$CCBNumber</p>".
         "</div>";
 
 //    $html .=
