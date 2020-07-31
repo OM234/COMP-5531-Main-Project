@@ -20,6 +20,7 @@ $accountBalance = getAccountBalance($username);  // get account balance
 $monthlyCharge= getMonthlyCharge($userCategory);
 $jobCategories = getJobCategoriesByUsername($username); // get job categories, Technical ...
 $_SESSION['jobcategories'] = $jobCategories;  // for cross file data transfer
+$paymentInfo = getPaymentInfo();  // payments
 
 echo "username: $username &nbsp&nbsp&nbsp&nbsp";
 echo "category: $userCategory&nbsp&nbsp&nbsp&nbsp";
@@ -86,7 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
                 showContactInfo();
                 break;
             case "viewPaymentInfo":
-                $paymentInfo = getPaymentInfo();  // get payment info data
                 showPaymentInfo($paymentInfo);    // show payment info
                 break;
             case "viewAccBalance":
@@ -204,6 +204,30 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if (insertDebitCard($username, $baNumber, $instituteNumber, $branchNumber)) {
                 echo "operation success<br>";
             };
+            echo "<a href='employerDash.php?tab=viewPaymentInfo'>view payment info</a>";
+            break;
+
+        case "changeDebitStatus":
+            $op = $_POST['op'];
+            $accountNumber = $_REQUEST['accountNumber'];
+            echo "account number: " .$_REQUEST['accountNumber'] . "<br>";
+            echo "operation: " . $_POST['op'] . "<br>";
+            if (changeDebitStatus($username, $op, $accountNumber)) {
+                echo "operation success<br>";
+            }
+            echo "<a href='employerDash.php?tab=viewPaymentInfo'>view payment info</a>";
+            break;
+
+        case "changeCreditStatus":
+            $op = $_POST['op'];
+            $ccNumber = $_REQUEST['ccNumber'];
+            $ccExpiry = $_REQUEST['ccExpiry'];
+            echo "credit card number: " . $_REQUEST['ccNumber'] . "<br>";
+            echo "credit card expiration date: " . $_REQUEST['ccExpiry'] . "<br>";
+            echo "operation: " . $_POST['op'] . "<br>";
+            if (changeCreditStatus($username, $op, $ccNumber, $ccExpiry)) {
+                echo "operation success<br>";
+            }
             echo "<a href='employerDash.php?tab=viewPaymentInfo'>view payment info</a>";
             break;
 
@@ -483,6 +507,8 @@ function getPaymentInfo() {
 
     $debitCardInfo = getDebitCardInfo($username);
 
+    $payments = [$creditCardInfo, $debitCardInfo];
+
     return [$creditCardInfo, $debitCardInfo];
 }
 
@@ -712,6 +738,72 @@ function insertEmployerPad($username, $baNumber) {
     return false;
 }
 
+// change debit card status
+function changeDebitStatus($username, $op, $accountNumber) {
+    if ($op === 'delete') {
+        $conn = connectDB();
+        $sql = "delete from employerpad where EmployerUserName = '$username' and AccountNumber = '$accountNumber'";
+        if (mysqli_query($conn, $sql)) {
+            $conn2 = connectDB();
+            $sql2 = "delete from padinfo where AccountNumber = '$accountNumber'";
+            if (mysqli_query($conn2, $sql2)) return true;
+        }
+    }
+    else if ($op === 'setDefault') {
+        setUndefault();
+        $conn = connectDB();
+        $sql = "update padinfo set IsDefault = 1 where AccountNumber = '$accountNumber'";
+        if (mysqli_query($conn, $sql)) return true;
+    }
+    return false;
+}
+
+// change credit card status
+function changeCreditStatus($username, $op, $ccNumber, $ccExpiry) {
+    if ($op === 'delete') {
+        $conn = connectDB();
+        $sql = "delete from employercc where EmployerUserName = '$username' and CCNumber = '$ccNumber'";
+        if (mysqli_query($conn, $sql)) {
+            $conn2 = connectDB();
+            $sql2 = "delete from creditcardinfo where CCNumber = '$ccNumber' and ExpireDate = '$ccExpiry'";
+            if (mysqli_query($conn2, $sql2)) return true;
+        }
+    }
+    else if ($op === 'setDefault') {
+        setUndefault();
+        $conn = connectDB();
+        $sql = "update creditcardinfo set IsDefault = 1 where CCNumber = '$ccNumber' and ExpireDate = '$ccExpiry'";
+        if (mysqli_query($conn, $sql)) return true;
+    }
+    return false;
+}
+
+// Change current default to undefault
+function setUndefault() {
+    global $username;
+    global $paymentInfo;
+    $creditInfo = $paymentInfo[0];
+    $debitInfo = $paymentInfo[1];
+
+    for ($i = 0; $i < count($creditInfo); $i++) {
+        if ($creditInfo[$i]['isDefault']) {
+            $ccNumber = $creditInfo[$i]['CCNumber'];
+            $ccExpiry = $creditInfo[$i]['CCExpiry'];
+            $conn = connectDB();
+            $sql = "update creditcardinfo set IsDefault = 0 where CCNumber = '$ccNumber' and ExpireDate = '$ccExpiry'";
+            if (!mysqli_query($conn, $sql)) echo "error in setUndefault";
+        }
+    }
+    for ($i = 0; $i < count($debitInfo); $i++) {
+        if ($debitInfo[$i]['isDefault']) {
+            $accountNumber = $debitInfo[$i]['accountNumber'];
+            $conn = connectDB();
+            $sql = "update padinfo set IsDefault = 0 where AccountNumber = '$accountNumber'";
+            if (!mysqli_query($conn, $sql)) echo "error in setUndefault";
+        }
+    }
+
+}
 
 
 /************************* End of data access *****************************************************/
@@ -905,8 +997,10 @@ function showDebitCardInfo(string $html, $data): string
 
         $html .=
             "<div class = 'col-2 text-center'>" .
-            "     <button class = 'btn btn-primary'>Set Default</button>" .
-            "      <button class = 'btn btn-danger'>Delete</button>" .
+            "   <form action='".$_SERVER['PHP_SELF']."?tab=changeDebitStatus&accountNumber=$accountNumber' method='post'>".
+            "     <button type=submit name='op' value='setDefault' class = 'btn btn-primary'>Set Default</button>" .
+            "     <button type=submit name='op' value='delete' class = 'btn btn-danger'>Delete</button>" .
+            "   </form>".
             "</div>";
     } else {
 
@@ -966,8 +1060,10 @@ function showCreditCardInfo(string $html, $data): string
 
         $html .=
             "   <div class = 'col-2 text-center'>" .
-            "       <button class = 'btn btn-primary'>Set Default</button>" .
-            "       <button class = 'btn btn-danger'>Delete</button>" .
+            "   <form action='".$_SERVER['PHP_SELF']."?tab=changeCreditStatus&ccNumber=$CCNumber&ccExpiry=$CCExpiry' method='post'>".
+            "       <button type='submit' name='op' value='setDefault' class = 'btn btn-primary'>Set Default</button>" .
+            "       <button type='submit' name='op' value='delete' class = 'btn btn-danger'>Delete</button>" .
+            "   </form>".
             "   </div>";
     } else {
 
