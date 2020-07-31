@@ -100,9 +100,14 @@ function editDebitCard(/*TODO: $bankAccountNumber*/) {
         "                       value=''>" +
         "            </div>" +
         "            <div class='form-group'>" +
-        "                <label for='transitNumber'><b>Transit Number</b></label>" +
-        "                <input type='text' class='form-control' placeholder='Enter transit number' id='transitNumber'" +
-        "                       name='transitNumber' value=''>" +
+        "                <label for='instituteNumber'><b>Institute Number</b></label>" +
+        "                <input type='text' class='form-control' placeholder='Enter institute number' id='instituteNumber'" +
+        "                       name='instituteNumber' value=''>" +
+        "            </div>" +
+        "            <div class='form-group'>" +
+        "                <label for='branchNumber'><b>Branch Number</b></label>" +
+        "                <input type='text' class='form-control' placeholder='Enter branch number' id='branchNumber'" +
+        "                       name='branchNumber' value=''>" +
         "            </div>" +
         "            <input class='btn btn-primary' type='submit' value='Submit'>" +
         "        </form>" +
@@ -118,17 +123,13 @@ function editCreditCard() {
         "    <div class='col-8'>" +
         "        <form action='/GUI/employerDash.php?tab=addCreditCard' method='post'>" +
         "            <div class='form-group'>" +
-        "                <label for='ccName'><b>Name</b></label>" +
-        "                <input type='text' class='form-control' placeholder='Enter name' id='ccName' name='ccName' value='' required>" +
-        "            </div>" +
-        "            <div class='form-group'>" +
         "                <label for='ccNumber'><b>Credit card number</b></label>" +
         "                <input type='text' class='form-control' placeholder='Enter card number' id='ccNumber' name='ccNumber'" +
         "                       value='' required>" +
         "            </div>" +
         "            <div class='form-group'>" +
-        "                <label for='cvvNumber'><b>CVV (3 digits)</b></label>" +
-        "                <input type='text' class='form-control' placeholder='Enter CVV' id='ccvNumber' name='ccvNumber'" +
+        "                <label for='ccbNumber'><b>CCB Number</b></label>" +
+        "                <input type='text' class='form-control' placeholder='Enter CVV' id='ccbNumber' name='ccbNumber'" +
         "                       value='' required>" +
         "            </div>" +
         "            <div class='form-group'>" +

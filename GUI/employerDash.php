@@ -136,6 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
             echo "<br><br><a href='/GUI/employerDash.php?tab=viewJobs'>view jobs</a>";
             break;
+
         case "postJob":
             $data = array();
             $data["title"] = $_POST['title'];
@@ -153,6 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
             echo "<br><br><a href='/GUI/employerDash.php?tab=viewJobs'>view jobs</a>";
             break;
+
         case "viewApplications":
             $appName = $_REQUEST['appName'];
             $jobID = $_REQUEST['jobID'];
@@ -180,15 +182,29 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             break;
 
         case "addCreditCard":
-            echo "ccName: " .$_POST['ccName'] . "<br>";
+            $ccNumber = $_POST['ccNumber'];
+            $ccbNumber = $_POST['ccbNumber'];
+            $ccExpiration = $_POST['ccExpiration'];
             echo "ccNumber: " .$_POST['ccNumber'] . "<br>";
-            echo "ccvNumber: " .$_POST['ccvNumber'] . "<br>";
-            echo "ccExpiration: " .$_POST['ccExpiration'] . "<br>";
+            echo "ccbNumber: " .$_POST['ccbNumber'] . "<br>";
+            echo "ccExpiration: " . $ccExpiration . "<br>";
+            if (insertCreditCard($username, $ccNumber, $ccbNumber, $ccExpiration)) {
+                echo "operation success<br>";
+            };
+            echo "<a href='employerDash.php?tab=viewPaymentInfo'>view payment info</a>";
             break;
 
         case "addDebitCard":
+            $baNumber = $_POST['baNumber'];
+            $instituteNumber = $_POST['instituteNumber'];
+            $branchNumber = $_POST['branchNumber'];
             echo "baNumber: " .$_POST['baNumber'] . "<br>";
-            echo "transitNumber: " .$_POST['transitNumber'] . "<br>";
+            echo "instituteNumber: " .$_POST['instituteNumber'] . "<br>";
+            echo "branchNumber: " .$_POST['branchNumber'] . "<br>";
+            if (insertDebitCard($username, $baNumber, $instituteNumber, $branchNumber)) {
+                echo "operation success<br>";
+            };
+            echo "<a href='employerDash.php?tab=viewPaymentInfo'>view payment info</a>";
             break;
 
         case "changeContactInfo":
@@ -600,8 +616,12 @@ function changeApplicationStatus($appName, $jobID, $operation) {
                 where ApplicantUserName = '$appName' and JobID = $jobID";
     }
 
-    if (mysqli_query($conn, $sql)) { return true; }
-    else { return false; }
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 
@@ -618,8 +638,10 @@ function changeContactInfo($username, $employerName, $firstName, $lastName, $ema
 function updateEmployerName($username, $employerName) {
     $conn = connectDB();
     $sql = "update employer set EmployerName = '$employerName' where UserName = '$username'";
-    if (mysqli_query($conn, $sql)) {return true;}
-    else {return false;}
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+    return false;
 }
 
 // update representative info given username
@@ -628,8 +650,66 @@ function updateRepresentativeInfo($username, $firstName, $lastName, $email, $num
     $sql = "update user 
             set FirstName = '$firstName', LastName = '$lastName', Email = '$email', ContactNumber = '$number'
             where UserName = '$username'";
-    if (mysqli_query($conn, $sql)) return true;
-    else return false;
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+    return false;
+}
+
+// insert a credit card of the username
+function insertCreditCard($username, $ccNumber, $ccbNumber, $ccExpiration) {
+    $month = substr($ccExpiration, 0, 2);
+    $year = substr($ccExpiration, 2, 4);
+    $expDate = $year . "-" . $month . "-1";
+
+    $flag = false;
+    $conn = connectDB();
+    $sql = "insert into creditcardinfo (CCNumber, ExpireDate, CCBNumber, IsDefault, Auto_Manual)
+            VALUES ($ccNumber, '$expDate', $ccbNumber, 0, 0)";
+    if (mysqli_query($conn, $sql)) {
+        $flag = true;
+    }
+
+    if ($flag) {
+        if (insertEmployerCC($ccNumber, $username)) return true;
+    }
+    return false;
+}
+
+// insert into employercc
+function insertEmployerCC($ccNumber, $username) {
+    $conn = connectDB();
+    $sql = "insert into employercc (EmployerUserName, CCNumber) values ('$username', '$ccNumber')";
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+    return false;
+}
+
+// insert debit card info
+function insertDebitCard($username, $baNumber, $instituteNumber, $branchNumber) {
+    $conn = connectDB();
+    $flag = false;
+    $sql = "insert into padinfo (AccountNumber, InstituteNumber, BranchNumber, IsDefault, Auto_Manual) 
+            values ('$baNumber', '$instituteNumber', '$branchNumber', 0, 0)";
+    if (mysqli_query($conn, $sql)) {
+        $flag = true;
+    }
+
+    if ($flag) {
+        if (insertEmployerPad($username, $baNumber)) return true;
+    }
+    return false;
+}
+
+// insert into employerpad table
+function insertEmployerPad($username, $baNumber) {
+    $conn = connectDB();
+    $sql = "insert into employerpad (EmployerUserName, AccountNumber) values ('$username', '$baNumber')";
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+    return false;
 }
 
 
@@ -826,14 +906,12 @@ function showDebitCardInfo(string $html, $data): string
         $html .=
             "<div class = 'col-2 text-center'>" .
             "     <button class = 'btn btn-primary'>Set Default</button>" .
-            "      <button class = 'btn btn-info' onclick='editDebitCard(/*TODO: $accountNumber*/)'>Edit</button>" .
             "      <button class = 'btn btn-danger'>Delete</button>" .
             "</div>";
     } else {
 
         $html .=
             "<div class = 'col-2 text-center'>" .
-            "     <button class = 'btn btn-info' onclick='editDebitCard(/*TODO: $accountNumber*/)'>Edit</button>" .
             "</div>";
     }
 
@@ -889,14 +967,12 @@ function showCreditCardInfo(string $html, $data): string
         $html .=
             "   <div class = 'col-2 text-center'>" .
             "       <button class = 'btn btn-primary'>Set Default</button>" .
-            "       <button class = 'btn btn-info' onclick='editCreditCard(/*, TODO: $CCNumber, CCExpiry*/)'>Edit</button>" .
             "       <button class = 'btn btn-danger'>Delete</button>" .
             "   </div>";
     } else {
 
         $html .=
             "<div class = 'col-2 text-center'>" .
-            "     <button class = 'btn btn-info' onclick='editCreditCard(/*, TODO: $CCNumber, CCExpiry*/)'>Edit</button>" .
             "</div>";
     }
 

@@ -11,6 +11,10 @@ function connectDB() {
     return $conn;
 }
 
+function closeDB($conn) {
+    mysqli_close($conn);
+}
+
 
 //$conn = connectDB();
 //$username = "Landry_G52";
