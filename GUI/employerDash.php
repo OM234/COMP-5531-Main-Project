@@ -125,9 +125,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $tab = $_REQUEST['tab'];
     switch ($tab) {
         case "viewJobs":
-            echo "deleteJobId: " . $_POST['deleteJobID'] . "<br>";
-            // TODO: database delete operation
-//            header("Location: /GUI/employerDash.php?tab=viewJobs");
+            $jobID = $_REQUEST['jobID'];
+            $op = $_POST['op'];
+            echo "operation: $op<br>";
+            echo "jobID: $jobID<br>";
+            if (changeJobStatus($op, $jobID)) {
+                echo "operation success<br><br>";
+            } else {
+                echo "operation failed<br><br>";
+            }
+            echo "<br><br><a href='/GUI/employerDash.php?tab=viewJobs'>view jobs</a>";
             break;
         case "postJob":
             $data = array();
@@ -153,8 +160,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             echo "operation: " . $operation . "<br>";
             echo " application name: " . $appName;
             echo " jobID: " . $jobID;
-            changeApplicationStatus();  /* TODO: change application status */
-//            header("Location: /GUI/employerDash.php?tab=viewApplications");
+            if (changeApplicationStatus($appName, $jobID, $operation)) {
+                echo "operation success";
+            } else {
+                echo "operation failed";
+            }
+            echo "<br><br><a href='/GUI/employerDash.php?tab=viewApplications'>view applications</a>";
             break;
 
         case "changeAccBalance":
@@ -529,6 +540,60 @@ function insertJob($data) {
 }
 
 
+// chang the status of a job (open, close), or delete a job
+function changeJobStatus($op, $jobID) {
+    $conn = connectDB();
+    $sql = "";
+
+    if ($op === "open") {
+        $sql = "update job set JobStatus = 1 where JobID = $jobID";
+    }
+    else if ($op === "close") {
+        $sql = "update job set JobStatus = 0 where JobID = $jobID";
+    }
+    else if ($op === "delete") {
+        $sql = "delete from job where JobID = $jobID";
+    }
+
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+// change application status (review, accepted, denied, sent, hired)
+function changeApplicationStatus($appName, $jobID, $operation) {
+    $conn = connectDB();
+    $sql = "";
+
+    if ($operation === "deny") {
+        $sql = "update application set ApplicationStatus = 'denied'
+                where ApplicantUserName = '$appName' and JobID = $jobID";
+    }
+    else if ($operation === "review") {
+        $sql = "update application set ApplicationStatus = 'review'
+                where ApplicantUserName = '$appName' and JobID = $jobID";
+    }
+    else if ($operation === "sendOffer") {
+        $sql = "update application set ApplicationStatus = 'sent'
+                where ApplicantUserName = '$appName' and JobID = $jobID";
+    }
+    else if ($operation === "hire") {
+        $sql = "update application set ApplicationStatus = 'hired'
+                where ApplicantUserName = '$appName' and JobID = $jobID";
+    }
+    else if ($operation === "delete") {
+        $sql = "delete from application
+                where ApplicantUserName = '$appName' and JobID = $jobID";
+    }
+
+    if (mysqli_query($conn, $sql)) { return true; }
+    else { return false; }
+}
+
+
 /************************* End of data access *****************************************************/
 
 
@@ -584,16 +649,14 @@ function showPostedJobs($postedJobsData) {
             "       <p><b>Job Status: </b>" . $postedJobsData[$i]['jobStatus']. "</p>" .
             "    </div>" .
             "    <div class='col-2 justify-content-center text-center'>" .
-            "         <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
-            "              <label class='btn btn-success'>" .
-            "                   <input type='radio' name='options' id='openJob' autocomplete='off'> Open" .
-            "              </label>" .
-            "              <label class='btn btn-warning'>" .
-            "                   <input type='radio' name='options' id='closeJob' autocomplete='off'> Close" .
-            "              </label>" .
-            "         </div>" .
-            "    <form action='" . $_SERVER['PHP_SELF'] . "?tab=viewJobs' method='post' onsubmit='return deleteJob(" . $ID . ")'>" .
-            "       <button type='submit' name='deleteJobID' value='" . $ID . "' class='btn btn-danger'> Delete </button>" .
+            "    <form action='" . $_SERVER['PHP_SELF'] . "?tab=viewJobs&jobID=$ID' method='post'>" .
+            "       <button type='submit' name='op' value='open' class='btn btn-success'> Open </button>" .
+            "    </form>" .
+            "    <form action='" . $_SERVER['PHP_SELF'] . "?tab=viewJobs&jobID=$ID' method='post'>" .
+            "       <button type='submit' name='op' value='close' class='btn btn-warning'> Close </button>" .
+            "    </form>" .
+            "    <form action='" . $_SERVER['PHP_SELF'] . "?tab=viewJobs&jobID=$ID' method='post' onsubmit='return deleteJob(" . $ID . ")'>" .
+            "       <button type='submit' name='op' value='delete' class='btn btn-danger'> Delete </button>" .
             "    </form>" .
             "    </div>" .
             "</div>";
