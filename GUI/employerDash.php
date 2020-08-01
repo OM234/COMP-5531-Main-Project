@@ -21,10 +21,11 @@ $jobCategories = getJobCategoriesByUsername($username); // get job categories, T
 $_SESSION['jobcategories'] = $jobCategories;  // for cross file data transfer
 $paymentInfo = getPaymentInfo();  // payments
 $autoPay = getAutoOrManual($username);    // auto payment or maunal payment, true for auto.
+$autoPayString = $autoPay ? "auto": "manual";
 
 echo "username: $username &nbsp&nbsp&nbsp&nbsp";
 echo "category: $userCategory&nbsp&nbsp&nbsp&nbsp";
-echo "autoPayment: $autoPay&nbsp&nbsp&nbsp&nbsp";
+echo "autoPayment: $autoPayString&nbsp&nbsp&nbsp&nbsp";
 echo "accountStatus: $accountStatus&nbsp&nbsp&nbsp&nbsp";
 echo "<br>";
 
@@ -300,9 +301,10 @@ function getUserCategory($username) {
     return $result->fetch_assoc()['Category'];
 }
 
-// TODO: get user's payment method, auto or manual, return true for auto, false for manual.
+//  get user's payment method, auto or manual, return true for auto, false for manual.
 function getAutoOrManual($username) {
-    return getDefaultPayment()['autoManual'] == 1;
+    if (getDefaultPayment()['autoManual'] == 1) return true;
+    else return false;
 }
 
 // Get user's account status, true for active, false for freeze
@@ -1192,7 +1194,6 @@ function showCreditCardInfo(string $html, $data): string
 function showContactInfo() {
     $url = $_SERVER['PHP_SELF']."?tab=changeContactInfo";
 
-    /* TODO: populate form */
     $html =
         "<div class = 'row justify-content-center'>" .
         "  <div class = 'col-8'>" .
@@ -1308,6 +1309,7 @@ function getMonthlyPaymentRadioButtonsHTML(string $html): string
 function getBalanceHTML(float $balance): string
 {
     global $monthlyCharge;
+    global $autoPay;
 
     $html =
         "<div class = 'row justify-content-center'>" .
@@ -1330,7 +1332,7 @@ function getBalanceHTML(float $balance): string
             "<div class ='col-2'>";
     }
 
-    if($balance < 0  || true /*TODO: || payment method == monthly manual*/) {
+    if($balance < 0  || (!$autoPay)) {
 
         $html .=
             "          <form action='".$_SERVER['PHP_SELF']."?tab=makePayment' method='post' onsubmit='return confirmPayment()'>".
