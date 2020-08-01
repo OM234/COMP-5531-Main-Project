@@ -143,10 +143,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $data["category"] = $_POST['category'];
             $data["description"] = $_POST['description'];
             $data["numOpenings"] = $_POST['numOpenings'];
-            echo "title:" . $_POST['title'] . "<br>";
-            echo "category" . $_POST['category'] . "<br>";
-            echo "description" . $_POST['description'] . "<br>";
-            echo "numOpenings" . $_POST['numOpenings'] . "<br>";
+            echo "title: " . $_POST['title'] . "<br>";
+            echo "category: " . $_POST['category'] . "<br>";
+            echo "description: " . $_POST['description'] . "<br>";
+            echo "numOpenings: " . $_POST['numOpenings'] . "<br>";
             if (insertJob($data)) {
                 echo "Insert successfully";
             } else {

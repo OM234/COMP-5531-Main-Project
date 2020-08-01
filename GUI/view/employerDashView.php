@@ -114,8 +114,8 @@ session_start();
                             </select>
                             <div class="form-group d-none" id ="newCategoryTextArea">
                                 <label for="newCategory"><b>New Category</b></label>
-                                <input type="text"  class="form-control" placeholder="Enter new category" type="text"
-                                          id="newCategory" name="newCategory">
+                                <input type="text"  class="form-control" placeholder="Enter new category"
+                                          id="newCategory" name="category">
                             </div>
                         </div>
                         <div class="col-4 text-right">
