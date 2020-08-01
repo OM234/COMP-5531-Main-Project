@@ -195,8 +195,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             break;
 
         case "passwordChange":
+            $prevPass = $_POST['prevPass'];
+            $newPass = $_POST['newPass'];
             echo "previous Password: ". $_POST['prevPass'] . "<br>";
             echo "new Password: ". $_POST['newPass'] . "<br>";
+            if (changePassword($prevPass, $newPass)) echo "operation success<br>";
+            else echo "operation failed<br>";
+            echo "<a href='employerDash.php?tab=viewPasswordChange'>change password page</a>";
             break;
 
         case "addCreditCard":
@@ -740,6 +745,21 @@ function changeAutoManual($defaultPayment, $isAuto) {
     return false;
 }
 
+// change password
+function changePassword($prevPass, $newPass) {
+    global $username;
+    $conn = connectDB();
+    $result = mysqli_query($conn, "select Password from user where UserName = '$username'");
+    if ($result->fetch_assoc()['Password'] !== $prevPass) {
+        echo "<script>alert('previous password not correct')</script>";
+        return false;
+    } else {
+        $conn2 = connectDB();
+        $sql = "update user set Password = '$newPass' where UserName = '$username'";
+        if (mysqli_query($conn2, $sql)) return true;
+        return false;
+    }
+}
 
 
 
