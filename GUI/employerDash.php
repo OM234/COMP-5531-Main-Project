@@ -14,13 +14,13 @@ if (!isset($_SESSION['isLogin']) || $_SESSION['isLogin'] == false) {
 $username = $_SESSION['username'];      // currently logged in user
 $accountType = $_SESSION['accountType'];  // current user account type, (job seeker, employer, admin)
 $userCategory = getUserCategory($username);  // current user's category, gold, prime
-$autoPay = getAutoOrManual($username);    // auto payment or maunal payment, true for auto.
 $accountStatus = getAccountStatus($username);  // get account status, true(active), false(not active)
 $accountBalance = getAccountBalance($username);  // get account balance
 $monthlyCharge= getMonthlyCharge($userCategory);
 $jobCategories = getJobCategoriesByUsername($username); // get job categories, Technical ...
 $_SESSION['jobcategories'] = $jobCategories;  // for cross file data transfer
 $paymentInfo = getPaymentInfo();  // payments
+$autoPay = getAutoOrManual($username);    // auto payment or maunal payment, true for auto.
 
 echo "username: $username &nbsp&nbsp&nbsp&nbsp";
 echo "category: $userCategory&nbsp&nbsp&nbsp&nbsp";
@@ -171,9 +171,27 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             break;
 
         case "changeAccBalance":
-            if (isset($_POST['upgrade'])) echo "upgrade to: ". $_POST['upgrade'] . "<br>" ;
-            if (isset($_POST['downgrade'])) echo "downgrade to: ". $_POST['downgrade'] . "<br>" ;
-            if (isset($_POST['auto'])) echo "Change auto payment to auto? : ". $_POST['auto'] . "<br>" ;
+            if (isset($_POST['upgrade'])) {
+                echo "upgrade to: ". $_POST['upgrade'] . "<br>" ;
+                $category = $_POST['upgrade'];
+                if (changeUserCategory($category)) echo "operation success<br>";
+                else echo "operation failed<br>";
+            }
+            if (isset($_POST['downgrade'])) {
+                echo "downgrade to: ". $_POST['downgrade'] . "<br>" ;
+                $category = $_POST['downgrade'];
+                if (changeUserCategory($category)) echo "operation success<br>";
+                else echo "operation failed<br>";
+            }
+            if (isset($_POST['auto'])) {
+                echo "Change auto payment to auto? : ". $_POST['auto'] . "<br>";
+                $isAuto = $_POST['auto'];
+                $defaultPayment = getDefaultPayment();
+                if (changeAutoManual($defaultPayment, $isAuto)) echo "operation success<br>";
+                else echo "operation failed<br>";
+            }
+
+            echo "<br><br><a href='/GUI/employerDash.php?tab=viewAccBalance'>view account balance</a>";
             break;
 
         case "passwordChange":
@@ -251,8 +269,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             break;
 
         case "makePayment":
+            $amount = $_POST['amount'];
             echo "payment Amount: " .$_POST['amount'] ."<br>";
-            // TODO: add account balance, sql query.
+            if (makePayment($amount)) {
+                echo "operation success<br>";
+            } else {
+                echo "operation failed<br>";
+            }
+            echo "<a href='employerDash.php?tab=viewAccBalance'>view account balance</a>";
             break;
 
     }
@@ -273,7 +297,7 @@ function getUserCategory($username) {
 
 // TODO: get user's payment method, auto or manual, return true for auto, false for manual.
 function getAutoOrManual($username) {
-    return true;
+    return getDefaultPayment()['autoManual'] == 1;
 }
 
 // Get user's account status, true for active, false for freeze
@@ -512,6 +536,29 @@ function getPaymentInfo() {
     return [$creditCardInfo, $debitCardInfo];
 }
 
+// get default payment info
+function getDefaultPayment() {
+    global $paymentInfo;
+    $creditInfo = $paymentInfo[0];
+    $debitInfo = $paymentInfo[1];
+
+    for ($i = 0; $i < count($creditInfo); $i++) {
+        if ($creditInfo[$i]['isDefault']) {
+            $ccNumber = $creditInfo[$i]['CCNumber'];
+            $ccExpiry = $creditInfo[$i]['CCExpiry'];
+            $isAuto = $creditInfo[$i]['autoManual'];
+            return array("type"=>"credit", "ccNumber"=>$ccNumber, "ccExpiry"=>$ccExpiry, "autoManual"=>$isAuto);
+        }
+    }
+    for ($i = 0; $i < count($debitInfo); $i++) {
+        if ($debitInfo[$i]['isDefault']) {
+            $accountNumber = $debitInfo[$i]['accountNumber'];
+            $isAuto = $debitInfo[$i]['autoManual'];
+            return array("type"=>"debit", "accountNumber"=>$accountNumber, "autoManual"=>$isAuto);
+        }
+    }
+}
+
 // get credit card info
 function getCreditCardInfo($username) {
     $creditCardInfo = array();
@@ -660,6 +707,42 @@ function changeContactInfo($username, $employerName, $firstName, $lastName, $ema
     else { return false; }
 }
 
+// change employer's category
+function changeUserCategory($category) {
+    global $username;
+    $conn = connectDB();
+    $sql = "update employer set Category = '$category' where UserName = '$username'";
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+    return false;
+}
+
+// change auto
+function changeAutoManual($defaultPayment, $isAuto) {
+    global $username;
+    $b = $isAuto==='true' ? 1 : 0;
+    $conn = connectDB();
+    $sql = "";
+    $s = $defaultPayment['type'];
+    if ($s === 'credit') {
+        $ccNumber = $defaultPayment['ccNumber'];
+        $ccExpiry = $defaultPayment['ccExpiry'];
+        $sql = "update creditcardinfo set Auto_Manual = $b 
+                where CCNumber = '$ccNumber' and ExpireDate = '$ccExpiry'";
+    }
+    else if ($s === 'debit') {
+        $accountNumber = $defaultPayment['accountNumber'];
+        $sql = "update padinfo set Auto_Manual = $b
+                where AccountNumber = '$accountNumber'";
+    }
+    if (mysqli_query($conn, $sql)) return true;
+    return false;
+}
+
+
+
+
 // update employer name given username
 function updateEmployerName($username, $employerName) {
     $conn = connectDB();
@@ -802,7 +885,15 @@ function setUndefault() {
             if (!mysqli_query($conn, $sql)) echo "error in setUndefault";
         }
     }
+}
 
+// make payment
+function makePayment($amount) {
+    global $username;
+    $conn = connectDB();
+    $sql = "update employer set Balance = Balance+$amount where UserName = '$username'";
+    if (mysqli_query($conn, $sql)) return true;
+    return false;
 }
 
 
@@ -1176,14 +1267,6 @@ function getMonthlyPaymentRadioButtonsHTML(string $html): string
         "<div class = 'row justify-content-center'>" .
         "     <div class = 'col-8'>" .
         "          <div><b>Payment Method : $paymentMethod</b></div>" .
-        "          <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
-        "               <label class='btn btn-info'>" .
-        "                    <input type='radio' name='options' id='autoPayMonth' autocomplete='off' $isAuto> Auto Monthly" .
-        "               </label>" .
-        "               <label class='btn btn-info'>" .
-        "                    <input type='radio' name='options' id='manualPayMonth' autocomplete='off' $isManual> Manual Monthly" .
-        "               </label>" .
-        "          </div>" .
         "     </div>" .
         "</div>" .
         "<div class='row justify-content-center mt-3'>".
