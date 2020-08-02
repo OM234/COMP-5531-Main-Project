@@ -1095,17 +1095,6 @@ function showDebitCardInfo(string $html, $data): string
         "     <p><b>Branch Number: </b>$branchNumber</p>".
         "</div>";
 
-//    $html .=
-//        "              <div class='form-group'>" .
-//        "                  <label for='baNumber'><b>Account number</b></label> " .
-//        "                  <input type='text' class='form-control' placeholder='Enter account number' id='baNumber' name='baNumber' value=''>" .
-//        "              </div>" .
-//        "              <div class='form-group'>" .
-//        "                   <label for='transitNumber'><b>Transit Number</b></label>" .
-//        "                   <input type='text' class='form-control' placeholder='Enter transit number' id='transitNumber' name='transitNumber' value=''>" .
-//        "              </div>" .
-//        "   </div>";
-
     if($isDefault == false) {
 
         $html .=
@@ -1153,21 +1142,6 @@ function showCreditCardInfo(string $html, $data): string
         "     <p><b>Expiry Date: </b>$CCExpiry</p>".
         "     <p><b>CCB Number: </b>$CCBNumber</p>".
         "</div>";
-
-//    $html .=
-//        "              <div class='form-group'>" .
-//        "                  <label for='ccName'><b>Name</b></label>" .
-//        "                  <input type='text' class='form-control' placeholder='Enter name' id='ccName' name='ccName' value=''>" .
-//        "              </div>" .
-//        "              <div class='form-group'>" .
-//        "                   <label for='ccNumber'><b>Credit card number</b></label>" .
-//        "                   <input type='text' class='form-control' placeholder='Enter card number' id='ccNumber' name='ccNumber' value=''>" .
-//        "              </div>" .
-//        "              <div class='form-group'>" .
-//        "                   <label for='ccExpiration'><b>Expiration(MMYYYY)</b></label>" .
-//        "                   <input type='text' class='form-control' placeholder='Enter expiration' id='ccExpiration' name='ccExpiration'value=''>" .
-//        "              </div>" .
-//        "</div>";
 
     if ($isDefault == false) {
 

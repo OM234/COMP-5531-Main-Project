@@ -17,13 +17,14 @@ $accountStatus = getAccountStatus($username);  // get account status, true(activ
 $accountBalance = getAccountBalance($username);  // get account balance
 $monthlyCharge= getMonthlyCharge($userCategory);
 //$paymentInfo = getPaymentInfo();  // payments
+$paymentInfo = getPaymentInfo();
 $autoPay = getAutoOrManual($username);    // auto payment or maunal payment, true for auto.
 $autoPayString = $autoPay ? "auto": "manual";
 
 echo "username: $username &nbsp&nbsp&nbsp&nbsp";
 echo "accountType: $accountType &nbsp&nbsp&nbsp&nbsp";
 echo "category: $userCategory&nbsp&nbsp&nbsp&nbsp";
-echo "autoPayment: $autoPay&nbsp&nbsp&nbsp&nbsp";
+echo "autoPayment: $autoPayString&nbsp&nbsp&nbsp&nbsp";
 echo "accountStatus: $accountStatus&nbsp&nbsp&nbsp&nbsp";
 echo "<br>";
 /************** End of data models ************************************************************************/
@@ -75,8 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
                 showContactInfo();
                 break;
             case "viewPaymentInfo":
-                $paymentInfo = getPaymentInfo();  // get payment info data
-                showPaymentInfo();  // show payment info
+                showPaymentInfo($paymentInfo);  // show payment info
                 break;
             case "viewAccBalance":
                 showAccBalance();
@@ -107,6 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             else echo "operation failed<br>";
             echo "<a href='seekerDash.php?tab=viewApplications'>view applications</a>";
             break;
+
         case "withdrawapp":
             $jobID = $_POST['withdrawJobID'];
             echo "withdraw application ID: ". $_POST['withdrawJobID'] . "<br>";
@@ -115,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             else echo "operation failed<br>";
             echo "<a href='seekerDash.php?tab=viewApplications'>view applications</a>";
             break;
+
         case "acceptoffer":
             $jobID = $_POST['acceptJobID'];
             echo "accept offer application ID: ". $_POST['acceptJobID'] . "<br>";
@@ -122,6 +124,123 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if (acceptApplication($jobID, $username)) echo "operation success<br>";
             else echo "operation failed<br>";
             echo "<a href='seekerDash.php?tab=viewApplications'>view applications</a>";
+            break;
+
+        case "changeContactInfo":
+            $firstName = $_POST['firstName'];
+            $lastName = $_POST['lastName'];
+            $email = $_POST['email'];
+            $number = $_POST['number'];
+            echo "firstName: " .$firstName . "<br>";
+            echo "lastName: " .$lastName . "<br>";
+            echo "email: " .$email . "<br>";
+            echo "number: " .$number . "<br>";
+            if (changeContactInfo($username, $firstName, $lastName, $email, $number)) {
+                echo "operation success. <br>";
+            } else {
+                echo "operation failed. <br>";
+            }
+            echo "<a href='seekerDash.php?tab=viewContactInfo'>view contact info</a>";
+            break;
+
+        case "addCreditCard":
+            $ccNumber = $_POST['ccNumber'];
+            $ccbNumber = $_POST['ccbNumber'];
+            $ccExpiration = $_POST['ccExpiration'];
+            echo "ccNumber: " .$_POST['ccNumber'] . "<br>";
+            echo "ccbNumber: " .$_POST['ccbNumber'] . "<br>";
+            echo "ccExpiration: " . $ccExpiration . "<br>";
+            if (insertCreditCard($username, $ccNumber, $ccbNumber, $ccExpiration)) {
+                echo "operation success<br>";
+            } else {echo "operation failed";}
+            echo "<a href='seekerDash.php?tab=viewPaymentInfo'>view payment info</a>";
+            break;
+
+        case "addDebitCard":
+            $baNumber = $_POST['baNumber'];
+            $instituteNumber = $_POST['instituteNumber'];
+            $branchNumber = $_POST['branchNumber'];
+            echo "baNumber: " .$_POST['baNumber'] . "<br>";
+            echo "instituteNumber: " .$_POST['instituteNumber'] . "<br>";
+            echo "branchNumber: " .$_POST['branchNumber'] . "<br>";
+            if (insertDebitCard($username, $baNumber, $instituteNumber, $branchNumber)) {
+                echo "operation success<br>";
+            } else { echo "operation failed"; }
+            echo "<a href='seekerDash.php?tab=viewPaymentInfo'>view payment info</a>";
+            break;
+
+        case "changeDebitStatus":
+            $op = $_POST['op'];
+            $accountNumber = $_REQUEST['accountNumber'];
+            echo "account number: " .$_REQUEST['accountNumber'] . "<br>";
+            echo "operation: " . $_POST['op'] . "<br>";
+            if (changeDebitStatus($username, $op, $accountNumber)) {
+                echo "operation success<br>";
+            } else { echo "operation failed"; }
+            echo "<a href='seekerDash.php?tab=viewPaymentInfo'>view payment info</a>";
+            break;
+
+        case "changeCreditStatus":
+            $op = $_POST['op'];
+            $ccNumber = $_REQUEST['ccNumber'];
+            $ccExpiry = $_REQUEST['ccExpiry'];
+            echo "credit card number: " . $_REQUEST['ccNumber'] . "<br>";
+            echo "credit card expiration date: " . $_REQUEST['ccExpiry'] . "<br>";
+            echo "operation: " . $_POST['op'] . "<br>";
+            if (changeCreditStatus($username, $op, $ccNumber, $ccExpiry)) {
+                echo "operation success<br>";
+            } else { echo "operation failed"; }
+            echo "<a href='seekerDash.php?tab=viewPaymentInfo'>view payment info</a>";
+            break;
+
+        case "makePayment":
+            $amount = $_POST['amount'];
+            echo "payment Amount: " .$_POST['amount'] ."<br>";
+            if (makePayment($amount)) {
+                echo "operation success<br>";
+            } else {
+                echo "operation failed<br>";
+            }
+            echo "<a href='seekerDash.php?tab=viewAccBalance'>view account balance</a>";
+            break;
+
+        case "changeAccBalance":
+            if (isset($_POST['upgrade'])) {
+                echo "upgrade to: ". $_POST['upgrade'] . "<br>" ;
+                $category = $_POST['upgrade'];
+                if (changeUserCategory($category)) echo "operation success<br>";
+                else echo "operation failed<br>";
+            }
+            if (isset($_POST['downgrade'])) {
+                echo "downgrade to: ". $_POST['downgrade'] . "<br>" ;
+                $category = $_POST['downgrade'];
+                if (changeUserCategory($category)) echo "operation success<br>";
+                else echo "operation failed<br>";
+            }
+            if (isset($_POST['basic'])) {
+                echo "downgrade to: " . $_POST['basic'] . "<br>";
+                $category = $_POST['basic'];
+                if (changeUserCategory($category)) echo "operation success<br>";
+                else echo "operation failed<br>";
+            }
+            if (isset($_POST['auto'])) {
+                echo "Change auto payment to auto? : ". $_POST['auto'] . "<br>";
+                $isAuto = $_POST['auto'];
+                $defaultPayment = getDefaultPayment();
+                if (changeAutoManual($defaultPayment, $isAuto)) echo "operation success<br>";
+                else echo "operation failed<br>";
+            }
+            echo "<br><br><a href='/GUI/seekerDash.php?tab=viewAccBalance'>view account balance</a>";
+            break;
+
+        case "passwordChange":
+            $prevPass = $_POST['prevPass'];
+            $newPass = $_POST['newPass'];
+            echo "previous Password: ". $_POST['prevPass'] . "<br>";
+            echo "new Password: ". $_POST['newPass'] . "<br>";
+            if (changePassword($prevPass, $newPass)) echo "operation success<br>";
+            else echo "operation failed<br>";
+            echo "<a href='seekerDash.php?tab=viewPasswordChange'>change password page</a>";
             break;
     }
 }
@@ -139,9 +258,10 @@ function getUserCategory($username) {
     return $result->fetch_assoc()['Category'];
 }
 
-// TODO: get user's payment method, auto or manual, return true for auto, false for manual.
+//  get user's payment method, auto or manual, return true for auto, false for manual.
 function getAutoOrManual($username) {
-    return true;
+    if (getDefaultPayment()['autoManual'] == 1) return true;
+    else return false;
 }
 
 // Get user's account status, true for active, false for freeze
@@ -153,7 +273,7 @@ function getAccountStatus($username) {
 // Get user's account balance
 function getAccountBalance($username) {
     $conn = connectDB();
-    $sql = "select Balance from employer where UserName = '$username'";
+    $sql = "select Balance from applicant where UserName = '$username'";
     $result = $conn->query($sql);
     return $result->fetch_assoc()['Balance'];
 }
@@ -295,6 +415,258 @@ function applyJob($jobID, $username) {
 }
 
 
+function changeContactInfo($username, $firstName, $lastName, $email, $number) {
+    $conn = connectDB();
+    $sql = "update user set FirstName = '$firstName', LastName = '$lastName', Email = '$email', ContactNumber = '$number'
+            where UserName = '$username'";
+    if (mysqli_query($conn, $sql)) return true;
+    return false;
+}
+
+function getPaymentInfo() {
+    global $username;
+    $creditCardInfo = getCreditCardInfo($username);
+    $debitCardInfo = getDebitCardInfo($username);
+    return [$creditCardInfo, $debitCardInfo];
+}
+
+// get credit card info
+function getCreditCardInfo($username) {
+    $creditCardInfo = array();
+
+    $conn = connectDB();
+    $sql = "select *
+            from
+            (select UserName, CCNumber
+            from applicant, applicantcc
+            where applicant.UserName = applicantcc.ApplicantUserName) as T natural join creditcardinfo
+            where UserName = '$username'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $cci = array("CCNumber"=>$row["CCNumber"], "CCExpiry"=>$row["ExpireDate"], "CCBNumber"=>$row["CCBNumber"],
+                "isDefault"=>$row["IsDefault"], "autoManual"=>$row["Auto_Manual"]);
+            array_push($creditCardInfo, $cci);
+        }
+    }
+    return $creditCardInfo;
+}
+
+// get debit card info
+function getDebitCardInfo($username) {
+    $debitCardInfo = array();
+
+    $conn = connectDB();
+    $sql = "select * from
+            (select UserName, AccountNumber
+                from applicant, applicantpad
+                where applicant.UserName = applicantpad.ApplicantUserName) as T natural join padinfo
+            where UserName = '$username'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $dci = array("accountNumber"=>$row["AccountNumber"], "instituteNumber"=>$row["InstituteNumber"],
+                "branchNumber"=>$row["BranchNumber"], "isDefault"=>$row["IsDefault"], "autoManual"=>$row["Auto_Manual"]);
+            array_push($debitCardInfo, $dci);
+        }
+    }
+    return $debitCardInfo;
+}
+
+// get default payment info
+function getDefaultPayment() {
+    global $paymentInfo;
+    $creditInfo = $paymentInfo[0];
+    $debitInfo = $paymentInfo[1];
+
+    for ($i = 0; $i < count($creditInfo); $i++) {
+        if ($creditInfo[$i]['isDefault']) {
+            $ccNumber = $creditInfo[$i]['CCNumber'];
+            $ccExpiry = $creditInfo[$i]['CCExpiry'];
+            $isAuto = $creditInfo[$i]['autoManual'];
+            return array("type"=>"credit", "ccNumber"=>$ccNumber, "ccExpiry"=>$ccExpiry, "autoManual"=>$isAuto);
+        }
+    }
+    for ($i = 0; $i < count($debitInfo); $i++) {
+        if ($debitInfo[$i]['isDefault']) {
+            $accountNumber = $debitInfo[$i]['accountNumber'];
+            $isAuto = $debitInfo[$i]['autoManual'];
+            return array("type"=>"debit", "accountNumber"=>$accountNumber, "autoManual"=>$isAuto);
+        }
+    }
+}
+
+function insertCreditCard($username, $ccNumber, $ccbNumber, $ccExpiration) {
+    $month = substr($ccExpiration, 0, 2);
+    $year = substr($ccExpiration, 2, 4);
+    $expDate = $year . "-" . $month . "-1";
+
+    $flag = false;
+    $conn = connectDB();
+    $sql = "insert into creditcardinfo (CCNumber, ExpireDate, CCBNumber, IsDefault, Auto_Manual)
+            VALUES ($ccNumber, '$expDate', $ccbNumber, 0, 0)";
+    if (mysqli_query($conn, $sql)) {
+        $flag = true;
+    }
+
+    if ($flag) {
+        if (insertApplicantCC($ccNumber, $username)) return true;
+    }
+    return false;
+}
+
+function insertApplicantCC($ccNumber, $username) {
+    $conn = connectDB();
+    $sql = "insert into applicantcc (ApplicantUserName, CCNumber) values ('$username', '$ccNumber')";
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+    return false;
+}
+
+// insert debit card info
+function insertDebitCard($username, $baNumber, $instituteNumber, $branchNumber) {
+    $conn = connectDB();
+    $flag = false;
+    $sql = "insert into padinfo (AccountNumber, InstituteNumber, BranchNumber, IsDefault, Auto_Manual) 
+            values ('$baNumber', '$instituteNumber', '$branchNumber', 0, 0)";
+    if (mysqli_query($conn, $sql)) {
+        $flag = true;
+    }
+
+    if ($flag) {
+        if (insertApplicantPad($username, $baNumber)) return true;
+    }
+    return false;
+}
+
+// insert into employerpad table
+function insertApplicantPad($username, $baNumber) {
+    $conn = connectDB();
+    $sql = "insert into applicantpad (ApplicantUserName, AccountNumber) values ('$username', '$baNumber')";
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+    return false;
+}
+
+function changeDebitStatus($username, $op, $accountNumber) {
+    if ($op === 'delete') {
+        $conn = connectDB();
+        $sql = "delete from applicantpad where ApplicantUserName = '$username' and AccountNumber = '$accountNumber'";
+        if (mysqli_query($conn, $sql)) {
+            $conn2 = connectDB();
+            $sql2 = "delete from padinfo where AccountNumber = '$accountNumber'";
+            if (mysqli_query($conn2, $sql2)) return true;
+        }
+    }
+    else if ($op === 'setDefault') {
+        setUndefault();
+        $conn = connectDB();
+        $sql = "update padinfo set IsDefault = 1 where AccountNumber = '$accountNumber'";
+        if (mysqli_query($conn, $sql)) return true;
+    }
+    return false;
+}
+
+// change credit card status
+function changeCreditStatus($username, $op, $ccNumber, $ccExpiry) {
+    if ($op === 'delete') {
+        $conn = connectDB();
+        $sql = "delete from applicantcc where ApplicantUserName = '$username' and CCNumber = '$ccNumber'";
+        if (mysqli_query($conn, $sql)) {
+            $conn2 = connectDB();
+            $sql2 = "delete from creditcardinfo where CCNumber = '$ccNumber' and ExpireDate = '$ccExpiry'";
+            if (mysqli_query($conn2, $sql2)) return true;
+        }
+    }
+    else if ($op === 'setDefault') {
+        setUndefault();
+        $conn = connectDB();
+        $sql = "update creditcardinfo set IsDefault = 1 where CCNumber = '$ccNumber' and ExpireDate = '$ccExpiry'";
+        if (mysqli_query($conn, $sql)) return true;
+    }
+    return false;
+}
+
+// Change current default to undefault
+function setUndefault() {
+    global $username;
+    global $paymentInfo;
+    $creditInfo = $paymentInfo[0];
+    $debitInfo = $paymentInfo[1];
+
+    for ($i = 0; $i < count($creditInfo); $i++) {
+        if ($creditInfo[$i]['isDefault']) {
+            $ccNumber = $creditInfo[$i]['CCNumber'];
+            $ccExpiry = $creditInfo[$i]['CCExpiry'];
+            $conn = connectDB();
+            $sql = "update creditcardinfo set IsDefault = 0 where CCNumber = '$ccNumber' and ExpireDate = '$ccExpiry'";
+            if (!mysqli_query($conn, $sql)) echo "error in setUndefault";
+        }
+    }
+    for ($i = 0; $i < count($debitInfo); $i++) {
+        if ($debitInfo[$i]['isDefault']) {
+            $accountNumber = $debitInfo[$i]['accountNumber'];
+            $conn = connectDB();
+            $sql = "update padinfo set IsDefault = 0 where AccountNumber = '$accountNumber'";
+            if (!mysqli_query($conn, $sql)) echo "error in setUndefault";
+        }
+    }
+}
+
+function makePayment($amount) {
+    global $username;
+    $conn = connectDB();
+    $sql = "update applicant set Balance = Balance+$amount where UserName = '$username'";
+    if (mysqli_query($conn, $sql)) return true;
+    return false;
+}
+
+function changeUserCategory($category) {
+    global $username;
+    $conn = connectDB();
+    $sql = "update applicant set Category = '$category' where UserName = '$username'";
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+    return false;
+}
+
+function changeAutoManual($defaultPayment, $isAuto) {
+    $b = $isAuto==='true' ? 1 : 0;
+    $conn = connectDB();
+    $sql = "";
+    $s = $defaultPayment['type'];
+    if ($s === 'credit') {
+        $ccNumber = $defaultPayment['ccNumber'];
+        $ccExpiry = $defaultPayment['ccExpiry'];
+        $sql = "update creditcardinfo set Auto_Manual = $b 
+                where CCNumber = '$ccNumber' and ExpireDate = '$ccExpiry'";
+    }
+    else if ($s === 'debit') {
+        $accountNumber = $defaultPayment['accountNumber'];
+        $sql = "update padinfo set Auto_Manual = $b
+                where AccountNumber = '$accountNumber'";
+    }
+    if (mysqli_query($conn, $sql)) return true;
+    return false;
+}
+
+function changePassword($prevPass, $newPass) {
+    global $username;
+    $conn = connectDB();
+    $result = mysqli_query($conn, "select Password from user where UserName = '$username'");
+    if ($result->fetch_assoc()['Password'] !== $prevPass) {
+        echo "<script>alert('previous password not correct')</script>";
+        return false;
+    } else {
+        $conn2 = connectDB();
+        $sql = "update user set Password = '$newPass' where UserName = '$username'";
+        if (mysqli_query($conn2, $sql)) return true;
+        return false;
+    }
+}
 
 /************************* End of data access *****************************************************/
 
@@ -409,37 +781,41 @@ function viewEmpContInfo($data) {
     echo "<script>document.getElementById('viewJobs').innerHTML = \"". $html ."\"</script>";
 }
 
-function showPaymentInfo() {
+function showPaymentInfo($paymentInfo) {
+
+    $creditCardInfo = $paymentInfo[0];
+    $debitCardInfo = $paymentInfo[1];
 
     $html =
         "<div class = 'row justify-content-center align-items-center'>".
         "     <div class = 'col-8 text-center'>".
-        "          <button class = 'btn btn-success' onclick='editCreditCard(/* null */)'>Add Credit Card</button>" .
-        "          <button class = 'btn btn-success' onclick='editDebitCard(/*null*/)'>Add Bank Card</button>" .
+        "          <button class = 'btn btn-success' onclick='editCreditCardSeeker()'>Add Credit Card</button>" .
+        "          <button class = 'btn btn-success' onclick='editDebitCardSeeker()'>Add Bank Card</button>" .
         "     </div>".
         "</div>";
 
 
-    for($i = 0; $i < 5 /*TODO: count of payment methods*/; $i++) {
+    for($i = 0; $i < count($creditCardInfo); $i++) {
 
-        if(/*TODO: if credit card*/ $i<4) {
+        $html = showCreditCardInfo($html, $creditCardInfo[$i]);
 
-            $html = showCreditCardInfo($html/*, TODO: $CCNumber, CCExpiry*/);
+    }
 
-        } else {
+    for ($i = 0; $i < count($debitCardInfo); $i++) {
 
-            $html = showDebitCardInfo($html /*, TODO: $bankAccountNumber*/);
-        }
+        $html = showDebitCardInfo($html, $debitCardInfo[$i]);
+
     }
 
     echo "<script>document.getElementById('accountSettings').innerHTML = \"". $html ."\"</script>";
 }
 
-function showDebitCardInfo(string $html/*, TODO: $bankAccountNumber*/): string
+function showDebitCardInfo(string $html, $data): string
 {
-    $isDefault = /*TODO: getDefaultPaymentMethod()*/ true;
-    $bankAccountNumber = -1;
-    $bankTransitNumber = -1;
+    $isDefault = $data["isDefault"];
+    $accountNumber = $data["accountNumber"];
+    $instituteNumber = $data["instituteNumber"];
+    $branchNumber = $data["branchNumber"];
 
     $html .=
         "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>";
@@ -454,34 +830,24 @@ function showDebitCardInfo(string $html/*, TODO: $bankAccountNumber*/): string
             "<div class = 'col-8 border rounded'>";
     }
     $html .=
-        "     <p><b>Bank Account Number: </b>$bankAccountNumber</p>".
-        "     <p><b>Bank Transit Number: </b>$bankTransitNumber</p>".
+        "     <p><b>Bank Account Number: </b>$accountNumber</p>".
+        "     <p><b>Institute Number: </b>$instituteNumber</p>".
+        "     <p><b>Branch Number: </b>$branchNumber</p>".
         "</div>";
-
-//    $html .=
-//        "              <div class='form-group'>" .
-//        "                  <label for='baNumber'><b>Account number</b></label> " .
-//        "                  <input type='text' class='form-control' placeholder='Enter account number' id='baNumber' name='baNumber' value=''>" .
-//        "              </div>" .
-//        "              <div class='form-group'>" .
-//        "                   <label for='transitNumber'><b>Transit Number</b></label>" .
-//        "                   <input type='text' class='form-control' placeholder='Enter transit number' id='transitNumber' name='transitNumber' value=''>" .
-//        "              </div>" .
-//        "   </div>";
 
     if($isDefault == false) {
 
         $html .=
             "<div class = 'col-2 text-center'>" .
-            "     <button class = 'btn btn-primary'>Set Default</button>" .
-            "      <button class = 'btn btn-info' onclick='editDebitCard(/*TODO: $bankAccountNumber*/)'>Edit</button>" .
-            "      <button class = 'btn btn-danger'>Delete</button>" .
+            "   <form action='".$_SERVER['PHP_SELF']."?tab=changeDebitStatus&accountNumber=$accountNumber' method='post'>".
+            "     <button type=submit name='op' value='setDefault' class = 'btn btn-primary'>Set Default</button>" .
+            "     <button type=submit name='op' value='delete' class = 'btn btn-danger'>Delete</button>" .
+            "   </form>".
             "</div>";
     } else {
 
         $html .=
             "<div class = 'col-2 text-center'>" .
-            "     <button class = 'btn btn-info' onclick='editDebitCard(/*TODO: $bankAccountNumber*/)'>Edit</button>" .
             "</div>";
     }
 
@@ -491,13 +857,12 @@ function showDebitCardInfo(string $html/*, TODO: $bankAccountNumber*/): string
     return $html;
 }
 
-function showCreditCardInfo(string $html/*, TODO: $CCNumber, CCExpiry*/): string
+function showCreditCardInfo(string $html, $data): string
 {
-    $isDefault = /*TODO: getDefaultPaymentMethod()*/ false;
-    $CCName = "To do";
-    $CCNumber = -1;
-    $CCExpiry = -1;
-    $CVVCode = -1; //3-digit code
+    $isDefault = $data["isDefault"];
+    $CCNumber = $data["CCNumber"];
+    $CCExpiry = $data["CCExpiry"];
+    $CCBNumber = $data["CCBNumber"];
 
     $html .=
         "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>";
@@ -513,40 +878,24 @@ function showCreditCardInfo(string $html/*, TODO: $CCNumber, CCExpiry*/): string
     }
 
     $html .=
-        "     <p><b>Name on Card: </b>$CCName</p>".
         "     <p><b>Credit Card Number: </b>$CCNumber</p>".
-        "     <p><b>CVV: </b>$CVVCode</p>".
         "     <p><b>Expiry Date: </b>$CCExpiry</p>".
+        "     <p><b>CCB Number: </b>$CCBNumber</p>".
         "</div>";
-
-//    $html .=
-//        "              <div class='form-group'>" .
-//        "                  <label for='ccName'><b>Name</b></label>" .
-//        "                  <input type='text' class='form-control' placeholder='Enter name' id='ccName' name='ccName' value=''>" .
-//        "              </div>" .
-//        "              <div class='form-group'>" .
-//        "                   <label for='ccNumber'><b>Credit card number</b></label>" .
-//        "                   <input type='text' class='form-control' placeholder='Enter card number' id='ccNumber' name='ccNumber' value=''>" .
-//        "              </div>" .
-//        "              <div class='form-group'>" .
-//        "                   <label for='ccExpiration'><b>Expiration(MMYYYY)</b></label>" .
-//        "                   <input type='text' class='form-control' placeholder='Enter expiration' id='ccExpiration' name='ccExpiration'value=''>" .
-//        "              </div>" .
-//        "</div>";
 
     if ($isDefault == false) {
 
         $html .=
             "   <div class = 'col-2 text-center'>" .
-            "       <button class = 'btn btn-primary'>Set Default</button>" .
-            "       <button class = 'btn btn-info' onclick='editCreditCard(/*, TODO: $CCNumber, CCExpiry*/)'>Edit</button>" .
-            "       <button class = 'btn btn-danger'>Delete</button>" .
+            "   <form action='".$_SERVER['PHP_SELF']."?tab=changeCreditStatus&ccNumber=$CCNumber&ccExpiry=$CCExpiry' method='post'>".
+            "       <button type='submit' name='op' value='setDefault' class = 'btn btn-primary'>Set Default</button>" .
+            "       <button type='submit' name='op' value='delete' class = 'btn btn-danger'>Delete</button>" .
+            "   </form>".
             "   </div>";
     } else {
 
         $html .=
             "<div class = 'col-2 text-center'>" .
-            "     <button class = 'btn btn-info' onclick='editCreditCard(/*, TODO: $CCNumber, CCExpiry*/)'>Edit</button>" .
             "</div>";
     }
 
@@ -557,27 +906,27 @@ function showCreditCardInfo(string $html/*, TODO: $CCNumber, CCExpiry*/): string
 }
 
 function showContactInfo() {
+    $url = $_SERVER['PHP_SELF']."?tab=changeContactInfo";
 
-    /* TODO: populate form */
     $html =
         "<div class = 'row justify-content-center'>" .
         "  <div class = 'col-8'>" .
-        "           <form>" .
+        "           <form action='$url' method='post'>" .
         "              <div class='form-group'>" .
-        "                  <label for='eName'><b>First Name</b></label>" .
-        "                  <input type='text' class='form-control' id='firstName' placeholder='Enter first name' required>" .
+        "                  <label for='firstName'><b>First Name</b></label>" .
+        "                  <input type='text' class='form-control' id='firstName' name='firstName' placeholder='Enter first name' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
-        "                  <label for='name'><b>Last Name</b></label>" .
-        "                  <input type='text' class='form-control' id='lastName' placeholder='Enter last name' required>" .
+        "                  <label for='lastName'><b>Last Name</b></label>" .
+        "                  <input type='text' class='form-control' id='lastName' name='lastName' placeholder='Enter last name' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                  <label for='email'><b>Email</b></label>" .
-        "                  <input type='email' class='form-control' id='email' placeholder='Enter email' required>" .
+        "                  <input type='email' class='form-control' id='email' name='email' placeholder='Enter email' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                  <label for='number'><b>Number</b></label>" .
-        "                  <input type='text' class='form-control' id='number' placeholder='Enter phone number' required>" .
+        "                  <input type='text' class='form-control' id='number' name='number' placeholder='Enter phone number' required>" .
         "              </div>" .
         "              <input class='btn btn-primary' type='submit' value='Submit'>".
         "           </form>" .
@@ -589,12 +938,11 @@ function showContactInfo() {
 }
 
 function showAccBalance() {
+    global $accountBalance;
 
-    $balance = 5; /*TODO: get balance*/
+    $html = getBalanceHTML($accountBalance);
 
-    $html = getBalanceHTML($balance);
-
-    if(/*TODO: not a basic seeker */ false) {
+    if(true) {
         $html = getMonthlyPaymentRadioButtonsHTML($html);
     }
     $html = getSeekerCategoryHTML($html);
@@ -608,6 +956,7 @@ function showAccBalance() {
  */
 function getSeekerCategoryHTML(string $html): string
 {
+    global $userCategory;
     $toolTipSeekerBasic = "You can only view jobs but cannot apply. No charge";
     $toolTipSeekerPrime = "You can view jobs as well as apply for up to five jobs. A monthly charge of $10 will be applied. ";
     $toolTipSeekerGold = "You can view and apply to as many jobs as you want. A monthly charge of $20 will be applied.";
@@ -615,7 +964,7 @@ function getSeekerCategoryHTML(string $html): string
     $html .=
         "<div class = 'row justify-content-center'>" .
         "     <div class = 'col-8'>" .
-        "          <div><b>Job Seeker Category</b></div>" .
+        "          <div><b>Job Seeker Category: $userCategory</b></div>" .
         "          <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
         "               <label class='btn btn-secondary' data-toggle='tooltip' data-placement='top' title='$toolTipSeekerBasic'>" .
         "                    <input type='radio' name='options' id='seekerBasic' autocomplete='off'> Job Seeker Basic" .
@@ -628,7 +977,17 @@ function getSeekerCategoryHTML(string $html): string
         "               </label>" .
         "          </div>" .
         "     </div>" .
+        "</div>".
+        "<div class = 'row justify-content-center mt-3'>".
+        "    <div class='col-8'>".
+        "       <form action='".$_SERVER['PHP_SELF']."?tab=changeAccBalance' method='post'>".
+        "          <button type='submit' class='btn-primary' name='downgrade' value='prime'>Upgrade/Downgrade to Prime</button>".
+        "          <button type='submit' class='btn-primary' name='upgrade' value='gold'>Upgrade to Gold</button>".
+        "          <button type='submit' class='btn-primary' name='basic' value='basic'>Downgrad to Basic</button>".
+        "       </form>".
+        "    </div>".
         "</div>";
+
 
     return $html;
 }
@@ -639,19 +998,21 @@ function getSeekerCategoryHTML(string $html): string
  */
 function getMonthlyPaymentRadioButtonsHTML(string $html): string
 {
+    global $autoPay;
+    $paymentMethod = $autoPay ? "Auto" : "Manual";
     $html .=
         "<div class = 'row justify-content-center'>" .
         "     <div class = 'col-8'>" .
-        "          <div><b>Payment Method</b></div>" .
-        "          <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
-        "               <label class='btn btn-info'>" .
-        "                    <input type='radio' name='options' id='autoPayMonth' autocomplete='off'> Auto Monthly" .
-        "               </label>" .
-        "               <label class='btn btn-info'>" .
-        "                    <input type='radio' name='options' id='manualPayMonth' autocomplete='off'> Manual Monthly" .
-        "               </label>" .
-        "          </div>" .
+        "          <div><b>Payment Method: $paymentMethod</b></div>" .
         "     </div>" .
+        "</div>" .
+        "<div class='row justify-content-center mt-3'>".
+        "   <div class='col-8'>".
+        "       <form action='".$_SERVER['PHP_SELF']."?tab=changeAccBalance' method='post'>".
+        "          <button type='submit' class='btn-primary' name='auto' value='true'>Change to Auto payment</button>".
+        "          <button type='submit' class='btn-primary' name='auto' value='false'>Change to Manual payment</button>".
+        "       </form>".
+        "   </div>".
         "</div>";
 
     return $html;
@@ -663,7 +1024,8 @@ function getMonthlyPaymentRadioButtonsHTML(string $html): string
  */
 function getBalanceHTML(float $balance): string
 {
-    $payment = /* TODO: get monthly payment */ 50;
+    global $monthlyCharge;
+    global $autoPay;
 
     $html =
         "<div class = 'row justify-content-center'>" .
@@ -686,10 +1048,12 @@ function getBalanceHTML(float $balance): string
             "<div class ='col-2'>";
     }
 
-    if($balance < 0  || true /*TODO: || payment method == monthly manual*/) {
+    if($balance < 0  || (!$autoPay)) {
 
         $html .=
-            "          <button class='btn btn-success' onclick = 'paymentApplied()'> Make Payment $$payment </button>".
+            "          <form action='".$_SERVER['PHP_SELF']."?tab=makePayment' method='post' onsubmit='return confirmPayment()'>" .
+            "          <button class='btn btn-success' type='submit' name='amount' value='$monthlyCharge'> Make Payment $$monthlyCharge </button>".
+            "          </form>" .
             "     </div>".
             "</div>";
     } else { // balance in good standing and auto monthly payment
@@ -705,20 +1069,20 @@ function getBalanceHTML(float $balance): string
 function showPasswordChange() {
 
     $html =
-        "<form>".
+        "<form action='".$_SERVER['PHP_SELF']."?tab=passwordChange' method='post' onsubmit='return confirmPassword()'>".
         "     <div class = 'row justify-content-center'>".
         "        <div class = 'col-8'>".
         "             <div class='form-group'>" .
         "                  <label for='prevPass'><b>Previous Password</b></label> " .
-        "                  <input type='password' class='form-control' placeholder='Enter previous password' id='prevPass' name='prevPass' value=''>" .
+        "                  <input type='password' class='form-control' placeholder='Enter previous password' id='prevPass' name='prevPass' value='' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                   <label for='newPass'><b>New Password</b></label> " .
-        "                   <input type='password' class='form-control' placeholder='Enter new password' id='newPass' name='newPass' value=''>" .
+        "                   <input type='password' class='form-control' placeholder='Enter new password' id='newPass' name='newPass' value='' required>" .
         "              </div>" .
         "              <div class='form-group'>" .
         "                   <label for='conNewPass'><b>Confirm New Password</b></label> " .
-        "                   <input type='password' class='form-control' placeholder='Confirm password' id='conNewPass' name='conNewPass' value=''>" .
+        "                   <input type='password' class='form-control' placeholder='Confirm password' id='conNewPass' name='conNewPass' value='' required>" .
         "              </div>" .
         "                   <input class='btn btn-primary' type='submit' value='Submit'>".
         "         </div>".

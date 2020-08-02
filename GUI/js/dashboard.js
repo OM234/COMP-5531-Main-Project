@@ -88,7 +88,7 @@ function confirmPayment() {
     return confirm("Are you sure to make payment?");
 }
 
-function editDebitCard(/*TODO: $bankAccountNumber*/) {
+function editDebitCard() {
 
     var html =
         "<div class='row justify-content-center'>" +
@@ -141,6 +141,63 @@ function editCreditCard() {
         "        </form>" +
         "    </div>" +
         "</div>"
+
+    document.getElementById('accountSettings').innerHTML = html;
+}
+
+function editCreditCardSeeker() {
+    var html =
+        "<div class='row justify-content-center'>" +
+        "    <div class='col-8'>" +
+        "        <form action='/GUI/seekerDash.php?tab=addCreditCard' method='post'>" +
+        "            <div class='form-group'>" +
+        "                <label for='ccNumber'><b>Credit card number</b></label>" +
+        "                <input type='text' class='form-control' placeholder='Enter card number' id='ccNumber' name='ccNumber'" +
+        "                       value='' required>" +
+        "            </div>" +
+        "            <div class='form-group'>" +
+        "                <label for='ccbNumber'><b>CCB Number</b></label>" +
+        "                <input type='text' class='form-control' placeholder='Enter CVV' id='ccbNumber' name='ccbNumber'" +
+        "                       value='' required>" +
+        "            </div>" +
+        "            <div class='form-group'>" +
+        "                <label for='ccExpiration'><b>Expiration(MMYYYY)</b></label>" +
+        "                <input type='text' class='form-control' placeholder='Enter expiration' id='ccExpiration'" +
+        "                       name='ccExpiration' value='' required>" +
+        "            </div>" +
+        "        <input class='btn btn-primary' type='submit' value='Submit'>" +
+        "        </form>" +
+        "    </div>" +
+        "</div>"
+
+    document.getElementById('accountSettings').innerHTML = html;
+}
+
+function editDebitCardSeeker() {
+
+    var html =
+        "<div class='row justify-content-center'>" +
+        "    <div class='col-8'>" +
+        "        <form action='/GUI/seekerDash.php?tab=addDebitCard' method='post'>" +
+        "            <div class='form-group'>" +
+        "                <label for='baNumber'><b>Account number</b></label>" +
+        "                <input type='text' class='form-control' placeholder='Enter account number' id='baNumber' name='baNumber'" +
+        "                       value=''>" +
+        "            </div>" +
+        "            <div class='form-group'>" +
+        "                <label for='instituteNumber'><b>Institute Number</b></label>" +
+        "                <input type='text' class='form-control' placeholder='Enter institute number' id='instituteNumber'" +
+        "                       name='instituteNumber' value=''>" +
+        "            </div>" +
+        "            <div class='form-group'>" +
+        "                <label for='branchNumber'><b>Branch Number</b></label>" +
+        "                <input type='text' class='form-control' placeholder='Enter branch number' id='branchNumber'" +
+        "                       name='branchNumber' value=''>" +
+        "            </div>" +
+        "            <input class='btn btn-primary' type='submit' value='Submit'>" +
+        "        </form>" +
+        "    </div>" +
+        "</div> "
 
     document.getElementById('accountSettings').innerHTML = html;
 }
