@@ -16,7 +16,7 @@ $userCategory = getUserCategory($username);  // current user's category, (basic,
 $accountStatus = getAccountStatus($username);  // get account status, true(active), false(not active)
 $accountBalance = getAccountBalance($username);  // get account balance
 $monthlyCharge= getMonthlyCharge($userCategory);
-//$paymentInfo = getPaymentInfo();  // payments
+$jobCategories = getAllJobCategories();
 $paymentInfo = getPaymentInfo();
 $autoPay = getAutoOrManual($username);    // auto payment or maunal payment, true for auto.
 $autoPayString = $autoPay ? "auto": "manual";
@@ -58,8 +58,15 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
                 break;
             case "viewJobs":  // view posted jobs
                 if ($accountStatus) {
-                    $postedJobsData = getPostedJobsData();
-                    showPostedJobs($postedJobsData);
+                    if (isset($_GET['jobCategory'])) {
+                        $jobCategory = $_GET['jobCategory'];
+                        $jobsOfCategory = getJobsOfCategory($jobCategory);
+                        showPostedJobs($jobsOfCategory);
+                    }
+                    else {
+                        $postedJobsData = getPostedJobsData();
+                        showPostedJobs($postedJobsData);
+                    }
                 } else {
                     echo "<script>alert('Your account has been deactivated, please go to Account Settings to reactive!')</script>";
                 }
@@ -295,6 +302,27 @@ function getPostedJobsData() {
 
     $conn = connectDB();
     $sql = "select * from job limit 20";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $job = array("jobID" =>$row["JobID"], "title"=>$row["Title"], "datePosted"=>$row["DatePosted"], "category"=>$row["Category"],
+                "description"=>$row["Description"], "numOfOpenings"=>$row["EmpNeeded"], "employerUserName"=>$row["EmployerUserName"]);
+            $jobStatus = ($row["JobStatus"] == 1) ? "open" : "closed";
+            $employerName = getEmployerName($row["EmployerUserName"]);
+            $job["jobStatus"] = $jobStatus;
+            $job["employerName"] = $employerName;
+            array_push($data, $job);
+        }
+    }
+    return $data;
+}
+
+// get posted jobs of one category
+function getJobsOfCategory($jobCategory) {
+    $data = array();
+
+    $conn = connectDB();
+    $sql = "select * from job where Category = '$jobCategory' limit 20";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -668,30 +696,48 @@ function changePassword($prevPass, $newPass) {
     }
 }
 
+function getAllJobCategories() {
+    $data = array();
+    $conn = connectDB();
+    $sql = "select distinct Category from job;";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $c = $row["Category"];
+            array_push($data, $c);
+        }
+    }
+    return $data;
+}
+
 /************************* End of data access *****************************************************/
 
 
 /****************** Front-end view part ******************************************************/
 
 function showPostedJobs($postedJobsData) {
+    global $jobCategories;
 
     $html =
         "<div class='row justify-content-center'>".
-        "    <div class = 'col-3'>".
+        "    <div class = 'col-4'>".
+        "    <form action='".$_SERVER['PHP_SELF']."'>" .
         "       <div class='form-group text-center'>" .
         "            <label for='selectCategory'>Select category:</label>" .
-        "            <select class='form-control'' id='selectCategory'>" .
+        "            <select class='form-control' id='selectCategory' name='jobCategory'>" .
         "                 <option>...</option>";
 
-    for($i = 0; $i < 5 /*TODO: count of categories*/; $i++) {
+    for($i = 0; $i < count($jobCategories); $i++) {
 
-        $category = "category";
+        $category = $jobCategories[$i];
         $html .=
-            "                 <option>$category</option>";
+            "                 <option value='$category'>$category</option>";
     }
     $html .=
         "            </select>" .
         "      </div>".
+        "   <button class='btn btn-primary' type='submit' name='tab' value='viewJobs'>Submit</button>" .
+        "   </form>" .
         "   </div>".
         "</div>";
 
