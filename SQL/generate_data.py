@@ -539,7 +539,7 @@ def createApplications():
         applicants = []
         applications = []
         numHired = 0
-        for i in range(r.randrange(1,30)):
+        for j in range(r.randrange(2, 20)):
             application = Application('', '', '')
             numHired = createApplicationStatus(application, applicationStatus, i, numHired)
             createApplicationDate(application)
