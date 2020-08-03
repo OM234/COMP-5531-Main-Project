@@ -68,10 +68,10 @@ class PAD:
         self.auto_manual = 0
 
 
-numEmployers = 100
+numEmployers = 50
 numAdmins = 10
-numSeekers = 500
-numJobs = numSeekers * 5
+numSeekers = 100
+numJobs = numSeekers * 2
 numCreditCards = (numEmployers + numSeekers) * 5
 numPAD = (numEmployers + numSeekers) * 5
 numUsers = numEmployers + numAdmins + numSeekers
@@ -575,7 +575,8 @@ def SQLInsertData():
     # SQL Insert Data
     with open('insert_data.sql', 'w') as sqlFile:
         sqlFile.write('USE cxc55311;\n\n')
-        sqlFile.write('INSER' + 'T INTO User(UserName, FirstName, LastName, Email, ContactNumber, Password)\n')
+        sqlFile.write('DELETE FROM User;')
+        sqlFile.write('\nINSER' + 'T INTO User(UserName, FirstName, LastName, Email, ContactNumber, Password)\n')
         sqlFile.write('VALUES ')
 
         for employer in listOfEmployers:
@@ -588,13 +589,7 @@ def SQLInsertData():
             sqlFile.write(
                 '(\'' + admin.username + '\', \'' + admin.firstname + '\', \'' + admin.lastname + '\', \'' + admin.email + '\', \'' + admin.phnumber + '\', \'' + admin.password + '\'),\n')
 
-        # for (a, b, c, d, e, f) in zip(userNameList, firstNameList, lastNameList, emailList, phoneNumberList, passwordList):
-        #     if count == len(userNameList) - 1:
-        #         sqlFile.write('(\''+a+'\', \''+b+'\', \''+c+'\', \''+d+'\', \''+e+'\', \''+f+'\');\n')
-        #     else:
-        #         sqlFile.write('(\''+a+'\', \''+b+'\', \''+c+'\', \''+d+'\', \''+e+'\', \''+f+'\'),\n')
-        #         count = count + 1
-
+        sqlFile.write('\nDELETE FROM Employer;')
         sqlFile.write('\nINSER' + 'T INTO Employer(UserName, EmployerName, Category, Balance)\n')
         sqlFile.write('VALUES ')
         for employer in listOfEmployers:
@@ -609,6 +604,7 @@ def SQLInsertData():
         #         sqlFile.write('(\''+p+'\', \''+q+'\', \''+str(u)+'\', \''+s+'\', \''+str(t)+'\'),\n')
         #         count = count + 1
 
+        sqlFile.write('\nDELETE FROM Applicant;')
         sqlFile.write('\nINSER' + 'T INTO Applicant(UserName, Category, Balance)\n')
         sqlFile.write('VALUES ')
         for seeker in listOfSeekers:
@@ -622,6 +618,7 @@ def SQLInsertData():
         #         sqlFile.write('(\''+a+'\', \''+str(b)+'\', \''+c+'\', \''+str(d)+'\'),\n')
         #         count = count + 1
 
+        sqlFile.write('\nDELETE FROM Admin;')
         sqlFile.write('\nINSER' + 'T INTO Admin(UserName)\n')
         sqlFile.write('VALUES ')
         for admin in listOfAdmins:
@@ -634,6 +631,7 @@ def SQLInsertData():
         #         sqlFile.write('(\''+each+'\'),\n')
         #         count = count + 1
 
+        sqlFile.write('\nDELETE FROM Job;')
         sqlFile.write('\nINSER' + 'T INTO Job(JobID, EmployerUserName, Title, DatePosted, Description, Category, '
                                   'JobStatus, EmpNeeded)\n')
         sqlFile.write('VALUES ')
@@ -654,6 +652,7 @@ def SQLInsertData():
         #                       '\''+jobTitleList[y]+'\', \''+str(jobDateList[y])+'\', \''+jobDescriptionList[y]+'\', \''
         #                       +jobCatFullList[y]+'\', \''+str(jobStatusList[y])+'\', \''+str(empNeededList[y])+'\'),\n')
 
+        sqlFile.write('\nDELETE FROM CreditCardInfo;')
         sqlFile.write('\nINSER' + 'T INTO CreditCardInfo(CCNumber, ExpireDate, CCBNumber, IsDefault, Auto_Manual)\n')
         sqlFile.write('VALUES ')
         for CC in listOfCreditCards:
@@ -667,6 +666,7 @@ def SQLInsertData():
         #         sqlFile.write('(\''+a+'\', \''+str(b)+'\', \''+c+'\', \''+str(d)+'\', \''+str(e)+'\'),\n')
         #         count = count + 1
 
+        sqlFile.write('\nDELETE FROM PADInfo;')
         sqlFile.write(
             '\nINSER' + 'T INTO PADInfo(AccountNumber, InstituteNumber, BranchNumber, IsDefault, Auto_Manual)\n')
         sqlFile.write('VALUES ')
@@ -682,6 +682,7 @@ def SQLInsertData():
         #         sqlFile.write('(\''+a+'\', \''+b+'\', \''+c+'\', \''+str(d)+'\', \''+str(e)+'\'),\n')
         #         count = count + 1
 
+        sqlFile.write('\nDELETE FROM Application;')
         sqlFile.write('\nINSER' + 'T INTO Application(ApplicantUserName, JobID, ApplicationStatus, ApplicationDate)\n')
         sqlFile.write('VALUES ')
         count = 0
@@ -707,6 +708,7 @@ def SQLInsertData():
         #                           '\''+str(applicationDateList[r.randrange(len(applicationDateList))])+'\'),\n')
         #     count = count + 1
 
+        sqlFile.write('\nDELETE FROM EmployerCC;')
         sqlFile.write('\nINSER' + 'T INTO EmployerCC(EmployerUserName, CCNumber)\n')
         sqlFile.write('VALUES ')
         for employer in listOfEmployers:
@@ -720,6 +722,7 @@ def SQLInsertData():
         #         sqlFile.write('(\''+a+'\', \''+b+'\'),\n')
         #         count = count + 1
 
+        sqlFile.write('\nDELETE FROM EmployerPAD;')
         sqlFile.write('\nINSER' + 'T INTO EmployerPAD(EmployerUserName, AccountNumber)\n')
         sqlFile.write('VALUES ')
         for employer in listOfEmployers:
@@ -733,6 +736,7 @@ def SQLInsertData():
         #         sqlFile.write('(\''+a+'\', \''+b+'\'),\n')
         #         count = count + 1
 
+        sqlFile.write('\nDELETE FROM ApplicantCC;')
         sqlFile.write('\nINSER' + 'T INTO ApplicantCC(ApplicantUserName, CCNumber)\n')
         sqlFile.write('VALUES ')
         for applicant in listOfSeekers:
@@ -748,6 +752,7 @@ def SQLInsertData():
         #         count = count + 1
         #     start = start + 1
 
+        sqlFile.write('\nDELETE FROM ApplicantPAD;')
         sqlFile.write('\nINSER' + 'T INTO ApplicantPAD(ApplicantUserName, AccountNumber)\n')
         sqlFile.write('VALUES ')
         for applicant in listOfSeekers:
