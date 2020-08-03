@@ -153,15 +153,29 @@ The file that contains the requested queries is appropriately named `queries.sql
 
 \subsection{Back-End Development}
 
+The back back-end provides the interlocking mechanism to link the user interface portion of the web portal with the database. The input provided by the users of the website is acquired and used by the functional capabilities of the back end software to issue queries that retrieve data, modify data, or insert data into the database. The back-end portion of the website is coded in PHP.
 
-\subsubsection{Login \& Sign Up}
+\subsubsection{Sign Up \& Login}
+
+The sign up allows someone to create an employer or job seeker type account. Every field needs to be entered. No empty or inappropriately entered fields will be allowed. Invalid data will not be processed and entered into the database when creating a new account. \par
+The login process retrieves the user input from the login fields and verifies the user name and password combination exists in the database. Based on the three different accounts (employer, job seeker, administrator), the appropriate tables are looked at and verified to log into the correct dashboard interface.
 
 \subsubsection{Employer Dashboard}
 
+This dashboard provides features for an employer type account. Jobs that have been posted may be viewed. The employer may also post new jobs for positions they are seeking to fill. The database is asked to retrieve the list of jobs the employer has posted by associating each job with an employer user name (which is a unique identifier for employers). The employer can post many jobs. Therefore, a job id number and user name combination may be used to retrieve the appropriate list of jobs for each employer user. The employer may also update payment information and the necessary tables are updated in the database when the employer makes this request.
+
 \subsubsection{Job Seeker Dashboard}
+
+After verifying the login credentials for a job seeker type account based on the user input the user is greeted with the job seeker dashboard. This main features of this dashboard include a searchable database of all jobs that have been posted and the ability to send an application to these jobs. The user can search by job title and job category. The connection with the database allows the appropriate tables to be retrieved based on similarities with the search terms and what is inside the job table attributes. \par 
+The job seeker user may also see a list of jobs they have applied for as when they apply for a job a new job `application' is created and inserted into a table containing all jobs that have been applied to. If the user decides to withdraw their application, a deletion query is sent to the database system to remove the application from the table. \par 
+There is an option to upgrade account category (basic, gold, or prime). The record associated with the user in question is updated as needed. When a payment is processed a query to update the database with a deduction in the account balance.
 
 \subsubsection{Administrator Dashboard}
 
+The administrator type account has access to a unique dashboard that has the ability to effect other user type accounts. The administrator can also see every job, employer, and job seeker related data available in the database. The administrator can directly deactivate or activate user accounts and retrieve the data associated with accounts. Lastly, user accounts may also be deleted by the administrator.
+
 \section{CONTRIBUTIONS}
+
+% Work in sections, subsections, and subsubsections and insert names for each portion.
 
 \end{document}
