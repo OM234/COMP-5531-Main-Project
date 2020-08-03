@@ -264,13 +264,6 @@ def setEmpNames():
     # for each in employerList:
     #     print(each)
 
-def setAccBalances():
-
-    for i in range (len(listOfEmployers)):
-        listOfEmployers[i].balance = round(r.uniform(-100.5, 300.5), 2)
-    for i in range(len(listOfSeekers)):
-        listOfSeekers[i].balance = round(r.uniform(-100.5, 300.5), 2)
-
 def setAccCategory():
 
     category = ['prime', 'gold']
@@ -283,6 +276,16 @@ def setAccCategory():
         # Applicant Category
         for i in range(len(listOfSeekers)):
             listOfSeekers[i].acategory = category[r.randrange(3)]
+
+def setAccBalances():
+
+    for i in range (len(listOfEmployers)):
+        listOfEmployers[i].balance = round(r.uniform(-100.5, 300.5), 2)
+    for i in range(len(listOfSeekers)):
+        if(listOfSeekers[i].acategory == 'basic'):
+            listOfSeekers[i].balance = 0
+        else:
+            listOfSeekers[i].balance = round(r.uniform(-100.5, 300.5), 2)
 
 def createJobs():
 
@@ -792,8 +795,8 @@ associatePhNumbersWithUsers()
 setUserNames()
 setPasswords()
 setEmpNames()
-setAccBalances()
 setAccCategory()
+setAccBalances()
 createJobs()
 associateJobWithEmployer()
 createJobIDs()
