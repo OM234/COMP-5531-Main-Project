@@ -34,6 +34,7 @@ create table employer
     UserName     varchar(30)            not null
         primary key,
     EmployerName varchar(100)           not null,
+    Activated    BOOL                   not null,
     Category     enum ('prime', 'gold') ,
     Balance      decimal(10, 2)         not null,
     constraint employer_ibfk_1
@@ -46,6 +47,7 @@ create table applicant
     UserName varchar(30)                     not null
         primary key,
     Category enum ('basic', 'prime', 'gold') ,
+    Activated BOOL                           not null,
     Balance  decimal(10, 2)                  not null,
     constraint applicant_ibfk_1
         foreign key (UserName) references user (UserName)

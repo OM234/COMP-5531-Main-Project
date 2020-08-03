@@ -12,6 +12,7 @@ class AnEmployer:
         self.balance = balance
         self.acategory = acategory
         self.email = email
+        self.activated = True
 
 class ASeeker:
     def __init__(self, username, password, firstname, lastname, phnumber, balance, acategory, email):
@@ -23,6 +24,7 @@ class ASeeker:
         self.balance = balance
         self.category = acategory
         self.email = email
+        self.activated = True
 
 class AnAdmin:
     def __init__(self, username, password, firstname, lastname, phnumber, email):
@@ -71,7 +73,7 @@ class PAD:
 numEmployers = 50
 numAdmins = 10
 numSeekers = 100
-numJobs = numSeekers * 2
+numJobs = numSeekers
 numCreditCards = (numEmployers + numSeekers) * 5
 numPAD = (numEmployers + numSeekers) * 5
 numUsers = numEmployers + numAdmins + numSeekers
@@ -99,6 +101,14 @@ def createusers():
     for i in range(numAdmins):
         anAdmin = AnAdmin('', '', '', '', '', '')
         listOfAdmins.append(anAdmin)
+
+def setSomeSeekersEmployersDeactivated():
+    for i in range(numSeekers):
+        if r.randrange(10) == 9:
+            listOfSeekers[i].activated = False
+    for i in range(numEmployers):
+        if r.randrange(10) == 9:
+            listOfEmployers[i].activated = False
 
 
 def makePhoneNumbers():
@@ -542,7 +552,7 @@ def createApplications():
         applicants = []
         applications = []
         numHired = 0
-        for j in range(r.randrange(2, 20)):
+        for j in range(r.randrange(2, 10)):
             application = Application('', '', '')
             numHired = createApplicationStatus(application, applicationStatus, i, numHired)
             createApplicationDate(application)
@@ -593,46 +603,25 @@ def SQLInsertData():
                 '(\'' + admin.username + '\', \'' + admin.firstname + '\', \'' + admin.lastname + '\', \'' + admin.email + '\', \'' + admin.phnumber + '\', \'' + admin.password + '\'),\n')
 
         sqlFile.write('\nDELETE FROM Employer;')
-        sqlFile.write('\nINSER' + 'T INTO Employer(UserName, EmployerName, Category, Balance)\n')
+        sqlFile.write('\nINSER' + 'T INTO Employer(UserName, EmployerName, Category, Balance, Activated)\n')
         sqlFile.write('VALUES ')
         for employer in listOfEmployers:
             sqlFile.write(
                 '(\'' + employer.username + '\', \'' + employer.empname + '\', \'' + employer.acategory + '\', \'' + str(
-                    employer.balance) + '\'),\n')
-        # count = 0
-        # for (p, q, u, s, t) in zip(employerUserNames, employerList, employerBoolStatus, employerCategory, employerBalance):
-        #     if count == len(employerUserNames) - 1:
-        #         sqlFile.write('(\''+p+'\', \''+q+'\', \''+str(u)+'\', \''+s+'\', \''+str(t)+'\');\n')
-        #     else:
-        #         sqlFile.write('(\''+p+'\', \''+q+'\', \''+str(u)+'\', \''+s+'\', \''+str(t)+'\'),\n')
-        #         count = count + 1
+                    employer.balance) + '\', ' + str(employer.activated) + '),\n')
 
         sqlFile.write('\nDELETE FROM Applicant;')
-        sqlFile.write('\nINSER' + 'T INTO Applicant(UserName, Category, Balance)\n')
+        sqlFile.write('\nINSER' + 'T INTO Applicant(UserName, Category, Balance, Activated)\n')
         sqlFile.write('VALUES ')
         for seeker in listOfSeekers:
             sqlFile.write(
-                '(\'' + seeker.username + '\', \'' + seeker.acategory + '\', \'' + str(seeker.balance) + '\'),\n')
-        # count = 0
-        # for (a, b, c, d) in zip(applicantUserNames, applicantAccountBool, applicantCategory, applicantBalance):
-        #     if count == len(applicantUserNames) - 1:
-        #         sqlFile.write('(\''+a+'\', \''+str(b)+'\', \''+c+'\', \''+str(d)+'\');\n')
-        #     else:
-        #         sqlFile.write('(\''+a+'\', \''+str(b)+'\', \''+c+'\', \''+str(d)+'\'),\n')
-        #         count = count + 1
+                '(\'' + seeker.username + '\', \'' + seeker.acategory + '\', \'' + str(seeker.balance) + '\', ' + str(seeker.activated) + '),\n')
 
         sqlFile.write('\nDELETE FROM Admin;')
         sqlFile.write('\nINSER' + 'T INTO Admin(UserName)\n')
         sqlFile.write('VALUES ')
         for admin in listOfAdmins:
             sqlFile.write('(\'' + admin.username + '\'),\n')
-        # count = 0
-        # for each in adminUserNames:
-        #     if count == len(adminUserNames) - 1:
-        #         sqlFile.write('(\''+each+'\');\n')
-        #     else:
-        #         sqlFile.write('(\''+each+'\'),\n')
-        #         count = count + 1
 
         sqlFile.write('\nDELETE FROM Job;')
         sqlFile.write('\nINSER' + 'T INTO Job(JobID, EmployerUserName, Title, DatePosted, Description, Category, '
@@ -644,16 +633,6 @@ def SQLInsertData():
                 job.date) + '\', \'' + job.description + '\', '
                                                          ' \'' + job.category + '\', \'' + str(
                 job.status) + '\', \'' + str(job.empNeeded) + '\'),\n')
-        # count = 0
-        # for y in range(len(jobIDList)):
-        #     if y == len(jobIDList) - 1:
-        #         sqlFile.write('(\''+str(jobIDList[y])+'\', \''+employerUserNames[r.randrange(len(employerUserNames))]+'\', '
-        #                       '\''+jobTitleList[y]+'\', \''+str(jobDateList[y])+'\', \''+jobDescriptionList[y]+'\', '
-        #                        ' \''+jobCatFullList[y]+'\', \''+str(jobStatusList[y])+'\', \''+str(empNeededList[y])+'\');\n')
-        #     else:
-        #         sqlFile.write('(\''+str(jobIDList[y])+'\', \''+employerUserNames[r.randrange(len(employerUserNames))]+'\', '
-        #                       '\''+jobTitleList[y]+'\', \''+str(jobDateList[y])+'\', \''+jobDescriptionList[y]+'\', \''
-        #                       +jobCatFullList[y]+'\', \''+str(jobStatusList[y])+'\', \''+str(empNeededList[y])+'\'),\n')
 
         sqlFile.write('\nDELETE FROM CreditCardInfo;')
         sqlFile.write('\nINSER' + 'T INTO CreditCardInfo(CCNumber, ExpireDate, CCBNumber, IsDefault, Auto_Manual)\n')
@@ -661,13 +640,6 @@ def SQLInsertData():
         for CC in listOfCreditCards:
             sqlFile.write('(\'' + CC.CCNumber + '\', \'' + str(CC.expDate) + '\', \'' + CC.CCB + '\', \'' + str(
                 CC.isDefault) + '\', \'' + str(CC.auto_manual) + '\'),\n')
-        # count = 0
-        # for (a, b, c, d, e) in zip(ccList, ccExpireList, CCBNumberList, ccDefList, ccAutoManualList):
-        #     if count == len(ccList) - 1:
-        #         sqlFile.write('(\''+a+'\', \''+str(b)+'\', \''+c+'\', \''+str(d)+'\', \''+str(e)+'\');\n')
-        #     else:
-        #         sqlFile.write('(\''+a+'\', \''+str(b)+'\', \''+c+'\', \''+str(d)+'\', \''+str(e)+'\'),\n')
-        #         count = count + 1
 
         sqlFile.write('\nDELETE FROM PADInfo;')
         sqlFile.write(
@@ -677,18 +649,9 @@ def SQLInsertData():
             sqlFile.write('(\'' + pad.accNum + '\', \'' + pad.instNum + '\', \'' + pad.branch + '\', \'' + str(
                 pad.isDefault) + '\', \'' + str(pad.auto_manual) + '\'),\n')
 
-        # count = 0
-        # for (a, b, c, d, e) in zip(accountNumberList, bankList, branchNumberList, PADDefault, PADAutoManual):
-        #     if count == len(accountNumberList) - 1:
-        #         sqlFile.write('(\''+a+'\', \''+b+'\', \''+c+'\', \''+str(d)+'\', \''+str(e)+'\');\n')
-        #     else:
-        #         sqlFile.write('(\''+a+'\', \''+b+'\', \''+c+'\', \''+str(d)+'\', \''+str(e)+'\'),\n')
-        #         count = count + 1
-
         sqlFile.write('\nDELETE FROM Application;')
         sqlFile.write('\nINSER' + 'T INTO Application(ApplicantUserName, JobID, ApplicationStatus, ApplicationDate)\n')
         sqlFile.write('VALUES ')
-        count = 0
 
         for job in listOfJobs:
             for app in job.listOfApp:
@@ -697,33 +660,12 @@ def SQLInsertData():
                                                                                                           '\'' + str(
                         app.appdate) + '\'),\n')
 
-        # for a in applicantDict:
-        #     for x in applicantDict[a]:
-        #         if count == len(applicantDict) - 1:
-        #             if x == applicantDict[a][len(applicantDict[a]) - 1]:
-        #                 sqlFile.write('(\''+x+'\', \''+str(a)+'\', \''+appStatusList[r.randrange(len(appStatusList))]+'\', '
-        #                               '\''+str(applicationDateList[r.randrange(len(applicationDateList))])+'\');\n')
-        #             else:
-        #                 sqlFile.write('(\''+x+'\', \''+str(a)+'\', \''+appStatusList[r.randrange(len(appStatusList))]+'\', '
-        #                               '\''+str(applicationDateList[r.randrange(len(applicationDateList))])+'\'),\n')
-        #         else:
-        #             sqlFile.write('(\''+x+'\', \''+str(a)+'\', \''+appStatusList[r.randrange(len(appStatusList))]+'\', '
-        #                           '\''+str(applicationDateList[r.randrange(len(applicationDateList))])+'\'),\n')
-        #     count = count + 1
-
         sqlFile.write('\nDELETE FROM EmployerCC;')
         sqlFile.write('\nINSER' + 'T INTO EmployerCC(EmployerUserName, CCNumber)\n')
         sqlFile.write('VALUES ')
         for employer in listOfEmployers:
             for cc in userCreditCards[employer.username]:
                 sqlFile.write('(\'' + employer.username + '\', \'' + cc + '\'),\n')
-        # count = 0
-        # for(a, b) in zip(employerUserNames, ccList):
-        #     if count == len(employerUserNames) - 1:
-        #         sqlFile.write('(\''+a+'\', \''+b+'\');\n')
-        #     else:
-        #         sqlFile.write('(\''+a+'\', \''+b+'\'),\n')
-        #         count = count + 1
 
         sqlFile.write('\nDELETE FROM EmployerPAD;')
         sqlFile.write('\nINSER' + 'T INTO EmployerPAD(EmployerUserName, AccountNumber)\n')
@@ -731,13 +673,6 @@ def SQLInsertData():
         for employer in listOfEmployers:
             for pad in userPADs[employer.username]:
                 sqlFile.write('(\'' + employer.username + '\', \'' + pad + '\'),\n')
-        # count = 0
-        # for(a, b) in zip(employerUserNames, accountNumberList):
-        #     if count == len(employerUserNames) - 1:
-        #         sqlFile.write('(\''+a+'\', \''+b+'\');\n')
-        #     else:
-        #         sqlFile.write('(\''+a+'\', \''+b+'\'),\n')
-        #         count = count + 1
 
         sqlFile.write('\nDELETE FROM ApplicantCC;')
         sqlFile.write('\nINSER' + 'T INTO ApplicantCC(ApplicantUserName, CCNumber)\n')
@@ -745,15 +680,6 @@ def SQLInsertData():
         for applicant in listOfSeekers:
             for cc in userCreditCards[applicant.username]:
                 sqlFile.write('(\'' + applicant.username + '\', \'' + cc + '\'),\n')
-        # count = 0
-        # start = 60
-        # for a in applicantUserNames:
-        #     if count == len(applicantUserNames) - 1:
-        #         sqlFile.write('(\''+a+'\', \''+ccList[start]+'\');\n')
-        #     else:
-        #         sqlFile.write('(\''+a+'\', \''+ccList[start]+'\'),\n')
-        #         count = count + 1
-        #     start = start + 1
 
         sqlFile.write('\nDELETE FROM ApplicantPAD;')
         sqlFile.write('\nINSER' + 'T INTO ApplicantPAD(ApplicantUserName, AccountNumber)\n')
@@ -761,17 +687,8 @@ def SQLInsertData():
         for applicant in listOfSeekers:
             for pad in userPADs[applicant.username]:
                 sqlFile.write('(\'' + applicant.username + '\', \'' + pad + '\'),\n')
-
         sqlFile.write("\n\n")  # for regex to remove comma
-        # count = 0
-        # start = 60
-        # stop = 140
-        # for (a, b) in zip(applicantUserNames, accountNumberList[start:stop]):
-        #     if count == len(applicantUserNames) - 1:
-        #         sqlFile.write('(\''+a+'\', \''+b+'\');\n')
-        #     else:
-        #         sqlFile.write('(\''+a+'\', \''+b+'\'),\n')
-        #         count = count + 1
+
         sqlFile.close()
 
 def SQLRemoveCommas():
@@ -788,6 +705,7 @@ def SQLRemoveCommas():
 
 
 createusers()
+setSomeSeekersEmployersDeactivated()
 makePhoneNumbers()
 setFirstAndLastNames()
 setEmails()
