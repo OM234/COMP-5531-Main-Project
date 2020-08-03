@@ -1,0 +1,17 @@
+\babel@toc {english}{}
+\contentsline {section}{\numberline {1}Introduction}{2}%
+\contentsline {section}{\numberline {2}Database Design}{2}%
+\contentsline {subsection}{\numberline {2.1}Entity-Relation Diagram}{2}%
+\contentsline {subsection}{\numberline {2.2}E/R to Relation Conversions}{2}%
+\contentsline {subsection}{\numberline {2.3}Functional Dependencies}{2}%
+\contentsline {subsubsection}{\numberline {2.3.1}Normalization}{2}%
+\contentsline {section}{\numberline {3}Web Portal Functionalities}{2}%
+\contentsline {subsection}{\numberline {3.1}Front-End Development}{2}%
+\contentsline {subsubsection}{\numberline {3.1.1}Landing Page}{2}%
+\contentsline {subsubsection}{\numberline {3.1.2}Dashboard}{2}%
+\contentsline {subsection}{\numberline {3.2}MySQL Database Implementation}{2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Generating Data}{2}%
+\contentsline {subsubsection}{\numberline {3.2.2}Creating Tables \& Inserting Data}{2}%
+\contentsline {subsubsection}{\numberline {3.2.3}SQL Queries}{2}%
+\contentsline {subsection}{\numberline {3.3}Back-End Development}{2}%
+\contentsline {subsubsection}{\numberline {3.3.1}Software Design \& Architecture}{2}%
