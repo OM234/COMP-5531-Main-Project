@@ -65,7 +65,8 @@
         </div>
     </div>
     <div id="viewJobs"> </div>
-    <div id="viewUsers"> </div>
+    <div id="viewUsers" class="container"> </div>
+    <div id="viewApplications" class="container"></div>
     <div id="accountSettings" class="container"></div>
 </div>
 <script src="assets/js/jquery.min.js"></script>
