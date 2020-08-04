@@ -12,14 +12,15 @@
 </head>
 <body>
 
-<?php
+/** @noinspection SqlResolve *//** @noinspection SqlResolve */<?php
+include_once "db/db_config.php";
 // define variables and set to empty values
 $usernameErr = $emailErr = $passwordErr = $accountTypeErr = "";
-$paymentErr = $ccNameErr = $ccNumberErr = $ccExpirationErr = "";
+$paymentErr = $ccbNumberErr = $ccNumberErr = $ccExpirationErr = "";
 $baNumberErr = $transitNumberErr = "";
 
 $username = $email = $password = $accountType = "";
-$payment = $ccName = $ccNumber = $ccExpiration = "";
+$payment = $ccbNumber = $ccNumber = $ccExpiration = "";
 $baNumber = $transitNumber = "";
 
 $validationSuccess = true;
@@ -48,11 +49,11 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 // validation process
 function validate() {
     global $usernameErr, $emailErr, $passwordErr, $accountTypeErr,
-    $paymentErr, $ccNameErr, $ccNumberErr, $ccExpirationErr,
+    $paymentErr, $ccbNumberErr, $ccNumberErr, $ccExpirationErr,
     $baNumberErr, $transitNumberErr;
 
     global $username, $email, $password, $accountType,
-    $payment, $ccName, $ccNumber, $ccExpiration,
+    $payment, $ccbNumber, $ccNumber, $ccExpiration,
     $baNumber, $transitNumber;
 
     global $validationSuccess;
@@ -78,8 +79,8 @@ function validate() {
     } else {
         $username = test_input($_POST["username"]);
         // check if username is valid
-        if (!preg_match("/^[a-zA-Z ]*$/", $username)) {
-            $usernameErr = "Only letters and white space allowed";
+        if (!preg_match("/^[a-zA-Z0-9_ ]*$/", $username)) {
+            $usernameErr = "Only letters, digits, '_' and white space allowed";
             $validationSuccess = false;
         }
     }
@@ -110,19 +111,18 @@ function validate() {
         $validationSuccess = false;
     } else {
         $payment = $_POST["paymentRadio"];
-//        echo $_POST["paymentRadio"];
     }
 
     // validate credit card information
     if ($payment == "creditCard") {
-        if (empty($_POST["ccName"])) {
-            $ccNameErr = "Credit Card Name should not be empty";
+        if (empty($_POST["ccbNumber"])) {
+            $ccbNumberErr = "Credit Card Name should not be empty";
             $validationSuccess = false;
         } else {
-            $ccName = test_input($_POST["ccName"]);
-            // check if ccname is valid
-            if (!preg_match("/^[a-zA-Z ]*$/", $ccName)) {
-                $ccNameErr = "Only letters and white space allowed";
+            $ccbNumber = test_input($_POST["ccbNumber"]);
+            // check if ccbNumber is valid
+            if (!preg_match("/^[0-9]*$/", $ccbNumber)) {
+                $ccbNumberErr = "Only digits allowed";
                 $validationSuccess = false;
             }
         }
@@ -177,8 +177,167 @@ function test_input($data) {
 
 // TODO: create an account
 function createAccount() {
-    echo "create account";
+    echo "create account<br>";
+    global $username, $email, $password, $accountType,
+           $payment, $ccbNumber, $ccNumber, $ccExpiration,
+           $baNumber, $transitNumber;
+    $accountType = $_POST["accountType"];
+    $firstName = $_POST["firstName"];
+    $lastName = $_POST["lastName"];
+    $number = $_POST["number"];
+    $flag = false;
+    $conn = connectDB();
+    $sql = "insert into user (UserName, FirstName, LastName, Email, ContactNumber, Password) 
+            VALUES ('$username', '$firstName', '$lastName', '$email', '$number', '$password')";
+    if (mysqli_query($conn, $sql)) {
+        $flag = true;
+    } else {
+        echo "database operation: insert into user table failed<br>";
+    }
+
+    if ($flag) {
+        if (insertEmployerOrApplicant($accountType, $username)) {
+            if (insertPaymentInfo($accountType, $payment, $username)) echo "operation success";
+            else echo "database operation: insert into payment information failed";
+        } else {
+            echo "database operation: insert into employer or applicant table failed<br>";
+        }
+    }
 }
+
+function insertEmployerOrApplicant ($accountType, $username) {
+    $conn = connectDB();
+    $sql = "";
+    if ($accountType === 'employerPrime') {
+        $employerName = $_POST["companyName"];
+        $sql = "insert into employer (UserName, EmployerName, Activated, Category, Balance)
+                values ('$username', '$employerName', 1, 'prime', 0)";
+    }
+    else if ($accountType === 'employerGold') {
+        $employerName = $_POST["companyName"];
+        $sql = "insert into employer (UserName, EmployerName, Activated, Category, Balance)
+                values ('$username', '$employerName', 1, 'gold', 0)";
+    }
+    else if ($accountType === 'seekerBasic') {
+        $sql = "insert into applicant (UserName, Category, Activated, Balance)
+                values ('$username', 'basic', 1, 0)";
+    }
+    else if ($accountType === 'seekerPrime') {
+        $sql = "insert into applicant (UserName, Category, Activated, Balance)
+                values ('$username', 'prime', 1, 0)";
+    }
+    else if ($accountType === 'seekerGold') {
+        $sql = "insert into applicant (UserName, Category, Activated, Balance)
+                values ('$username', 'gold', 1, 0)";
+    }
+    if (mysqli_query($conn, $sql)) return true;
+    return false;
+}
+
+
+function insertPaymentInfo($accountType, $payment, $username) {
+        if ($payment === 'creditCard') {
+            $ccNumber = $_POST['ccNumber'];
+            $ccbNumber = $_POST['ccbNumber'];
+            $ccExpiration = $_POST['ccExpiration'];
+            if (insertCreditCard($username, $ccNumber, $ccbNumber, $ccExpiration)) return true;
+        }
+        else if ($payment === 'bankAccount') {
+            $baNumber = $_POST['baNumber'];
+            $transitNumber = $_POST['transitNumber'];
+            $branchNumber = $_POST['branchNumber'];
+            if (insertDebitCard($username, $baNumber, $transitNumber, $branchNumber)) return true;
+        }
+        return false;
+
+}
+
+
+// insert a credit card of the username
+function insertCreditCard($username, $ccNumber, $ccbNumber, $ccExpiration) {
+    global $accountType;
+    $month = substr($ccExpiration, 0, 2);
+    $year = substr($ccExpiration, 2, 4);
+    $expDate = $year . "-" . $month . "-1";
+
+    $flag = false;
+    $conn = connectDB();
+    $sql = "insert into creditcardinfo (CCNumber, ExpireDate, CCBNumber, IsDefault, Auto_Manual)
+            VALUES ($ccNumber, '$expDate', $ccbNumber, 0, 0)";
+    if (mysqli_query($conn, $sql)) {
+        $flag = true;
+    }
+
+    if ($flag) {
+        if (($accountType === 'employerPrime') || ($accountType === 'employerPrime')) {
+            if (insertEmployerCC($ccNumber, $username)) return true;
+        } else {
+            if (insertApplicantCC($ccNumber, $username)) return true;
+        }
+    }
+    return false;
+}
+
+// insert into employercc
+function insertEmployerCC($ccNumber, $username) {
+    $conn = connectDB();
+    $sql = "insert into employercc (EmployerUserName, CCNumber) values ('$username', '$ccNumber')";
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+    return false;
+}
+
+function insertApplicantCC($ccNumber, $username) {
+    $conn = connectDB();
+    $sql = "insert into applicantcc (ApplicantUserName, CCNumber) values ('$username', '$ccNumber')";
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+    return false;
+}
+
+function insertDebitCard($username, $baNumber, $instituteNumber, $branchNumber) {
+    global $accountType;
+    $conn = connectDB();
+    $flag = false;
+    $sql = "insert into padinfo (AccountNumber, InstituteNumber, BranchNumber, IsDefault, Auto_Manual) 
+            values ('$baNumber', '$instituteNumber', '$branchNumber', 0, 0)";
+    if (mysqli_query($conn, $sql)) {
+        $flag = true;
+    }
+
+    if ($flag) {
+        if (($accountType === 'employerPrime') || ($accountType === 'employerPrime')) {
+            if (insertEmployerPad($username, $baNumber)) return true;
+        } else {
+            if (insertApplicantPad($username, $baNumber)) return true;
+        }
+    }
+    return false;
+}
+
+// insert into employerpad table
+function insertEmployerPad($username, $baNumber) {
+    $conn = connectDB();
+    $sql = "insert into employerpad (EmployerUserName, AccountNumber) values ('$username', '$baNumber')";
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+    return false;
+}
+
+// insert into employerpad table
+function insertApplicantPad($username, $baNumber) {
+    $conn = connectDB();
+    $sql = "insert into applicantpad (ApplicantUserName, AccountNumber) values ('$username', '$baNumber')";
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+    return false;
+}
+
+
 
 ?>
 
@@ -193,24 +352,19 @@ function createAccount() {
         <form id="signUpForm" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
             <div class="row justify-content-center" style="margin-top: 50px">
                 <div class="col-8">
-                    <div class='form-group d-none' id='companyNameField'>
-                        <label for='companyName'><b>Company Name</b></label>
-                        <input type='text' class='form-control' id='companyName' placeholder='Enter Company Name'>
-                        <span class="error"></span>
-                    </div>
                     <div class='form-group'>
                         <label for='firstName'><b>First Name</b></label>
-                        <input type='text' class='form-control' id='firstName' placeholder='Enter first name' required>
+                        <input type='text' class='form-control' id='firstName' name='firstName' placeholder='Enter first name' required>
                         <span class="error"></span>
                     </div>
                     <div class='form-group'>
                         <label for='lastName'><b>Last Name</b></label>
-                        <input type='text' class='form-control' id='lastName' placeholder='Enter last name' required>
+                        <input type='text' class='form-control' id='lastName' name='lastName' placeholder='Enter last name' required>
                         <span class="error"></span>
                     </div>
                     <div class='form-group'>
                         <label for='number'><b>Number</b></label>
-                        <input type='text' class='form-control' id='number' placeholder='Enter phone number' required>
+                        <input type='text' class='form-control' id='number' name='number' placeholder='Enter phone number' required>
                         <span class="error"></span>
                     </div>
                     <div class="form-group">
@@ -238,6 +392,11 @@ function createAccount() {
                         <input type="password" class='form-control' placeholder="Re-enter password" id="confirmPass"
                                name="confirmPass"
                                value="" required>
+                        <span class="error"></span>
+                    </div>
+                    <div class='form-group d-none' id='companyNameField'>
+                        <label for='companyName'><b>Company Name</b></label>
+                        <input type='text' class='form-control' id='companyName' name='companyName' placeholder='Enter Company Name'>
                         <span class="error"></span>
                     </div>
                 </div>
@@ -289,10 +448,10 @@ function createAccount() {
                     </div>
 
                     <div class="form-group">
-                        <label for="ccName"><b>Cardholder Name</b></label>
-                        <input type="text" class='form-control' placeholder="Enter name" id="ccName" name="ccName"
-                               value="<?php echo $ccName; ?>">
-                        <span class="error"> <?php echo $ccNameErr; ?></span>
+                        <label for="ccbNumber"><b>CCB Number</b></label>
+                        <input type="text" class='form-control' placeholder="Enter CCB Number" id="ccbNumber" name="ccbNumber"
+                               value="<?php echo $ccbNumber; ?>">
+                        <span class="error"> <?php echo $ccbNumberErr; ?></span>
                     </div>
 
                     <div class="form-group">
@@ -326,11 +485,17 @@ function createAccount() {
                         <span class="error"> <?php echo $baNumberErr; ?></span>
                     </div>
                     <div class="form-group">
-                        <label for="transitNumber"><b>Transit Number</b></label>
+                        <label for="transitNumber"><b>Institute Number</b></label>
                         <input type="text" class='form-control' placeholder="Enter transit number" id="transitNumber"
                                name="transitNumber"
                                value="<?php echo $transitNumber ?>">
                         <span class="error"> <?php echo $transitNumberErr; ?></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="branchNumber"><b>Branch Number</b></label>
+                        <input type="text" class='form-control' placeholder="Enter transit number" id="branchNumber"
+                               name="branchNumber">
+                        <span class="error"></span>
                     </div>
                 </div>
             </div>
