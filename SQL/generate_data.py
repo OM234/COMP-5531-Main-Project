@@ -13,6 +13,7 @@ class AnEmployer:
         self.acategory = acategory
         self.email = email
         self.activated = True
+        self.numJobs = 0
 
 class ASeeker:
     def __init__(self, username, password, firstname, lastname, phnumber, balance, acategory, email):
@@ -305,17 +306,13 @@ def createJobs():
 
 def associateJobWithEmployer():
 
-    takenJobs = []
-
-    # for i in range (len(listOfEmployers)):
-    #     for j in range (r.randrange(1, 5)):
-    #         jobIndex = r.randrange(len(listOfJobs))
-    #         while listOfJobs[jobIndex] in takenJobs :
-    #             jobIndex = r.randrange(len(listOfJobs))
-    #         takenJobs.append(listOfJobs[jobIndex])
-    #         listOfJobs[i].empUserName = listOfEmployers[i].username
     for i in range (len(listOfJobs)):
-        listOfJobs[i].empUserName = listOfEmployers[r.randrange(len(listOfEmployers))].username
+        index = r.randrange(len(listOfEmployers))
+        while listOfEmployers[index].acategory == 'prime' and listOfEmployers[index].numJobs >= 5:
+            index = r.randrange(len(listOfEmployers))
+
+        listOfJobs[i].empUserName = listOfEmployers[index].username
+        listOfEmployers[index].numJobs = listOfEmployers[index].numJobs + 1
 
 def createJobIDs():
 
