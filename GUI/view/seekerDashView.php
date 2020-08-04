@@ -9,8 +9,8 @@
     <title>zz</title>
     <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="/GUI/css/dashboard.css" rel="stylesheet">
-    <script src="/GUI/js/dashboard.js"></script>
+    <link href="css/dashboard.css" rel="stylesheet">
+    <script src="js/dashboard.js"></script>
 </head>
 <body>
 <div class="container">
