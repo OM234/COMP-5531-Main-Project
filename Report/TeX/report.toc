@@ -19,4 +19,4 @@
 \contentsline {subsubsection}{\numberline {3.4.2}Employer Dashboard}{6}{subsubsection.3.4.2}%
 \contentsline {subsubsection}{\numberline {3.4.3}Job Seeker Dashboard}{7}{subsubsection.3.4.3}%
 \contentsline {subsubsection}{\numberline {3.4.4}Administrator Dashboard}{7}{subsubsection.3.4.4}%
-\contentsline {section}{\numberline {4}CONTRIBUTIONS}{8}{section.4}%
+\contentsline {section}{\numberline {4}CONTRIBUTIONS}{9}{section.4}%

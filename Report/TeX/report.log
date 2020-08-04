@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.8.2)  4 AUG 2020 14:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.8.2)  4 AUG 2020 16:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -784,57 +784,57 @@ l.86 \newpage
 <MVC.png, id=158, 362.35374pt x 181.67876pt>
 File: MVC.png Graphic file (type png)
 <use MVC.png>
-Package pdftex.def Info: MVC.png  used on input line 113.
+Package pdftex.def Info: MVC.png  used on input line 114.
 (pdftex.def)             Requested size: 253.64589pt x 127.17424pt.
  [3 <./MVC.png>] [4]
-Overfull \hbox (12.20917pt too wide) in paragraph at lines 151--152
+Overfull \hbox (12.20917pt too wide) in paragraph at lines 152--153
 \OT1/cmr/m/n/10.95 The file that con-tains the re-quested queries is ap-pro-pri
 -ately named `queries.sql'.
  []
 
-[5] [6] [7]
-Underfull \hbox (badness 10000) in paragraph at lines 181--193
+[5] [6] [7] [8]
+Underfull \hbox (badness 10000) in paragraph at lines 185--197
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 181--193
+Underfull \hbox (badness 10000) in paragraph at lines 185--197
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 181--193
+Underfull \hbox (badness 10000) in paragraph at lines 185--197
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 195--205
+Underfull \hbox (badness 10000) in paragraph at lines 199--209
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 195--205
+Underfull \hbox (badness 10000) in paragraph at lines 199--209
 
  []
 
-[8]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 209.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 209.
+[9]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 210.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 210.
  (./report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 209.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 209.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 210.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 210.
 Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: 324D46C3FA76DF93BCF97204BE524399;1510.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 209.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 210.
  ) 
 Here is how much of TeX's memory you used:
- 20245 strings out of 480906
- 373887 string characters out of 5912174
+ 20246 strings out of 480906
+ 373893 string characters out of 5912174
  650784 words of memory out of 5000000
  35386 multiletter control sequences out of 15000+600000
  542580 words of font info for 54 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 68i,6n,83p,698b,416s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 68i,5n,83p,698b,416s stack positions out of 5000i,500n,10000p,200000b,80000s
 <c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/tex
 live/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2020
 /texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb><c:/texlive/2020/texmf-
@@ -843,10 +843,10 @@ ts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/p
 ublic/amsfonts/cm/cmr12.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsf
 onts/cm/cmti10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/c
 mti12.pfb>
-Output written on report.pdf (9 pages, 166869 bytes).
+Output written on report.pdf (10 pages, 168415 bytes).
 PDF statistics:
- 224 PDF objects out of 1000 (max. 8388607)
- 183 compressed objects within 2 object streams
- 31 named destinations out of 1000 (max. 500000)
+ 228 PDF objects out of 1000 (max. 8388607)
+ 186 compressed objects within 2 object streams
+ 32 named destinations out of 1000 (max. 500000)
  287 words of extra memory for PDF output out of 10000 (max. 10000000)
 
