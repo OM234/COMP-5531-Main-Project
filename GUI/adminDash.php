@@ -11,7 +11,7 @@ if (!isset($_SESSION['isLogin']) || $_SESSION['isLogin'] == false) {
 /*********** Data models variables ***********************************************************************/
 $username = $_SESSION['username'];      // currently logged in user
 $accountType = $_SESSION['accountType'];  // current user account type, (job seeker, employer, admin)
-$maxSize = 5;
+$maxSize = 50;
 
 echo "username: $username&nbsp&nbsp&nbsp&nbsp";
 echo "accountType: $accountType<br>";
