@@ -1024,7 +1024,6 @@ function viewApplicationsOfJob($job)
             "           <button type='submit' name='op' value='deny' class='btn btn-warning'>Deny</button>" .
             "           <button type='submit' name='op' value='review' class='btn btn-secondary'>Review</button>" .
             "           <button type='submit' name='op' value='sendOffer' class='btn btn-primary'>Send Offer</button>" .
-            "           <button type='submit' name='op' value='hire' class='btn btn-success'>Hire</button>" .
             "           <button type='submit' name='op' value='delete' class='btn btn-danger m-2'>Delete</button>" .
             "           </form>" .
             "    </div>" .
