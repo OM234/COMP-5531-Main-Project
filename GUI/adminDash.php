@@ -551,21 +551,17 @@ function viewEmpContInfo($html , $data){
         "          <p><b>Representative Email: </b> $empRepEmail</p>" .
         "          <p><b>Representative Number: </b>$empRepNumber</p>" .
         "     </div>".
-        "     <div class='col-2 d-flex justify-content-center '>" .
+        "     <div class='col-2 d-flex justify-content-center flex-column align-items-center'>" .
         "          <form action='".$_SERVER['PHP_SELF']."?tab=deleteUser' method='post' onsubmit='return confirm(\"Sure to delete this user?\")'>" .
-        "               <button type='submit' name='' value='' class='btn btn-info'> Activate </button>" .
-        "               <button type='submit' name='' value='' class='btn btn-warning'> Deactivate </button>" .
         "               <button type='submit' name='username' value='$username' class='btn btn-danger'> Delete </button>" .
         "          </form>" .
+        "          <form action='".$_SERVER['PHP_SELF']."?tab=deleteUser' method='post' onsubmit='return confirm(\"Sure to activate this user?\")'>" .
+        "               <button type='submit' name='' value='' class='btn btn-info'> Activate </button>" .
+        "          </form>" .
+        "          <form action='".$_SERVER['PHP_SELF']."?tab=deleteUser' method='post' onsubmit='return confirm(\"Sure to deactivate this user?\")'>" .
+        "               <button type='submit' name='' value='' class='btn btn-warning'> Deactivate </button>" .
+        "          </form>" .
         "     </div>" .
-//        "         <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
-//        "              <label class='btn btn-success'>" .
-//        "                   <input type='radio' name='options' id='activate' autocomplete='off'> Activate" .
-//        "              </label>" .
-//        "              <label class='btn btn-warning'>" .
-//        "                   <input type='radio' name='options' id='deactivate' autocomplete='off'> Deactivate" .
-//        "              </label>" .
-//        "         </div>".
         "</div>";
 
     return $html;
@@ -584,21 +580,17 @@ function viewSeekerContInfo($html, $data) {
         "          <p><b>Job Seeker Email: </b> $seekerEmail</p>" .
         "          <p><b>Job Seeker Number: </b>$seekerNumber</p>" .
         "     </div>".
-        "    <div class='col-2 d-flex justify-content-center '>" .
+        "    <div class='col-2 d-flex justify-content-center flex-column align-items-center'>" .
         "         <form action='".$_SERVER['PHP_SELF']."?tab=deleteUser' method='post' onsubmit='return confirm(\"Sure to delete this user?\")'>" .
-        "               <button type='submit' name='' value='' class='btn btn-info'> Activate </button>" .
-        "               <button type='submit' name='' value='' class='btn btn-warning'> Deactivate </button>" .
         "            <button type='submit' name='username' value='$username' class='btn btn-danger'> Delete </button>" .
         "         </form>" .
+        "         <form action='".$_SERVER['PHP_SELF']."?tab=deleteUser' method='post' onsubmit='return confirm(\"Sure to activate this user?\")'>" .
+        "               <button type='submit' name='' value='' class='btn btn-info'> Activate </button>" .
+        "         </form>" .
+        "         <form action='".$_SERVER['PHP_SELF']."?tab=deleteUser' method='post' onsubmit='return confirm(\"Sure to deactivate this user?\")'>" .
+        "               <button type='submit' name='' value='' class='btn btn-warning'> Deactivate </button>" .
+        "         </form>" .
         "    </div>" .
-//        "         <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
-//        "              <label class='btn btn-success'>" .
-//        "                   <input type='radio' name='options' id='activate' autocomplete='off'> Activate" .
-//        "              </label>" .
-//        "              <label class='btn btn-warning'>" .
-//        "                   <input type='radio' name='options' id='deactivate' autocomplete='off'> Deactivate" .
-//        "              </label>" .
-//        "         </div>".
     "</div>";
 
     return $html;
