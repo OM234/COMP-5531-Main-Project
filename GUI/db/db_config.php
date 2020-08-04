@@ -11,9 +11,25 @@ function connectDB() {
     return $conn;
 }
 
+//function connectDB() {
+//    $servername = "cxc5531.encs.concordia.ca";
+//    $username = "cxc55311";
+//    $password = "pa1234ss";
+//    $dbname = "cxc55311";
+//    $conn = mysqli_connect($servername, $username, $password, $dbname);
+//    if (mysqli_connect_errno()) {
+//        echo "Failed to connect to database.";
+//        exit();
+//    } else {
+//        echo "Connect to database success";
+//    }
+//    return $conn;
+//}
+
 function closeDB($conn) {
     mysqli_close($conn);
 }
+
 
 
 //$conn = connectDB();

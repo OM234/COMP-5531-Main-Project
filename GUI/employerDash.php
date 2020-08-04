@@ -18,6 +18,7 @@ $accountStatus = getAccountStatus($username);  // get account status, true(activ
 $accountBalance = getAccountBalance($username);  // get account balance
 $monthlyCharge= getMonthlyCharge($userCategory);
 $jobCategories = getJobCategoriesByUsername($username); // get job categories, Technical ...
+$numOfPostedJobs = getNumOfPostedJobs($username);
 $_SESSION['jobcategories'] = $jobCategories;  // for cross file data transfer
 $paymentInfo = getPaymentInfo();  // payments
 $autoPay = getAutoOrManual($username);    // auto payment or maunal payment, true for auto.
@@ -27,6 +28,7 @@ echo "username: $username &nbsp&nbsp&nbsp&nbsp";
 echo "category: $userCategory&nbsp&nbsp&nbsp&nbsp";
 echo "autoPayment: $autoPayString&nbsp&nbsp&nbsp&nbsp";
 echo "accountStatus: $accountStatus&nbsp&nbsp&nbsp&nbsp";
+echo "numberOfPostedJobs: $numOfPostedJobs<br>";
 echo "<br>";
 
 /************** End of data models ************************************************************************/
@@ -63,18 +65,30 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
                 break;
             case "viewJobs":  // view posted jobs
                 if ($accountStatus) {
-                    $postedJobsData = getPostedJobsData();
-                    showPostedJobs($postedJobsData);
+                    if (isset($_GET['jobCategory'])) {
+                        $jobCategory = $_GET['jobCategory'];
+                        $jobsOfCategory = getJobsOfCategoryByUsername($jobCategory);
+                        showPostedJobs($jobsOfCategory);
+                    }
+                    else {
+                        $postedJobsData = getPostedJobsData();
+                        showPostedJobs($postedJobsData);
+                    }
                 } else {
                     echo "<script>alert('Your account has been deactivated, please go to Account Settings to reactive!')</script>";
                 }
                 break;
             case "postJob":  // post a job
-                if ($accountStatus) {
-                    $categories = getJobCategoriesByUsername($username);
-                    showPostJobForm();
-                } else {
-                    echo "<script>alert('Your account has been deactivated, please go to Account Settings to reactive!')</script>";
+                if (!checkJobNum()) {
+                    echo "<script>alert('Employer of prime category can only post up to 5 jobs!')</script>";
+                }
+                else {
+                    if ($accountStatus) {
+                        $categories = getJobCategoriesByUsername($username);
+                        showPostJobForm();
+                    } else {
+                        echo "<script>alert('Your account has been deactivated, please go to Account Settings to reactive!')</script>";
+                    }
                 }
                 break;
             case "viewApplications":
@@ -116,6 +130,14 @@ function showApplications()
     }
     echo "<script>document.getElementById('viewApplications').innerHTML = \"". $html ."\"</script>";
 
+}
+
+// check posted job numbers and employer category
+function checkJobNum() {
+     global $numOfPostedJobs;
+     global $userCategory;
+     if ($userCategory === 'prime' && $numOfPostedJobs >= 5) return false;
+     else return true;
 }
 
 
@@ -181,8 +203,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if (isset($_POST['downgrade'])) {
                 echo "downgrade to: ". $_POST['downgrade'] . "<br>" ;
                 $category = $_POST['downgrade'];
-                if (changeUserCategory($category)) echo "operation success<br>";
-                else echo "operation failed<br>";
+                if ($numOfPostedJobs > 5) {
+                    echo "<script>alert('You have more than 5 posted jobs, cannot downgrade to prime, pleas delete some posted jobs!')</script>";
+                }
+                else {
+                    if (changeUserCategory($category)) echo "operation success<br>";
+                    else echo "operation failed<br>";
+                }
             }
             if (isset($_POST['auto'])) {
                 echo "Change auto payment to auto? : ". $_POST['auto'] . "<br>";
@@ -623,6 +650,39 @@ function getJobCategoriesByUsername($username) {
     }
     return $categories;
 }
+// get all jobs posted by user of one category
+function getJobsOfCategoryByUsername($jobCategory) {
+    global $username;
+    $data = array();
+
+    $conn = connectDB();
+    $sql = "select * from job where EmployerUserName = '$username' and Category = '$jobCategory'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $job = array("jobID" =>$row["JobID"], "title"=>$row["Title"], "datePosted"=>$row["DatePosted"], "category"=>$row["Category"],
+                "description"=>$row["Description"], "numOfOpenings"=>$row["EmpNeeded"]);
+            $jobStatus = ($row["JobStatus"] == 1) ? "open" : "closed";
+            $numOfApplications = getNumOfApplications($row["JobID"]);
+            $numOfHires = getNumOfHires($row["JobID"]);
+            $job["jobStatus"] = $jobStatus;
+            $job["numOfApplications"] = $numOfApplications;
+            $job["numOfHires"] = $numOfHires;
+            array_push($data, $job);
+        }
+    }
+    return $data;
+}
+
+// get number of posted jobs
+function getNumOfPostedJobs($username) {
+    $conn = connectDB();
+    $sql = "select count(*) as n from job where EmployerUserName = '$username'";
+    $result = mysqli_query($conn, $sql);
+    if ($result->num_rows > 0) {
+        return $result->fetch_assoc()['n'];
+    }
+}
 
 // insert a job into database, return true if insert successfully.
 function insertJob($data) {
@@ -935,23 +995,28 @@ function showPostJobForm() {
 
 // show posted jobs in "viewJobs" tab
 function showPostedJobs($postedJobsData) {
+    global $jobCategories;
+
     $html =
         "<div class='row justify-content-center'>".
-        "    <div class = 'col-3'>".
+        "    <div class = 'col-4'>".
+        "    <form action='".$_SERVER['PHP_SELF']."'>" .
         "       <div class='form-group text-center'>" .
         "            <label for='selectCategory'>Select category:</label>" .
-        "            <select class='form-control'' id='selectCategory'>" .
+        "            <select class='form-control' id='selectCategory' name='jobCategory'>" .
         "                 <option>...</option>";
 
-    for($i = 0; $i < 5 /*TODO: count of categories*/; $i++) {
+    for($i = 0; $i < count($jobCategories); $i++) {
 
-        $category = "category";
+        $category = $jobCategories[$i];
         $html .=
-        "                 <option>$category</option>";
+        "                 <option value='$category'>$category</option>";
     }
     $html .=
         "            </select>" .
         "      </div>".
+        "   <button class='btn btn-primary' type='submit' name='tab' value='viewJobs'>Submit</button>" .
+        "   </form>" .
         "   </div>".
         "</div>";
 
