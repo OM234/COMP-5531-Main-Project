@@ -102,6 +102,11 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         $data = getEmpContInfo($empUserName);
         viewEmpContInfo($data);
     }
+
+    if (isset($_GET['search'])) {
+        $searchedJob = getSearchedJobs($_GET['search']);
+        showPostedJobs($searchedJob);
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
@@ -412,6 +417,30 @@ function getNumOfAppliedJobs($username) {
     if ($result->num_rows > 0) {
         return $result->fetch_assoc()['n'];
     }
+}
+
+
+//Fetching all job based on the search string
+function getSearchedJobs($searchString)
+{
+    $data = array();
+
+    $conn = connectDB();
+    $sql = "SELECT * FROM job WHERE title LIKE '%$searchString%'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $job = array("jobID" => $row["JobID"], "title" => $row["Title"], "datePosted" => $row["DatePosted"], "category" => $row["Category"],
+                "description" => $row["Description"], "numOfOpenings" => $row["EmpNeeded"], "employerUserName" => $row["EmployerUserName"]);
+            $jobStatus = ($row["JobStatus"] == 1) ? "open" : "closed";
+            $employerName = getEmployerName($row["EmployerUserName"]);
+            $job["jobStatus"] = $jobStatus;
+            $job["employerName"] = $employerName;
+            array_push($data, $job);
+        }
+    }
+    return $data;
+
 }
 
 

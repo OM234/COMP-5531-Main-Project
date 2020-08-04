@@ -42,6 +42,14 @@
             </ul>
         </div>
     </nav>
+    <div>
+        <form action="seekerDash.php" method="GET">
+            <div class="form-group">
+                <input type="search" class="form-control" name="search" id="jobSearch" />
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
     <div class="row justify-content-center m-1 d-none" id ="accSettingsNavbar">
         <div class='col-8'>
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
