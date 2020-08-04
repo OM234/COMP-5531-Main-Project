@@ -56,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
                 session_destroy();
                 break;
             case "viewJobs": // view posted jobs
+                echo "<script>document.getElementById('jobSearch').classList.remove('d-none');</script>";
                 if ($accountStatus) {
                     if (isset($_GET['jobCategory'])) {
                         $jobCategory = $_GET['jobCategory'];

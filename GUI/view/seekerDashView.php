@@ -42,10 +42,10 @@
             </ul>
         </div>
     </nav>
-    <div>
-      <form action="seekerDash.php" method="GET">
+    <div class="d-none" id="jobSearch">
+      <form action="seekerDash.php?tab=viewJobs" method="GET">
         <div class="form-group">
-          <input type="search" class="form-control" name="search" id="jobSearch" />
+          <input type="search" class="form-control" name="search"/>
         </div>
         <button type="submit" class="btn btn-primary">Search</button>
       </form>
@@ -81,7 +81,7 @@
             </nav>
         </div>
     </div>
-    <div id="viewJobs"> </div>
+    <div id="viewJobs"></div>
     <div id="accountSettings" class="container"></div>
 </div>
 <script src="assets/js/jquery.min.js"></script>
