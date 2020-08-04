@@ -548,6 +548,8 @@ function viewEmpContInfo($html , $data){
         "     </div>".
         "     <div class='col-2 d-flex justify-content-center '>" .
         "          <form action='".$_SERVER['PHP_SELF']."?tab=deleteUser' method='post' onsubmit='return confirm(\"Sure to delete this user?\")'>" .
+        "               <button type='submit' name='' value='' class='btn btn-info'> Activate </button>" .
+        "               <button type='submit' name='' value='' class='btn btn-warning'> Deactivate </button>" .
         "               <button type='submit' name='username' value='$username' class='btn btn-danger'> Delete </button>" .
         "          </form>" .
         "     </div>" .
@@ -579,6 +581,8 @@ function viewSeekerContInfo($html, $data) {
         "     </div>".
         "    <div class='col-2 d-flex justify-content-center '>" .
         "         <form action='".$_SERVER['PHP_SELF']."?tab=deleteUser' method='post' onsubmit='return confirm(\"Sure to delete this user?\")'>" .
+        "               <button type='submit' name='' value='' class='btn btn-info'> Activate </button>" .
+        "               <button type='submit' name='' value='' class='btn btn-warning'> Deactivate </button>" .
         "            <button type='submit' name='username' value='$username' class='btn btn-danger'> Delete </button>" .
         "         </form>" .
         "    </div>" .
