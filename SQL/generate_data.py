@@ -25,6 +25,7 @@ class ASeeker:
         self.category = acategory
         self.email = email
         self.activated = True
+        self.numApplications = 0
 
 class AnAdmin:
     def __init__(self, username, password, firstname, lastname, phnumber, email):
@@ -70,10 +71,10 @@ class PAD:
         self.auto_manual = 0
 
 
-numEmployers = 50
+numEmployers = 100
 numAdmins = 10
-numSeekers = 100
-numJobs = numSeekers
+numSeekers = numEmployers * 5
+numJobs = numEmployers * 10
 numCreditCards = (numEmployers + numSeekers) * 5
 numPAD = (numEmployers + numSeekers) * 5
 numUsers = numEmployers + numAdmins + numSeekers
@@ -562,10 +563,14 @@ def createApplications():
 
 def getApplicationApplicantUserName(applicants, application):
 
-    applicantUserName = listOfSeekers[r.randrange(len(listOfSeekers))].username
-    while applicantUserName in applicants:
-        applicantUserName = listOfSeekers[r.randrange(len(listOfSeekers))].username
+    index = r.randrange(len(listOfSeekers))
+    applicantUserName = listOfSeekers[index].username
+    while (applicantUserName in applicants) or (listOfSeekers[index].acategory == 'basic') or \
+            (listOfSeekers[index].acategory == 'prime' and listOfSeekers[index].numApplications >= 5):
+        index = r.randrange(len(listOfSeekers))
+        applicantUserName = listOfSeekers[index].username
     application.appUserName = applicantUserName
+    listOfSeekers[index].numApplications = listOfSeekers[index].numApplications + 1
     applicants.append(applicantUserName)
 
 
