@@ -453,7 +453,7 @@ function withdrawApplication($jobID, $username) {
 
 function acceptApplication($jobID, $username) {
     $conn = connectDB();
-    $sql = "update application set ApplicationStatus = 'accepted' 
+    $sql = "update application set ApplicationStatus = 'hired' 
             where ApplicantUserName = '$username' and JobID = $jobID";
     if (mysqli_query($conn, $sql)) return true;
     else return false;

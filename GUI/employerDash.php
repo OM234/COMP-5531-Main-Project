@@ -744,11 +744,7 @@ function changeApplicationStatus($appName, $jobID, $operation) {
                 where ApplicantUserName = '$appName' and JobID = $jobID";
     }
     else if ($operation === "sendOffer") {
-        $sql = "update application set ApplicationStatus = 'sent'
-                where ApplicantUserName = '$appName' and JobID = $jobID";
-    }
-    else if ($operation === "hire") {
-        $sql = "update application set ApplicationStatus = 'hired'
+        $sql = "update application set ApplicationStatus = 'accepted'
                 where ApplicantUserName = '$appName' and JobID = $jobID";
     }
     else if ($operation === "delete") {
