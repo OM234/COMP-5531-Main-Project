@@ -546,7 +546,7 @@ def createCreditAndPADDefaultAndAuto():
 
 def createApplications():
 
-    applicationStatus = ['denied', 'review', 'sent', 'accepted', 'hired']
+    applicationStatus = ['denied', 'review', 'sent', 'hired']
 
     for i in range(len(listOfJobs)):
         applicants = []
