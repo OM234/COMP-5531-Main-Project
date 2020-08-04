@@ -5,8 +5,8 @@ use cxc55311;
 INSERT INTO User(UserName, FirstName, LastName, Email, ContactNumber, Password)
 VALUES ('Xavier_K67', 'Xavier', 'Kelp', 'XavierKelp34@coldmail.com', '514-675-2345', 'xylophone454');
 
-INSERT INTO Employer(UserName, EmployerName, AccStatus, Category, Balance)
-VALUES ('Xavier_K67', 'Microsoft Corporation', '1', 'gold', '675.23');
+INSERT INTO Employer(UserName, EmployerName, Activated, Category, Balance)
+VALUES ('Xavier_K67', 'Microsoft Corporation', true, 'gold', '675.23');
 
 DELETE FROM Employer
 WHERE UserName = 'Xavier_K67';
@@ -31,8 +31,8 @@ LIMIT 1;
 INSERT INTO User(UserName, FirstName, LastName, Email, ContactNumber, Password)
 VALUES ('Xavier_K67', 'Xavier', 'Kelp', 'XavierKelp34@coldmail.com', '514-675-2345', 'xylophone454');
 
-INSERT INTO Employer(UserName, EmployerName, AccStatus, Category, Balance)
-VALUES ('Xavier_K67', 'Microsoft Corporation', '1', 'prime', '675.23');
+INSERT INTO Employer(UserName, EmployerName, Activated, Category, Balance)
+VALUES ('Xavier_K67', 'Microsoft Corporation', true, 'prime', '675.23');
 
 UPDATE Employer
 SET Category = null
@@ -77,8 +77,8 @@ WHERE (job.DatePosted BETWEEN '2020-04-26' AND '2020-11-08') AND application.Job
 INSERT INTO User(UserName, FirstName, LastName, Email, ContactNumber, Password)
 VALUES ('Zack_B67', 'Zack', 'Bael', 'ZackBael61@hmail.com', '438-634-9835', 'couch872');
 
-INSERT INTO Applicant(UserName, AccStatus, Category, Balance)
-VALUES ('Zack_B67', '1', 'basic', '34.55');
+INSERT INTO Applicant(UserName, Activated, Category, Balance)
+VALUES ('Zack_B67', true, 'basic', '34.55');
 
 DELETE FROM applicant
 WHERE UserName = 'Zack_B67';
@@ -192,7 +192,7 @@ WHERE ApplicantUserName = 'Frances_M45';
 UPDATE applicantcc
 SET CCNUMBER = '827390457394827812'
 WHERE CCNumber IN (SELECT creditcardinfo.CCNumber FROM creditcardinfo WHERE Auto_Manual = '1' AND
-                                                                            CCNumber = '0729363628516973')
+                                                                            CCNumber = '0729363628516973');
 
 # xvi. Make a manual payment by a user.
 
