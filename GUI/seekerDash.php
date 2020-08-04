@@ -17,6 +17,7 @@ $accountStatus = getAccountStatus($username);  // get account status, true(activ
 $accountBalance = getAccountBalance($username);  // get account balance
 $monthlyCharge= getMonthlyCharge($userCategory);
 $jobCategories = getAllJobCategories();
+$numOfAppliedJobs = getNumOfAppliedJobs($username);
 $paymentInfo = getPaymentInfo();
 $autoPay = getAutoOrManual($username);    // auto payment or maunal payment, true for auto.
 $autoPayString = $autoPay ? "auto": "manual";
@@ -26,6 +27,7 @@ echo "accountType: $accountType &nbsp&nbsp&nbsp&nbsp";
 echo "category: $userCategory&nbsp&nbsp&nbsp&nbsp";
 echo "autoPayment: $autoPayString&nbsp&nbsp&nbsp&nbsp";
 echo "accountStatus: $accountStatus&nbsp&nbsp&nbsp&nbsp";
+echo "numOfAppliedJobs: $numOfAppliedJobs<br>";
 echo "<br>";
 /************** End of data models ************************************************************************/
 
@@ -108,10 +110,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     switch ($tab) {
         case "applyjob":
-            $jobID = $_POST['applyJobID'];
-            echo "apply job ID: " .$jobID . "<br>";
-            if (applyJob($jobID, $username)) echo "operation success<br>";
-            else echo "operation failed<br>";
+            if ($userCategory === 'basic') {
+                echo "<script>alert('You are in basic category, cannot apply for jobs!')</script>";
+            } else if ($userCategory === 'prime' && $numOfAppliedJobs >= 5) {
+                echo "<script>alert('You are in prime category, the number of applied jobs exceed 5!')</script>";
+            } else {
+                $jobID = $_POST['applyJobID'];
+                echo "apply job ID: " . $jobID . "<br>";
+                if (applyJob($jobID, $username)) echo "operation success<br>";
+                else echo "operation failed<br>";
+            }
             echo "<a href='seekerDash.php?tab=viewApplications'>view applications</a>";
             break;
 
@@ -221,14 +229,22 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if (isset($_POST['downgrade'])) {
                 echo "downgrade to: ". $_POST['downgrade'] . "<br>" ;
                 $category = $_POST['downgrade'];
-                if (changeUserCategory($category)) echo "operation success<br>";
-                else echo "operation failed<br>";
+                if ($numOfAppliedJobs > 5) {
+                    echo "<script>alert('You cannot downgrade to prime, number of applied jobs exceed 5!')</script>";
+                } else {
+                    if (changeUserCategory($category)) echo "operation success<br>";
+                    else echo "operation failed<br>";
+                }
             }
             if (isset($_POST['basic'])) {
                 echo "downgrade to: " . $_POST['basic'] . "<br>";
                 $category = $_POST['basic'];
-                if (changeUserCategory($category)) echo "operation success<br>";
-                else echo "operation failed<br>";
+                if ($numOfAppliedJobs > 0) {
+                    echo "<script>alert('You cannot downgrade to basic, you have some job applications.')</script>";
+                } else {
+                    if (changeUserCategory($category)) echo "operation success<br>";
+                    else echo "operation failed<br>";
+                }
             }
             if (isset($_POST['auto'])) {
                 echo "Change auto payment to auto? : ". $_POST['auto'] . "<br>";
@@ -387,6 +403,15 @@ function getAppliedJobsData($username) {
         }
     }
     return $data;
+}
+
+function getNumOfAppliedJobs($username) {
+    $conn = connectDB();
+    $sql = "select count(*) as n from application where ApplicantUserName = '$username'";
+    $result = mysqli_query($conn, $sql);
+    if ($result->num_rows > 0) {
+        return $result->fetch_assoc()['n'];
+    }
 }
 
 
