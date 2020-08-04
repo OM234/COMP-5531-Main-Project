@@ -1024,7 +1024,6 @@ function viewApplicationsOfJob($job)
             "           <button type='submit' name='op' value='deny' class='btn btn-warning'>Deny</button>" .
             "           <button type='submit' name='op' value='review' class='btn btn-secondary'>Review</button>" .
             "           <button type='submit' name='op' value='sendOffer' class='btn btn-primary'>Send Offer</button>" .
-            "           <button type='submit' name='op' value='hire' class='btn btn-success'>Hire</button>" .
             "           <button type='submit' name='op' value='delete' class='btn btn-danger m-2'>Delete</button>" .
             "           </form>" .
             "    </div>" .
@@ -1227,23 +1226,11 @@ function getEmployerCategoryHTML(string $html): string
         "<div class = 'row justify-content-center'>" .
         "     <div class = 'col-8'>" .
         "          <div><b>Employer Category: $userCategory</b></div>" .
-        "          <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
-        "               <label class='btn btn-secondary' data-toggle='tooltip' data-placement='top' title='$toolTipEmpPrime'>" .
-        "                    <input type='radio' name='options' id='employerPrime' autocomplete='off' $isPrime> Employer Prime" .
-        "               </label>" .
-        "               <label class='btn btn-warning' data-toggle='tooltip' data-placement='top' title='$toolTipEmpGold'>" .
-        "                    <input type='radio' name='options' id='employerGold' autocomplete='off' $isGold> Employer Gold" .
-        "               </label>" .
-        "          </div> <br>" .
+        "       <form action='" . $_SERVER['PHP_SELF'] . "?tab=changeAccBalance' method='post'>" .
+        "          <button type='submit' class='btn btn-secondary' name='downgrade' value='prime'>Downgrade to Prime</button>" .
+        "          <button type='submit' class='btn btn-warning' name='upgrade' value='gold'>Upgrade to Gold</button>" .
+        "       </form>" .
         "     </div>" .
-        "</div>".
-        "<div class = 'row justify-content-center mt-3'>".
-        "    <div class='col-8'>".
-        "       <form action='".$_SERVER['PHP_SELF']."?tab=changeAccBalance' method='post'>".
-        "          <button type='submit' class='btn-primary' name='downgrade' value='prime'>Downgrade to Prime</button>".
-        "          <button type='submit' class='btn-primary' name='upgrade' value='gold'>Upgrade to Gold</button>".
-        "       </form>".
-        "    </div>".
         "</div>";
     return $html;
 }
@@ -1262,15 +1249,11 @@ function getMonthlyPaymentRadioButtonsHTML(string $html): string
         "<div class = 'row justify-content-center'>" .
         "     <div class = 'col-8'>" .
         "          <div><b>Payment Method : $paymentMethod</b></div>" .
+        "       <form action='" . $_SERVER['PHP_SELF'] . "?tab=changeAccBalance' method='post'>" .
+        "          <button type='submit' class='btn btn-info' name='auto' value='true'>Change to Auto payment</button>" .
+        "          <button type='submit' class='btn btn-info' name='auto' value='false'>Change to Manual payment</button>" .
+        "       </form>" .
         "     </div>" .
-        "</div>" .
-        "<div class='row justify-content-center mt-3'>".
-        "   <div class='col-8'>".
-        "       <form action='".$_SERVER['PHP_SELF']."?tab=changeAccBalance' method='post'>".
-        "          <button type='submit' class='btn-primary' name='auto' value='true'>Change to Auto payment</button>".
-        "          <button type='submit' class='btn-primary' name='auto' value='false'>Change to Manual payment</button>".
-        "       </form>".
-        "   </div>".
         "</div>";
 
     return $html;

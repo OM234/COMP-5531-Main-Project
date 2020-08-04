@@ -1152,8 +1152,8 @@ function showContactInfo()
     echo "<script>document.getElementById('accountSettings').innerHTML = \"" . $html . "\"</script>";
 }
 
-function showAccBalance()
-{
+function showAccBalance() {
+
     global $accountBalance;
 
     $html = getBalanceHTML($accountBalance);
@@ -1181,6 +1181,7 @@ function getSeekerCategoryHTML(string $html): string
         "<div class = 'row justify-content-center'>" .
         "     <div class = 'col-8'>" .
         "          <div><b>Job Seeker Category: $userCategory</b></div>" .
+<<<<<<< HEAD
         "          <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
         "               <label class='btn btn-secondary' data-toggle='tooltip' data-placement='top' title='$toolTipSeekerBasic'>" .
         "                    <input type='radio' name='options' id='seekerBasic' autocomplete='off'> Job Seeker Basic" .
@@ -1202,6 +1203,14 @@ function getSeekerCategoryHTML(string $html): string
         "          <button type='submit' class='btn-primary' name='basic' value='basic'>Downgrad to Basic</button>" .
         "       </form>" .
         "    </div>" .
+=======
+        "       <form action='".$_SERVER['PHP_SELF']."?tab=changeAccBalance' method='post'>".
+        "          <button type='submit' class='btn btn-secondary' name='basic' value='basic'>Change to Basic</button>".
+        "          <button type='submit' class='btn btn-info' name='downgrade' value='prime'>Change to Prime</button>".
+        "          <button type='submit' class='btn btn-warning' name='upgrade' value='gold'>Change to Gold</button>".
+        "       </form>".
+        "     </div>" .
+>>>>>>> c37a24fbca4f1321fff861170293edf1ff0d0c2c
         "</div>";
 
     return $html;
@@ -1221,6 +1230,7 @@ function getMonthlyPaymentRadioButtonsHTML(string $html): string
         "          <div><b>Payment Method: $paymentMethod</b></div>" .
         "     </div>" .
         "</div>" .
+<<<<<<< HEAD
         "<div class='row justify-content-center mt-3'>" .
         "   <div class='col-8'>" .
         "       <form action='" . $_SERVER['PHP_SELF'] . "?tab=changeAccBalance' method='post'>" .
@@ -1228,6 +1238,15 @@ function getMonthlyPaymentRadioButtonsHTML(string $html): string
         "          <button type='submit' class='btn-primary' name='auto' value='false'>Change to Manual payment</button>" .
         "       </form>" .
         "   </div>" .
+=======
+        "<div class='row justify-content-center mt-3'>".
+        "   <div class='col-8'>".
+        "       <form action='".$_SERVER['PHP_SELF']."?tab=changeAccBalance' method='post'>".
+        "          <button type='submit' class='btn btn-info' name='auto' value='true'>Change to Auto payment</button>".
+        "          <button type='submit' class='btn btn-info' name='auto' value='false'>Change to Manual payment</button>".
+        "       </form>".
+        "     </div>" .
+>>>>>>> c37a24fbca4f1321fff861170293edf1ff0d0c2c
         "</div>";
 
     return $html;
