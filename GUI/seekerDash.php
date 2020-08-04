@@ -57,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         switch ($tab) {
             case "signout":
                 session_destroy();
+                goToPage("/GUI/index.php");
                 break;
             case "viewJobs":  // view posted jobs
                 if ($accountStatus) {
@@ -1176,3 +1177,9 @@ function showPasswordChange() {
 
     echo "<script>document.getElementById('accountSettings').innerHTML = \"". $html ."\"</script>";
 }
+
+function goToPage($url) {
+    echo "<script>window.location.href = '$url'</script>";
+}
+
+

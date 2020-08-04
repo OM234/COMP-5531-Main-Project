@@ -62,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         switch ($tab) {
             case "signout":
                 session_destroy();
+                goToPage("/GUI/index.php");
                 break;
             case "viewJobs":  // view posted jobs
                 if ($accountStatus) {

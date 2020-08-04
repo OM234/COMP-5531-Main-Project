@@ -39,6 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         }
 
         switch ($tab) {
+            case "signout":
+                session_destroy();
+                goToPage("/GUI/index.php");
+                break;
+
             case "viewJobs":  // view posted jobs
                 $postedJobsData = getPostedJobsData();
                 showPostedJobs($postedJobsData);
@@ -598,3 +603,8 @@ function viewSeekerContInfo($html, $data) {
 
     return $html;
 }
+
+function goToPage($url) {
+    echo "<script>window.location.href = '$url'</script>";
+}
+
