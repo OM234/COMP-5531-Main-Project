@@ -1,0 +1,21 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Database Design}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Entity-Relation Diagram}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{E/R Diagram to Relation Conversions}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Functional Dependencies}{section.2}% 5
+\BOOKMARK [3][-]{subsubsection.2.3.1}{Normalization}{subsection.2.3}% 6
+\BOOKMARK [1][-]{section.3}{Web Portal Functionalities}{}% 7
+\BOOKMARK [2][-]{subsection.3.1}{Software Design \046 Architecture}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.2}{Front-End Development}{section.3}% 9
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Landing Page}{subsection.3.2}% 10
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Dashboards}{subsection.3.2}% 11
+\BOOKMARK [2][-]{subsection.3.3}{MySQL Database Implementation}{section.3}% 12
+\BOOKMARK [3][-]{subsubsection.3.3.1}{Generating Data}{subsection.3.3}% 13
+\BOOKMARK [3][-]{subsubsection.3.3.2}{Creating Tables \046 Inserting Data}{subsection.3.3}% 14
+\BOOKMARK [3][-]{subsubsection.3.3.3}{SQL Queries}{subsection.3.3}% 15
+\BOOKMARK [2][-]{subsection.3.4}{Back-End Development}{section.3}% 16
+\BOOKMARK [3][-]{subsubsection.3.4.1}{Sign Up \046 Login}{subsection.3.4}% 17
+\BOOKMARK [3][-]{subsubsection.3.4.2}{Employer Dashboard}{subsection.3.4}% 18
+\BOOKMARK [3][-]{subsubsection.3.4.3}{Job Seeker Dashboard}{subsection.3.4}% 19
+\BOOKMARK [3][-]{subsubsection.3.4.4}{Administrator Dashboard}{subsection.3.4}% 20
+\BOOKMARK [1][-]{section.4}{CONTRIBUTIONS}{}% 21
