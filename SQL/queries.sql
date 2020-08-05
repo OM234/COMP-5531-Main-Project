@@ -239,35 +239,12 @@ FROM user natural join employer;
 
 # xviii. Report of all outstanding balance accounts
 
-# applicants
-
 SELECT UserName, email, balance
 FROM user
 natural join applicant
-WHERE balance < 0;
-
-# employers
-
+WHERE balance < 0
+UNION
 SELECT UserName, email, Balance
 from user
 natural join employer
 WHERE Balance < 0;
-
-# Select user.UserName, email, T.balance
-# FROM user,
-#      (SELECT balance FROM applicant, user WHERE user.UserName = applicant.UserName and balance < 0
-#      UNION ALL
-#      SELECT balance FROM employer, user WHERE user.UserName = employer.UserName and balance < 0) as T;
-
-# natural join
-# (SELECT applicant.balance
-# FROM applicant
-# WHERE balance < 0
-# UNION ALL
-# SELECT employer.balance
-# FROM employer) as T1;
-
-# SELECT user.UserName, email, employer.balance, applicant.balance
-# FROM employer, applicant
-# NATURAL JOIN user
-# WHERE employer.balance < 0 and applicant.balance < 0;
