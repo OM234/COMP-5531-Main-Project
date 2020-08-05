@@ -14,9 +14,9 @@
 \contentsline {subsubsection}{\numberline {3.3.1}Generating Data}{5}{subsubsection.3.3.1}%
 \contentsline {subsubsection}{\numberline {3.3.2}Creating Tables \& Inserting Data}{5}{subsubsection.3.3.2}%
 \contentsline {subsubsection}{\numberline {3.3.3}SQL Queries}{6}{subsubsection.3.3.3}%
-\contentsline {subsection}{\numberline {3.4}Back-End Development}{7}{subsection.3.4}%
-\contentsline {subsubsection}{\numberline {3.4.1}Sign Up \& Login}{7}{subsubsection.3.4.1}%
-\contentsline {subsubsection}{\numberline {3.4.2}Employer Dashboard}{8}{subsubsection.3.4.2}%
-\contentsline {subsubsection}{\numberline {3.4.3}Job Seeker Dashboard}{8}{subsubsection.3.4.3}%
-\contentsline {subsubsection}{\numberline {3.4.4}Administrator Dashboard}{9}{subsubsection.3.4.4}%
-\contentsline {section}{\numberline {4}CONTRIBUTIONS}{10}{section.4}%
+\contentsline {subsection}{\numberline {3.4}Back-End Development}{9}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {3.4.1}Sign Up \& Login}{9}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.2}Employer Dashboard}{9}{subsubsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.3}Job Seeker Dashboard}{10}{subsubsection.3.4.3}%
+\contentsline {subsubsection}{\numberline {3.4.4}Administrator Dashboard}{10}{subsubsection.3.4.4}%
+\contentsline {section}{\numberline {4}CONTRIBUTIONS}{11}{section.4}%

@@ -150,7 +150,7 @@ The files `create\_tables.sql' and `insert\_data.sql' create the database tables
 \subsubsection{SQL Queries}
 
 The file that contains the requested queries is appropriately named `queries.sql'. Some of the queries merely request the manipulation of one record. Such as deleting a user, inserting a user, or posting one job position. All eighteen queries demanded in the main project requirements documented are listed here and labelled with appropriate comments. \par 
-The following queries from the requirements document were hand picked to show five tuples, as requested. They were chosen because only these four queries from the document actually demand for a plurality (more than one) tuple. \\
+The following queries from the requirements document were hand picked to show exactly five tuples, as requested. They were chosen because only these four queries from the document actually demand for a plurality (more than one) tuple. \\
 \\
 \underline{\textbf{vi.}} Report of posted jobs by an employer during a specific period of time (Job title, date posted, short description, of the job up to 50 characters, number of needed employees to the post, number of applied jobs to the post, number of accepted offers). \\
 
@@ -180,10 +180,9 @@ numberOfHires where UltimateSoftwareJobs.SoJobs = numberOfHires.HireTitle
 GROUP BY SoJobs;
 \end{verbatim}
 
-\begin{table}[]
+\begin{table}[!htbp]
 \begin{tabular}{lllllll}
 \textbf{Job\_Title}  & \textbf{DatePosted}  & \textbf{EmpNeeded} & \textbf{EmployerName} &  & \\
-Oven Heater                   & 2020-10-26  & 1 & Ultimate Software & 0 & 6 \\
 Electronic Wirer              & 2020-03-27 & 2 & Ultimate Software & 0 & 4 \\
 Political Research Scientist  & 2020-08-13 & 4 & Ultimate Software & 0 & 2 \\
 Tile-Molder, Hand             & 2020-08-08 & 3 & Ultimate Software & 3 & 7 \\
@@ -192,12 +191,11 @@ Head of Data                  & 2020-06-17 & 5 & Ultimate Software & 1 & 6 \\
 \end{tabular}
 \end{table}
 
-$^{*}$\textit{Note}: The description column is missing from the above table due to not being able to fit on the page. The last two columns are named `NumberHired' and `NumberOfApplicants'. \\
-\\
+$^{*}$\textit{Note}: The job description column is missing from the above table due to not being able to fit on the page. The last two columns are named `NumberHired' and `NumberOfApplicants'.\\
 
 \underline{\textbf{xiii.}} Report of applied jobs by an employee during a specific period of time
 (Job title, date applied, short description of the job up to 50 characters,
-status of the application). \\
+status of the application).
 
 \begin{verbatim}
 SELECT job.Title, application.ApplicationDate, job.description, 
@@ -208,7 +206,68 @@ job.JobID = application.JobID AND
       applicantUserName = 'Bethany_Delena72';
 \end{verbatim}
 
+\begin{table}[!htbp]
+\begin{tabular}{llll}
+\textbf{Job\_Title}                 & \textbf{DateApplied} & \textbf{ApplicationStatus} \\
+Machine Joint Cutter                  & 2020-06-20 & denied \\
+Green-Chain Offbearer                 & 2020-08-25 & review \\
+Womens Health Care Nurse Practitioner & 2020-05-18 & sent   \\
+Plan Manager                          & 2020-06-19 & hired  \\
+Fish Skinning Machine Feeder          & 2020-06-03 & review \\
+\end{tabular}
+\end{table}
 
+$^{*}$\textit{Note}: The job description column is missing from the above table due to not being able to fit on the page. 
+
+\newpage
+
+\underline{\textbf{xvii.}} Report of all users by the administrator for employers or employees
+(Name, email, category, status, balance).
+
+\begin{verbatim}
+SELECT FirstName, LastName, Email, Category, Balance
+FROM user natural join applicant
+UNION
+SELECT FirstName, LastName, Email, Category, Balance
+FROM user natural join employer;
+\end{verbatim}
+
+\begin{table}[!htbp]
+\begin{tabular}{lllll}
+\textbf{FirstName}        & \textbf{LastName}          & \textbf{Email} & \textbf{Category}  & \textbf{Balance} \\
+Abu          & Llewellyn      & AbuLlewellyn26@coldmail.com          & prime & 264.33 \\
+Adolfo       & Shamus         & AdolfoShamus91@hmail.ca              & gold  & 148.68 \\
+Aften        & Emmaline       & AftenEmmaline62@hmail.ca             & prime & -55.40 \\
+Agatha       & Perfecto       & AgathaPerfecto64@coldmail.com        & prime & 189.96 \\
+Ajeenah      & Niclole        & AjeenahNiclole39@coldmail.com        & prime & 47.13  \\
+\end{tabular}
+\end{table}
+
+\underline{\textbf{xviii.}} Report of all outstanding balance accounts (User name, email, balance,
+since when the account is suffering).
+
+\begin{verbatim}
+SELECT UserName, email, balance
+FROM user
+natural join applicant
+WHERE balance < 0
+UNION
+SELECT UserName, email, Balance
+from user
+natural join employer
+WHERE Balance < 0;
+\end{verbatim}
+
+\begin{table}[!htbp]
+\begin{tabular}{lll}
+\textbf{UserName}    & \textbf{Email}        & \textbf{Balance} \\
+Daymond\_Zola41     & DaymondZola13@hmail.ca         & -60.39 \\
+Jolena\_Collins97   & JolenaCollins79@coldmail.com   & -82.09 \\
+Lysander\_Rasean38  & LysanderRasean18@coldmail.com  & -65.59 \\
+Naquan\_Madeleine55 & NaquanMadeleine43@coldmail.com & -90.71 \\
+Catherina\_Darrol69 & CatherinaDarrol66@hmail.ca     & -62.16
+\end{tabular}
+\end{table}
 
 \subsection{Back-End Development}
 
