@@ -149,7 +149,65 @@ The files `create\_tables.sql' and `insert\_data.sql' create the database tables
 
 \subsubsection{SQL Queries}
 
-The file that contains the requested queries is appropriately named `queries.sql'. Some of the queries merely request the manipulation of one record. Such as deleting a user, inserting a user, or posting one job position. All eighteen queries demanded in the main project requirements documented are listed here and labelled with appropriate comments.
+The file that contains the requested queries is appropriately named `queries.sql'. Some of the queries merely request the manipulation of one record. Such as deleting a user, inserting a user, or posting one job position. All eighteen queries demanded in the main project requirements documented are listed here and labelled with appropriate comments. \par 
+The following queries from the requirements document were hand picked to show five tuples, as requested. They were chosen because only these four queries from the document actually demand for a plurality (more than one) tuple. \\
+\\
+\underline{\textbf{vi.}} Report of posted jobs by an employer during a specific period of time (Job title, date posted, short description, of the job up to 50 characters, number of needed employees to the post, number of applied jobs to the post, number of accepted offers). \\
+
+\begin{verbatim}
+SELECT SoJobs, DatePosted, description, EmpNeeded, EmployerName, NumberHired, 
+COUNT(SoJobs) as NumberOfApplicants
+FROM (SELECT Title as SoJobs, DatePosted, description, EmpNeeded, EmployerName
+    FROM employer e join job j on e.UserName = j.EmployerUserName join application
+    WHERE EmployerName = 'Ultimate Software' AND (DatePosted BETWEEN '2020-01-26' 
+    AND '2020-11-08') and
+          application.JobID = j.JobID) as
+UltimateSoftwareJobs
+join (SELECT a.Title as HireTitle, COUNT(ApplicationStatus) AS NumberHired
+FROM (SELECT Title FROM
+    employer e join job j on e.UserName = j.EmployerUserName join application
+    WHERE EmployerName = 'Ultimate Software' AND (DatePosted BETWEEN '2020-01-26' 
+    AND '2020-11-08') and
+          application.JobID = j.JobID GROUP BY Title) as a
+LEFT JOIN (SELECT Title, ApplicationStatus FROM employer e join job j on 
+e.UserName = j.EmployerUserName join application
+    WHERE EmployerName = 'Ultimate Software' AND (DatePosted BETWEEN '2020-01-26'
+    AND '2020-11-08') and
+          application.JobID = j.JobID) as b on a.Title = b.Title and 
+          b.ApplicationStatus = 'hired' GROUP BY
+          a.Title) as
+numberOfHires where UltimateSoftwareJobs.SoJobs = numberOfHires.HireTitle
+GROUP BY SoJobs;
+\end{verbatim}
+
+\begin{table}[]
+\begin{tabular}{lllllll}
+\textbf{Job\_Title}  & \textbf{DatePosted}  & \textbf{EmpNeeded} & \textbf{EmployerName} &  & \\
+Oven Heater                   & 2020-10-26  & 1 & Ultimate Software & 0 & 6 \\
+Electronic Wirer              & 2020-03-27 & 2 & Ultimate Software & 0 & 4 \\
+Political Research Scientist  & 2020-08-13 & 4 & Ultimate Software & 0 & 2 \\
+Tile-Molder, Hand             & 2020-08-08 & 3 & Ultimate Software & 3 & 7 \\
+Jet-Piercer Operator          & 2020-07-13 & 5 & Ultimate Software & 2 & 4 \\
+Head of Data                  & 2020-06-17 & 5 & Ultimate Software & 1 & 6 \\
+\end{tabular}
+\end{table}
+
+$^{*}$\textit{Note}: The description column is missing from the above table due to not being able to fit on the page. The last two columns are named `NumberHired' and `NumberOfApplicants'. \\
+\\
+
+\underline{\textbf{xiii.}} Report of applied jobs by an employee during a specific period of time
+(Job title, date applied, short description of the job up to 50 characters,
+status of the application). \\
+
+\begin{verbatim}
+SELECT job.Title, application.ApplicationDate, job.description, 
+application.ApplicationStatus
+FROM application, job
+WHERE (ApplicationDate BETWEEN '2020-01-20' AND '2020-10-15') AND 
+job.JobID = application.JobID AND
+      applicantUserName = 'Bethany_Delena72';
+\end{verbatim}
+
 
 
 \subsection{Back-End Development}
