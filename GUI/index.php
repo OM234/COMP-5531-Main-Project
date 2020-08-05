@@ -35,12 +35,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo "accountType: " . $accountType . "<br>";
 
     // if authenticate success, start session, and then set session attributes.
-    if (true) { //authenticate($username, $password, $accountType
+    if (authenticate($username, $password, $accountType)) { //
         session_start();
         $_SESSION['isLogin'] = true;
-        $_SESSION["username"] = "1";
-        $_SESSION["password"] = "1";
-        $_SESSION["accountType"] = "jobSeeker";
+        $_SESSION["username"] = $username;
+        $_SESSION["password"] = $password;
+        $_SESSION["accountType"] = $accountType;
         goToDashboard($accountType);
     } else {
         echo "<script>alert('Login error, please try again!, use password 1 to login')</script>";

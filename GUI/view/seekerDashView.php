@@ -42,14 +42,15 @@
             </ul>
         </div>
     </nav>
-    <div class="d-none" id="jobSearch">
-      <form action="seekerDash.php?tab=viewJobs" method="GET">
+    <div class="p-2" id="jobSearch">
+      <form  action="<?php echo $_SERVER['PHP_SELF'] ?>" method="GET">
         <div class="form-group">
-          <input type="search" class="form-control" name="search"/>
+          <input class="form-control" placeholder="Search for jobs" type="search" class="form-control" name="search"/>
         </div>
-        <button type="submit" class="btn btn-primary">Search</button>
+        <!-- <button type="submit" class="btn btn-primary">Search</button> -->
       </form>
     </div>
+
     <div class="row justify-content-center m-1 d-none" id ="accSettingsNavbar">
         <div class='col-8'>
             <nav class="navbar navbar-expand-lg navbar-light bg-light">

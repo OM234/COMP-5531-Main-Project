@@ -5,8 +5,8 @@ use cxc55311;
 INSERT INTO User(UserName, FirstName, LastName, Email, ContactNumber, Password)
 VALUES ('Xavier_K67', 'Xavier', 'Kelp', 'XavierKelp34@coldmail.com', '514-675-2345', 'xylophone454');
 
-INSERT INTO Employer(UserName, EmployerName, AccStatus, Category, Balance)
-VALUES ('Xavier_K67', 'Microsoft Corporation', '1', 'gold', '675.23');
+INSERT INTO Employer(UserName, EmployerName, Activated, Category, Balance)
+VALUES ('Xavier_K67', 'Microsoft Corporation', true, 'gold', '675.23');
 
 DELETE FROM Employer
 WHERE UserName = 'Xavier_K67';
@@ -31,8 +31,8 @@ LIMIT 1;
 INSERT INTO User(UserName, FirstName, LastName, Email, ContactNumber, Password)
 VALUES ('Xavier_K67', 'Xavier', 'Kelp', 'XavierKelp34@coldmail.com', '514-675-2345', 'xylophone454');
 
-INSERT INTO Employer(UserName, EmployerName, AccStatus, Category, Balance)
-VALUES ('Xavier_K67', 'Microsoft Corporation', '1', 'prime', '675.23');
+INSERT INTO Employer(UserName, EmployerName, Activated, Category, Balance)
+VALUES ('Xavier_K67', 'Microsoft Corporation', true, 'prime', '675.23');
 
 UPDATE Employer
 SET Category = null
@@ -66,19 +66,32 @@ WHERE application.JobID = job.JobID AND application.JobID = 1743;
 
 # vi. Report of posted jobs by an employer during a specific period of time
 
-SELECT job.Title, job.DatePosted, Job.description, job.EmpNeeded, application.ApplicantUserName,
-       ApplicationStatus, EmployerName
-FROM application, job, employer
-WHERE (job.DatePosted BETWEEN '2020-04-26' AND '2020-11-08') AND application.JobID = job.JobID and
-      job.EmployerUserName = employer.UserName and EmployerName = 'The Goose and Duck';
+SELECT Job_Title, DatePosted, description, EmpNeeded, EmployerName, NumberHired, COUNT(Job_Title) as NumberOfApplicants
+FROM (SELECT Title as Job_Title, DatePosted, description, EmpNeeded, EmployerName
+    FROM employer e join job j on e.UserName = j.EmployerUserName join application
+    WHERE EmployerName = 'Ultimate Software' AND (DatePosted BETWEEN '2020-01-26' AND '2020-11-08') and
+          application.JobID = j.JobID) as
+UltimateSoftwareJobs
+join
+(SELECT a.Title as HireTitle, COUNT(ApplicationStatus) AS NumberHired
+FROM (SELECT Title FROM
+    employer e join job j on e.UserName = j.EmployerUserName join application
+    WHERE EmployerName = 'Ultimate Software' AND (DatePosted BETWEEN '2020-01-26' AND '2020-11-08') and
+          application.JobID = j.JobID GROUP BY Title) as a
+LEFT JOIN (SELECT Title, ApplicationStatus FROM employer e join job j on e.UserName = j.EmployerUserName join application
+    WHERE EmployerName = 'Ultimate Software' AND (DatePosted BETWEEN '2020-01-26' AND '2020-11-08') and
+          application.JobID = j.JobID) as b on a.Title = b.Title and b.ApplicationStatus = 'hired' GROUP BY
+          a.Title) as
+numberOfHires where UltimateSoftwareJobs.Job_Title = numberOfHires.HireTitle
+GROUP BY Job_Title;
 
 # vii. Create/Delete/Edit/Display an employee
 
 INSERT INTO User(UserName, FirstName, LastName, Email, ContactNumber, Password)
 VALUES ('Zack_B67', 'Zack', 'Bael', 'ZackBael61@hmail.com', '438-634-9835', 'couch872');
 
-INSERT INTO Applicant(UserName, AccStatus, Category, Balance)
-VALUES ('Zack_B67', '1', 'basic', '34.55');
+INSERT INTO Applicant(UserName, Activated, Category, Balance)
+VALUES ('Zack_B67', true, 'basic', '34.55');
 
 DELETE FROM applicant
 WHERE UserName = 'Zack_B67';
@@ -142,7 +155,7 @@ WHERE ApplicantUserName = 'Campbell_B00';
 SELECT job.Title, application.ApplicationDate, job.description, application.ApplicationStatus
 FROM application, job
 WHERE (ApplicationDate BETWEEN '2020-01-20' AND '2020-10-15') AND job.JobID = application.JobID AND
-      applicantUserName = 'Frances_M45';
+      applicantUserName = 'Bethany_Delena72';
 
 # xiv. Add/Delete/Edit a method of payment by a user.
 
@@ -192,7 +205,7 @@ WHERE ApplicantUserName = 'Frances_M45';
 UPDATE applicantcc
 SET CCNUMBER = '827390457394827812'
 WHERE CCNumber IN (SELECT creditcardinfo.CCNumber FROM creditcardinfo WHERE Auto_Manual = '1' AND
-                                                                            CCNumber = '0729363628516973')
+                                                                            CCNumber = '0729363628516973');
 
 # xvi. Make a manual payment by a user.
 
@@ -218,45 +231,20 @@ WHERE UserName = 'Lennon_R94';
 
 # xvii. Report of all users by the administrator for employers or employees
 
-# employees (applicants aka job seekers)
-SELECT UserName, FirstName, LastName, Email, Category, Balance
-FROM user natural join applicant;
-
-# employers
-SELECT UserName, FirstName, LastName, Email, Category, Balance
+SELECT FirstName, LastName, Email, Category, Balance
+FROM user natural join applicant
+UNION
+SELECT FirstName, LastName, Email, Category, Balance
 FROM user natural join employer;
 
 # xviii. Report of all outstanding balance accounts
 
-# applicants
-
 SELECT UserName, email, balance
 FROM user
 natural join applicant
-WHERE balance < 0;
-
-# employers
-
+WHERE balance < 0
+UNION
 SELECT UserName, email, Balance
 from user
 natural join employer
 WHERE Balance < 0;
-
-# Select user.UserName, email, T.balance
-# FROM user,
-#      (SELECT balance FROM applicant, user WHERE user.UserName = applicant.UserName and balance < 0
-#      UNION ALL
-#      SELECT balance FROM employer, user WHERE user.UserName = employer.UserName and balance < 0) as T;
-
-# natural join
-# (SELECT applicant.balance
-# FROM applicant
-# WHERE balance < 0
-# UNION ALL
-# SELECT employer.balance
-# FROM employer) as T1;
-
-# SELECT user.UserName, email, employer.balance, applicant.balance
-# FROM employer, applicant
-# NATURAL JOIN user
-# WHERE employer.balance < 0 and applicant.balance < 0;

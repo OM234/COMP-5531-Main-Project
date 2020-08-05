@@ -66,7 +66,7 @@ create table admin
 
 create table job
 (
-    JobID            int auto_increment primary key,
+    JobID            int auto_increment primary key not null,
     EmployerUserName varchar(30) ,
     Title            varchar(50) ,
     DatePosted       date        ,

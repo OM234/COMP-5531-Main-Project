@@ -11,7 +11,7 @@ if (!isset($_SESSION['isLogin']) || $_SESSION['isLogin'] == false) {
 /*********** Data models variables ***********************************************************************/
 $username = $_SESSION['username'];      // currently logged in user
 $accountType = $_SESSION['accountType'];  // current user account type, (job seeker, employer, admin)
-$maxSize = 5;
+$maxSize = 50;
 
 echo "username: $username&nbsp&nbsp&nbsp&nbsp";
 echo "accountType: $accountType<br>";
@@ -39,6 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         }
 
         switch ($tab) {
+            case "signout":
+                session_destroy();
+                goToPage("/GUI/index.php");
+                break;
+
             case "viewJobs":  // view posted jobs
                 $postedJobsData = getPostedJobsData();
                 showPostedJobs($postedJobsData);
@@ -75,6 +80,42 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if (deleteUser($deleteUsername)) echo "operation success";
             else echo "operation failed";
             echo "<br>";
+            echo "<a href='adminDash.php?tab=viewAllUsers'>view all users</a>";
+            break;
+
+        case "activateEmployer":
+            $username = $_POST['username'];
+            echo "op: activate employer<br>";
+            echo "username: $username<br>";
+            if (changeUserStatus($username, "activate", "employer")) echo "operation success<br>";
+            else echo "operation failed<br>";
+            echo "<a href='adminDash.php?tab=viewAllUsers'>view all users</a>";
+            break;
+
+        case "deactivateEmployer":
+            $username = $_POST['username'];
+            echo "op: deactivate employer<br>";
+            echo "username: $username<br>";
+            if (changeUserStatus($username, "deactivate", "employer")) echo "operation success<br>";
+            else echo "operation failed<br>";
+            echo "<a href='adminDash.php?tab=viewAllUsers'>view all users</a>";
+            break;
+
+        case "activateApplicant":
+            $username = $_POST['username'];
+            echo "op: activate applicant<br>";
+            echo "username: $username<br>";
+            if (changeUserStatus($username, "activate", "applicant")) echo "operation success<br>";
+            else echo "operation failed<br>";
+            echo "<a href='adminDash.php?tab=viewAllUsers'>view all users</a>";
+            break;
+
+        case "deactivateApplicant":
+            $username = $_POST['username'];
+            echo "op: deactivate applicant<br>";
+            echo "username: $username<br>";
+            if (changeUserStatus($username, "deactivate", "applicant")) echo "operation success<br>";
+            else echo "operation failed<br>";
             echo "<a href='adminDash.php?tab=viewAllUsers'>view all users</a>";
             break;
 
@@ -360,6 +401,26 @@ function changePassword($prevPass, $newPass) {
     }
 }
 
+function changeUserStatus($username, $op, $userCategory) {
+    $conn = connectDB();
+    if ($op === "activate" && $userCategory === "employer") {
+       $sql = "update employer set Activated = 1 where UserName = '$username'";
+    }
+    else if ($op === "deactivate" && $userCategory === "employer") {
+        $sql = "update employer set Activated = 0 where UserName = '$username'";
+    }
+    else if ($op === "activate" && $userCategory === "applicant") {
+        $sql = "update applicant set Activated = 1 where UserName = '$username'";
+    }
+    else {
+        $sql = "update applicant set Activated = 0 where UserName = '$username'";
+    }
+    if (mysqli_query($conn, $sql)) return true;
+    return false;
+}
+
+
+
 /************************* End of data access *****************************************************/
 
 
@@ -405,12 +466,6 @@ function showPostedJobs($postedJobsData) {
             "       <p><b>Job Status: </b>" . $postedJobsData[$i]['jobStatus']. "</p>" .
             "    </div>" .
             "    <div class='col-2 justify-content-center text-center'>" .
-//            "    <form action='" . $_SERVER['PHP_SELF'] . "?tab=viewJobs&jobID=$ID' method='post'>" .
-//            "       <button type='submit' name='op' value='open' class='btn btn-success'> Open </button>" .
-//            "    </form>" .
-//            "    <form action='" . $_SERVER['PHP_SELF'] . "?tab=viewJobs&jobID=$ID' method='post'>" .
-//            "       <button type='submit' name='op' value='close' class='btn btn-warning'> Close </button>" .
-//            "    </form>" .
             "    <form action='" . $_SERVER['PHP_SELF'] . "?tab=viewJobs&jobID=$ID' method='post' onsubmit='return deleteJob(" . $ID . ")'>" .
             "       <button type='submit' name='op' value='delete' class='btn btn-danger'> Delete </button>" .
             "    </form>" .
@@ -546,21 +601,17 @@ function viewEmpContInfo($html , $data){
         "          <p><b>Representative Email: </b> $empRepEmail</p>" .
         "          <p><b>Representative Number: </b>$empRepNumber</p>" .
         "     </div>".
-        "     <div class='col-2 d-flex justify-content-center '>" .
+        "     <div class='col-2 d-flex justify-content-center flex-column align-items-center'>" .
         "          <form action='".$_SERVER['PHP_SELF']."?tab=deleteUser' method='post' onsubmit='return confirm(\"Sure to delete this user?\")'>" .
-        "               <button type='submit' name='' value='' class='btn btn-info'> Activate </button>" .
-        "               <button type='submit' name='' value='' class='btn btn-warning'> Deactivate </button>" .
         "               <button type='submit' name='username' value='$username' class='btn btn-danger'> Delete </button>" .
         "          </form>" .
+        "          <form action='".$_SERVER['PHP_SELF']."?tab=activateEmployer' method='post' onsubmit='return confirm(\"Sure to activate this user?\")'>" .
+        "               <button type='submit' name='username' value='$username' class='btn btn-info'> Activate </button>" .
+        "          </form>" .
+        "          <form action='".$_SERVER['PHP_SELF']."?tab=deactivateEmployer' method='post' onsubmit='return confirm(\"Sure to deactivate this user?\")'>" .
+        "               <button type='submit' name='username' value='$username' class='btn btn-warning'> Deactivate </button>" .
+        "          </form>" .
         "     </div>" .
-//        "         <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
-//        "              <label class='btn btn-success'>" .
-//        "                   <input type='radio' name='options' id='activate' autocomplete='off'> Activate" .
-//        "              </label>" .
-//        "              <label class='btn btn-warning'>" .
-//        "                   <input type='radio' name='options' id='deactivate' autocomplete='off'> Deactivate" .
-//        "              </label>" .
-//        "         </div>".
         "</div>";
 
     return $html;
@@ -579,22 +630,23 @@ function viewSeekerContInfo($html, $data) {
         "          <p><b>Job Seeker Email: </b> $seekerEmail</p>" .
         "          <p><b>Job Seeker Number: </b>$seekerNumber</p>" .
         "     </div>".
-        "    <div class='col-2 d-flex justify-content-center '>" .
+        "    <div class='col-2 d-flex justify-content-center flex-column align-items-center'>" .
         "         <form action='".$_SERVER['PHP_SELF']."?tab=deleteUser' method='post' onsubmit='return confirm(\"Sure to delete this user?\")'>" .
-        "               <button type='submit' name='' value='' class='btn btn-info'> Activate </button>" .
-        "               <button type='submit' name='' value='' class='btn btn-warning'> Deactivate </button>" .
         "            <button type='submit' name='username' value='$username' class='btn btn-danger'> Delete </button>" .
         "         </form>" .
+        "         <form action='".$_SERVER['PHP_SELF']."?tab=activateApplicant' method='post' onsubmit='return confirm(\"Sure to activate this user?\")'>" .
+        "               <button type='submit' name='username' value='$username' class='btn btn-info'> Activate </button>" .
+        "         </form>" .
+        "         <form action='".$_SERVER['PHP_SELF']."?tab=deactivateApplicant' method='post' onsubmit='return confirm(\"Sure to deactivate this user?\")'>" .
+        "               <button type='submit' name='username' value='$username' class='btn btn-warning'> Deactivate </button>" .
+        "         </form>" .
         "    </div>" .
-//        "         <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
-//        "              <label class='btn btn-success'>" .
-//        "                   <input type='radio' name='options' id='activate' autocomplete='off'> Activate" .
-//        "              </label>" .
-//        "              <label class='btn btn-warning'>" .
-//        "                   <input type='radio' name='options' id='deactivate' autocomplete='off'> Deactivate" .
-//        "              </label>" .
-//        "         </div>".
     "</div>";
 
     return $html;
 }
+
+function goToPage($url) {
+    echo "<script>window.location.href = '$url'</script>";
+}
+

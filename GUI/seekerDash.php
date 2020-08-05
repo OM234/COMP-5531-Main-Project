@@ -17,6 +17,7 @@ $accountStatus = getAccountStatus($username); // get account status, true(active
 $accountBalance = getAccountBalance($username); // get account balance
 $monthlyCharge = getMonthlyCharge($userCategory);
 $jobCategories = getAllJobCategories();
+// $numOfAppliedJobs = getNumOfAppliedJobs($username);
 $paymentInfo = getPaymentInfo();
 $autoPay = getAutoOrManual($username); // auto payment or maunal payment, true for auto.
 $autoPayString = $autoPay ? "auto" : "manual";
@@ -26,6 +27,7 @@ echo "accountType: $accountType &nbsp&nbsp&nbsp&nbsp";
 echo "category: $userCategory&nbsp&nbsp&nbsp&nbsp";
 echo "autoPayment: $autoPayString&nbsp&nbsp&nbsp&nbsp";
 echo "accountStatus: $accountStatus&nbsp&nbsp&nbsp&nbsp";
+echo "numOfAppliedJobs: $numOfAppliedJobs<br>";
 echo "<br>";
 /************** End of data models ************************************************************************/
 
@@ -48,15 +50,17 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
             case "viewAccBalance":
             case "viewPasswordChange":
                 echo "<script>document.getElementById('accSettingsNavbar').classList.remove('d-none');</script>";
+                echo "<script>document.getElementById('jobSearch').classList.add('d-none');</script>";
+
                 break;
         }
 
         switch ($tab) {
             case "signout":
                 session_destroy();
+                goToPage("/GUI/index.php");
                 break;
             case "viewJobs": // view posted jobs
-                echo "<script>document.getElementById('jobSearch').classList.remove('d-none');</script>";
                 if ($accountStatus) {
                     if (isset($_GET['jobCategory'])) {
                         $jobCategory = $_GET['jobCategory'];
@@ -102,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
     if (isset($_GET['search'])) {
         $searchedJob = getSearchedJobs($_GET['search']);
-        searchJob($searchedJob);
+        searchJob($searchedJob, $_GET['search']);
     }
 
 }
@@ -390,7 +394,7 @@ function getSearchedJobs($searchString)
     $data = array();
 
     $conn = connectDB();
-    $sql = "SELECT * FROM job WHERE title LIKE '%$searchString%'";
+    $sql = "SELECT * FROM job WHERE JOBSTATUS = 1 AND title LIKE '%$searchString%'";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -850,8 +854,10 @@ function getAllJobCategories()
 /****************** Front-end view part ******************************************************/
 
 //Search bar for job seeker
-function searchJob($searchResult)
+function searchJob($searchResult, $searchString)
 {
+    $message = count($searchResult) ? "Showing search result for " . "<mark>" . $searchString . "</mark>" : "Sorry no available job to display";
+    $html = "<span>" . $message . "</span>";
     for ($i = 0; $i < count($searchResult); $i++) {
 
         $ID = $searchResult[$i]['jobID'];
@@ -1152,7 +1158,8 @@ function showContactInfo()
     echo "<script>document.getElementById('accountSettings').innerHTML = \"" . $html . "\"</script>";
 }
 
-function showAccBalance() {
+function showAccBalance()
+{
 
     global $accountBalance;
 
@@ -1181,7 +1188,6 @@ function getSeekerCategoryHTML(string $html): string
         "<div class = 'row justify-content-center'>" .
         "     <div class = 'col-8'>" .
         "          <div><b>Job Seeker Category: $userCategory</b></div>" .
-<<<<<<< HEAD
         "          <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
         "               <label class='btn btn-secondary' data-toggle='tooltip' data-placement='top' title='$toolTipSeekerBasic'>" .
         "                    <input type='radio' name='options' id='seekerBasic' autocomplete='off'> Job Seeker Basic" .
@@ -1203,14 +1209,6 @@ function getSeekerCategoryHTML(string $html): string
         "          <button type='submit' class='btn-primary' name='basic' value='basic'>Downgrad to Basic</button>" .
         "       </form>" .
         "    </div>" .
-=======
-        "       <form action='".$_SERVER['PHP_SELF']."?tab=changeAccBalance' method='post'>".
-        "          <button type='submit' class='btn btn-secondary' name='basic' value='basic'>Change to Basic</button>".
-        "          <button type='submit' class='btn btn-info' name='downgrade' value='prime'>Change to Prime</button>".
-        "          <button type='submit' class='btn btn-warning' name='upgrade' value='gold'>Change to Gold</button>".
-        "       </form>".
-        "     </div>" .
->>>>>>> c37a24fbca4f1321fff861170293edf1ff0d0c2c
         "</div>";
 
     return $html;
@@ -1230,7 +1228,6 @@ function getMonthlyPaymentRadioButtonsHTML(string $html): string
         "          <div><b>Payment Method: $paymentMethod</b></div>" .
         "     </div>" .
         "</div>" .
-<<<<<<< HEAD
         "<div class='row justify-content-center mt-3'>" .
         "   <div class='col-8'>" .
         "       <form action='" . $_SERVER['PHP_SELF'] . "?tab=changeAccBalance' method='post'>" .
@@ -1238,15 +1235,6 @@ function getMonthlyPaymentRadioButtonsHTML(string $html): string
         "          <button type='submit' class='btn-primary' name='auto' value='false'>Change to Manual payment</button>" .
         "       </form>" .
         "   </div>" .
-=======
-        "<div class='row justify-content-center mt-3'>".
-        "   <div class='col-8'>".
-        "       <form action='".$_SERVER['PHP_SELF']."?tab=changeAccBalance' method='post'>".
-        "          <button type='submit' class='btn btn-info' name='auto' value='true'>Change to Auto payment</button>".
-        "          <button type='submit' class='btn btn-info' name='auto' value='false'>Change to Manual payment</button>".
-        "       </form>".
-        "     </div>" .
->>>>>>> c37a24fbca4f1321fff861170293edf1ff0d0c2c
         "</div>";
 
     return $html;

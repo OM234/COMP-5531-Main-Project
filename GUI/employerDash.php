@@ -18,6 +18,7 @@ $accountStatus = getAccountStatus($username);  // get account status, true(activ
 $accountBalance = getAccountBalance($username);  // get account balance
 $monthlyCharge= getMonthlyCharge($userCategory);
 $jobCategories = getJobCategoriesByUsername($username); // get job categories, Technical ...
+$numOfPostedJobs = getNumOfPostedJobs($username);
 $_SESSION['jobcategories'] = $jobCategories;  // for cross file data transfer
 $paymentInfo = getPaymentInfo();  // payments
 $autoPay = getAutoOrManual($username);    // auto payment or maunal payment, true for auto.
@@ -27,6 +28,7 @@ echo "username: $username &nbsp&nbsp&nbsp&nbsp";
 echo "category: $userCategory&nbsp&nbsp&nbsp&nbsp";
 echo "autoPayment: $autoPayString&nbsp&nbsp&nbsp&nbsp";
 echo "accountStatus: $accountStatus&nbsp&nbsp&nbsp&nbsp";
+echo "numberOfPostedJobs: $numOfPostedJobs<br>";
 echo "<br>";
 
 /************** End of data models ************************************************************************/
@@ -60,13 +62,13 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         switch ($tab) {
             case "signout":
                 session_destroy();
+                goToPage("/GUI/index.php");
                 break;
             case "viewJobs":  // view posted jobs
                 if ($accountStatus) {
                     if (isset($_GET['jobCategory'])) {
                         $jobCategory = $_GET['jobCategory'];
                         $jobsOfCategory = getJobsOfCategoryByUsername($jobCategory);
-                        print_r($jobsOfCategory);
                         showPostedJobs($jobsOfCategory);
                     }
                     else {
@@ -78,11 +80,16 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
                 }
                 break;
             case "postJob":  // post a job
-                if ($accountStatus) {
-                    $categories = getJobCategoriesByUsername($username);
-                    showPostJobForm();
-                } else {
-                    echo "<script>alert('Your account has been deactivated, please go to Account Settings to reactive!')</script>";
+                if (!checkJobNum()) {
+                    echo "<script>alert('Employer of prime category can only post up to 5 jobs!')</script>";
+                }
+                else {
+                    if ($accountStatus) {
+                        $categories = getJobCategoriesByUsername($username);
+                        showPostJobForm();
+                    } else {
+                        echo "<script>alert('Your account has been deactivated, please go to Account Settings to reactive!')</script>";
+                    }
                 }
                 break;
             case "viewApplications":
@@ -124,6 +131,14 @@ function showApplications()
     }
     echo "<script>document.getElementById('viewApplications').innerHTML = \"". $html ."\"</script>";
 
+}
+
+// check posted job numbers and employer category
+function checkJobNum() {
+     global $numOfPostedJobs;
+     global $userCategory;
+     if ($userCategory === 'prime' && $numOfPostedJobs >= 5) return false;
+     else return true;
 }
 
 
@@ -189,8 +204,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if (isset($_POST['downgrade'])) {
                 echo "downgrade to: ". $_POST['downgrade'] . "<br>" ;
                 $category = $_POST['downgrade'];
-                if (changeUserCategory($category)) echo "operation success<br>";
-                else echo "operation failed<br>";
+                if ($numOfPostedJobs > 5) {
+                    echo "<script>alert('You have more than 5 posted jobs, cannot downgrade to prime, pleas delete some posted jobs!')</script>";
+                }
+                else {
+                    if (changeUserCategory($category)) echo "operation success<br>";
+                    else echo "operation failed<br>";
+                }
             }
             if (isset($_POST['auto'])) {
                 echo "Change auto payment to auto? : ". $_POST['auto'] . "<br>";
@@ -655,6 +675,16 @@ function getJobsOfCategoryByUsername($jobCategory) {
     return $data;
 }
 
+// get number of posted jobs
+function getNumOfPostedJobs($username) {
+    $conn = connectDB();
+    $sql = "select count(*) as n from job where EmployerUserName = '$username'";
+    $result = mysqli_query($conn, $sql);
+    if ($result->num_rows > 0) {
+        return $result->fetch_assoc()['n'];
+    }
+}
+
 // insert a job into database, return true if insert successfully.
 function insertJob($data) {
     global $username;
@@ -715,11 +745,7 @@ function changeApplicationStatus($appName, $jobID, $operation) {
                 where ApplicantUserName = '$appName' and JobID = $jobID";
     }
     else if ($operation === "sendOffer") {
-        $sql = "update application set ApplicationStatus = 'sent'
-                where ApplicantUserName = '$appName' and JobID = $jobID";
-    }
-    else if ($operation === "hire") {
-        $sql = "update application set ApplicationStatus = 'hired'
+        $sql = "update application set ApplicationStatus = 'accepted'
                 where ApplicantUserName = '$appName' and JobID = $jobID";
     }
     else if ($operation === "delete") {
