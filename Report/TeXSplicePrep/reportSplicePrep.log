@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.8.2)  5 AUG 2020 12:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.8.2)  5 AUG 2020 13:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -779,165 +779,167 @@ been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.86 \newpage
-              [1] [2]
-<MVC.png, id=158, 362.35374pt x 181.67876pt>
+              [1] [2] [3] [4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14]
+[15] [16] [17] [18] [19] [20] [21] [22] [23] [24] [25] [26] [27] [28] [29]
+<MVC.png, id=271, 362.35374pt x 181.67876pt>
 File: MVC.png Graphic file (type png)
 <use MVC.png>
-Package pdftex.def Info: MVC.png  used on input line 114.
+Package pdftex.def Info: MVC.png  used on input line 168.
 (pdftex.def)             Requested size: 253.64589pt x 127.17424pt.
- [3 <./MVC.png>] [4]
-Overfull \hbox (12.20917pt too wide) in paragraph at lines 152--152
+
+[30 <./MVC.png>] [31]
+Overfull \hbox (12.20917pt too wide) in paragraph at lines 206--206
 \OT1/cmr/m/n/10.95 The file that con-tains the re-quested queries is ap-pro-pri
 -ately named `queries.sql'.
  []
 
-[5]
-Underfull \hbox (badness 10000) in paragraph at lines 153--156
+[32]
+Underfull \hbox (badness 10000) in paragraph at lines 207--210
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 153--156
+Underfull \hbox (badness 10000) in paragraph at lines 207--210
 
  []
 
 
-Overfull \hbox (82.64896pt too wide) in paragraph at lines 158--158
+Overfull \hbox (82.64896pt too wide) in paragraph at lines 212--212
 []\OT1/cmtt/m/n/10.95 SELECT SoJobs, DatePosted, description, EmpNeeded, Employ
 erName, NumberHired,[] 
  []
 
 
-Overfull \hbox (88.39764pt too wide) in paragraph at lines 160--160
+Overfull \hbox (88.39764pt too wide) in paragraph at lines 214--214
 []\OT1/cmtt/m/n/10.95 FROM (SELECT Title as SoJobs, DatePosted, description, Em
 pNeeded, EmployerName[] 
  []
 
 
-Overfull \hbox (111.3924pt too wide) in paragraph at lines 161--161
+Overfull \hbox (111.3924pt too wide) in paragraph at lines 215--215
 []    \OT1/cmtt/m/n/10.95 FROM employer e join job j on e.UserName = j.Employer
 UserName join application[] 
  []
 
 
-Overfull \hbox (105.6437pt too wide) in paragraph at lines 162--162
+Overfull \hbox (105.6437pt too wide) in paragraph at lines 216--216
 []    \OT1/cmtt/m/n/10.95 WHERE EmployerName = 'Ultimate Software' AND (DatePos
 ted BETWEEN '2020-01-26'[] 
  []
 
 
-Overfull \hbox (65.4029pt too wide) in paragraph at lines 166--166
+Overfull \hbox (65.4029pt too wide) in paragraph at lines 220--220
 []\OT1/cmtt/m/n/10.95 join (SELECT a.Title as HireTitle, COUNT(ApplicationStatu
 s) AS NumberHired[] 
  []
 
 
-Overfull \hbox (82.64896pt too wide) in paragraph at lines 168--168
+Overfull \hbox (82.64896pt too wide) in paragraph at lines 222--222
 []    \OT1/cmtt/m/n/10.95 employer e join job j on e.UserName = j.EmployerUserN
 ame join application[] 
  []
 
 
-Overfull \hbox (105.6437pt too wide) in paragraph at lines 169--169
+Overfull \hbox (105.6437pt too wide) in paragraph at lines 223--223
 []    \OT1/cmtt/m/n/10.95 WHERE EmployerName = 'Ultimate Software' AND (DatePos
 ted BETWEEN '2020-01-26'[] 
  []
 
 
-Overfull \hbox (53.90552pt too wide) in paragraph at lines 172--172
+Overfull \hbox (53.90552pt too wide) in paragraph at lines 226--226
 []\OT1/cmtt/m/n/10.95 LEFT JOIN (SELECT Title, ApplicationStatus FROM employer 
 e join job j on[] 
  []
 
 
-Overfull \hbox (105.6437pt too wide) in paragraph at lines 174--174
+Overfull \hbox (105.6437pt too wide) in paragraph at lines 228--228
 []    \OT1/cmtt/m/n/10.95 WHERE EmployerName = 'Ultimate Software' AND (DatePos
 ted BETWEEN '2020-01-26'[] 
  []
 
 
-Overfull \hbox (30.91077pt too wide) in paragraph at lines 176--176
+Overfull \hbox (30.91077pt too wide) in paragraph at lines 230--230
 []          \OT1/cmtt/m/n/10.95 application.JobID = j.JobID) as b on a.Title = 
 b.Title and[] 
  []
 
 
-Overfull \hbox (59.6542pt too wide) in paragraph at lines 179--179
+Overfull \hbox (59.6542pt too wide) in paragraph at lines 233--233
 []\OT1/cmtt/m/n/10.95 numberOfHires where UltimateSoftwareJobs.SoJobs = numberO
 fHires.HireTitle[] 
  []
 
 
-Overfull \hbox (70.25607pt too wide) in paragraph at lines 184--192
+Overfull \hbox (70.25607pt too wide) in paragraph at lines 238--246
 [][] 
  []
 
-[6]
-Underfull \hbox (badness 10000) in paragraph at lines 194--195
+[33]
+Underfull \hbox (badness 10000) in paragraph at lines 248--249
 
  []
 
 
-Overfull \hbox (2.16733pt too wide) in paragraph at lines 201--201
+Overfull \hbox (2.16733pt too wide) in paragraph at lines 255--255
 []\OT1/cmtt/m/n/10.95 SELECT job.Title, application.ApplicationDate, job.descri
 ption,[] 
  []
 
 
-Overfull \hbox (13.6647pt too wide) in paragraph at lines 204--204
+Overfull \hbox (13.6647pt too wide) in paragraph at lines 258--258
 []\OT1/cmtt/m/n/10.95 WHERE (ApplicationDate BETWEEN '2020-01-20' AND '2020-10-
 15') AND[] 
  []
 
 
-Overfull \hbox (38.96272pt too wide) in paragraph at lines 210--218
+Overfull \hbox (38.96272pt too wide) in paragraph at lines 264--272
 [][] 
  []
 
-[7]
-Overfull \hbox (64.2796pt too wide) in paragraph at lines 236--244
+[34]
+Overfull \hbox (64.2796pt too wide) in paragraph at lines 290--298
 [][] 
  []
 
-[8] [9] [10]
-Underfull \hbox (badness 10000) in paragraph at lines 302--314
+[35] [36] [37]
+Underfull \hbox (badness 10000) in paragraph at lines 356--368
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 302--314
+Underfull \hbox (badness 10000) in paragraph at lines 356--368
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 302--314
+Underfull \hbox (badness 10000) in paragraph at lines 356--368
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 316--326
+Underfull \hbox (badness 10000) in paragraph at lines 370--380
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 316--326
+Underfull \hbox (badness 10000) in paragraph at lines 370--380
 
  []
 
-[11]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 327.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 327.
+[38]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 381.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 381.
  (./reportSplicePrep.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 327.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 327.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 381.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 381.
 Package rerunfilecheck Info: File `reportSplicePrep.out' has not changed.
 (rerunfilecheck)             Checksum: 324D46C3FA76DF93BCF97204BE524399;1510.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 327.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 381.
  ) 
 Here is how much of TeX's memory you used:
- 20250 strings out of 480906
- 374111 string characters out of 5912174
- 653801 words of memory out of 5000000
+ 20277 strings out of 480906
+ 374300 string characters out of 5912174
+ 652801 words of memory out of 5000000
  35387 multiletter control sequences out of 15000+600000
  542748 words of font info for 55 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -951,10 +953,10 @@ ublic/amsfonts/cm/cmr12.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsf
 onts/cm/cmsy8.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 ti10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb>
 <c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on reportSplicePrep.pdf (12 pages, 197814 bytes).
+Output written on reportSplicePrep.pdf (39 pages, 204168 bytes).
 PDF statistics:
- 244 PDF objects out of 1000 (max. 8388607)
- 198 compressed objects within 2 object streams
- 34 named destinations out of 1000 (max. 500000)
+ 367 PDF objects out of 1000 (max. 8388607)
+ 293 compressed objects within 3 object streams
+ 61 named destinations out of 1000 (max. 500000)
  287 words of extra memory for PDF output out of 10000 (max. 10000000)
 

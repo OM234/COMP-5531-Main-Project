@@ -1,22 +1,22 @@
 \babel@toc {english}{}
 \contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
 \contentsline {section}{\numberline {2}Database Design}{2}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Entity-Relation Diagram}{3}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}E/R Diagram to Relation Conversions}{3}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Functional Dependencies}{3}{subsection.2.3}%
-\contentsline {subsubsection}{\numberline {2.3.1}Normalization}{3}{subsubsection.2.3.1}%
-\contentsline {section}{\numberline {3}Web Portal Functionalities}{3}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Software Design \& Architecture}{3}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Front-End Development}{4}{subsection.3.2}%
-\contentsline {subsubsection}{\numberline {3.2.1}Landing Page}{4}{subsubsection.3.2.1}%
-\contentsline {subsubsection}{\numberline {3.2.2}Dashboards}{4}{subsubsection.3.2.2}%
-\contentsline {subsection}{\numberline {3.3}MySQL Database Implementation}{5}{subsection.3.3}%
-\contentsline {subsubsection}{\numberline {3.3.1}Generating Data}{5}{subsubsection.3.3.1}%
-\contentsline {subsubsection}{\numberline {3.3.2}Creating Tables \& Inserting Data}{5}{subsubsection.3.3.2}%
-\contentsline {subsubsection}{\numberline {3.3.3}SQL Queries}{6}{subsubsection.3.3.3}%
-\contentsline {subsection}{\numberline {3.4}Back-End Development}{9}{subsection.3.4}%
-\contentsline {subsubsection}{\numberline {3.4.1}Sign Up \& Login}{9}{subsubsection.3.4.1}%
-\contentsline {subsubsection}{\numberline {3.4.2}Employer Dashboard}{9}{subsubsection.3.4.2}%
-\contentsline {subsubsection}{\numberline {3.4.3}Job Seeker Dashboard}{10}{subsubsection.3.4.3}%
-\contentsline {subsubsection}{\numberline {3.4.4}Administrator Dashboard}{10}{subsubsection.3.4.4}%
-\contentsline {section}{\numberline {4}CONTRIBUTIONS}{11}{section.4}%
+\contentsline {subsection}{\numberline {2.1}Entity-Relation Diagram}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}E/R Diagram to Relation Conversions}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Functional Dependencies}{7}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}Normalization}{7}{subsubsection.2.3.1}%
+\contentsline {section}{\numberline {3}Web Portal Functionalities}{30}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Software Design \& Architecture}{30}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Front-End Development}{31}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Landing Page}{31}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}Dashboards}{31}{subsubsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.3}MySQL Database Implementation}{32}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}Generating Data}{32}{subsubsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.2}Creating Tables \& Inserting Data}{32}{subsubsection.3.3.2}%
+\contentsline {subsubsection}{\numberline {3.3.3}SQL Queries}{33}{subsubsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.4}Back-End Development}{36}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {3.4.1}Sign Up \& Login}{36}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.2}Employer Dashboard}{36}{subsubsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.3}Job Seeker Dashboard}{37}{subsubsection.3.4.3}%
+\contentsline {subsubsection}{\numberline {3.4.4}Administrator Dashboard}{37}{subsubsection.3.4.4}%
+\contentsline {section}{\numberline {4}CONTRIBUTIONS}{38}{section.4}%
