@@ -66,11 +66,24 @@ WHERE application.JobID = job.JobID AND application.JobID = 1743;
 
 # vi. Report of posted jobs by an employer during a specific period of time
 
-SELECT job.Title, job.DatePosted, Job.description, job.EmpNeeded, application.ApplicantUserName,
-       ApplicationStatus, EmployerName
-FROM application, job, employer
-WHERE (job.DatePosted BETWEEN '2020-04-26' AND '2020-11-08') AND application.JobID = job.JobID and
-      job.EmployerUserName = employer.UserName and EmployerName = 'The Goose and Duck';
+SELECT SoJobs, DatePosted, description, EmpNeeded, EmployerName, NumberHired, COUNT(SoJobs) as NumberOfApplicants
+FROM (SELECT Title as SoJobs, DatePosted, description, EmpNeeded, EmployerName
+    FROM employer e join job j on e.UserName = j.EmployerUserName join application
+    WHERE EmployerName = 'Ultimate Software' AND (DatePosted BETWEEN '2020-01-26' AND '2020-11-08') and
+          application.JobID = j.JobID) as
+UltimateSoftwareJobs
+join
+(SELECT a.Title as HireTitle, COUNT(ApplicationStatus) AS NumberHired
+FROM (SELECT Title FROM
+    employer e join job j on e.UserName = j.EmployerUserName join application
+    WHERE EmployerName = 'Ultimate Software' AND (DatePosted BETWEEN '2020-01-26' AND '2020-11-08') and
+          application.JobID = j.JobID GROUP BY Title) as a
+LEFT JOIN (SELECT Title, ApplicationStatus FROM employer e join job j on e.UserName = j.EmployerUserName join application
+    WHERE EmployerName = 'Ultimate Software' AND (DatePosted BETWEEN '2020-01-26' AND '2020-11-08') and
+          application.JobID = j.JobID) as b on a.Title = b.Title and b.ApplicationStatus = 'hired' GROUP BY
+          a.Title) as
+numberOfHires where UltimateSoftwareJobs.SoJobs = numberOfHires.HireTitle
+GROUP BY SoJobs;
 
 # vii. Create/Delete/Edit/Display an employee
 
