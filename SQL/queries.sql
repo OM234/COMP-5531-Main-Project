@@ -155,7 +155,7 @@ WHERE ApplicantUserName = 'Campbell_B00';
 SELECT job.Title, application.ApplicationDate, job.description, application.ApplicationStatus
 FROM application, job
 WHERE (ApplicationDate BETWEEN '2020-01-20' AND '2020-10-15') AND job.JobID = application.JobID AND
-      applicantUserName = 'Frances_M45';
+      applicantUserName = 'Bethany_Delena72';
 
 # xiv. Add/Delete/Edit a method of payment by a user.
 
