@@ -1,4 +1,7 @@
 * {
     font-family: 'Titillium Web', sans-serif;
 }
+.error {
+    color: red;
+}
 
