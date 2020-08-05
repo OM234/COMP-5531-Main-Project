@@ -26,15 +26,15 @@
                     <a class="nav-link" href="index.php">Home<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php echo $_SERVER['PHP_SELF'] . "?tab=viewJobs";?>">View All Jobs</a>
+                    <a class="nav-link" href="<?php echo $_SERVER['PHP_SELF'] . "?tab=viewJobs"; ?>">View All Jobs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php echo $_SERVER['PHP_SELF'] . "?tab=viewApplications";?>">View Job Applications</a>
+                    <a class="nav-link" href="<?php echo $_SERVER['PHP_SELF'] . "?tab=viewApplications"; ?>">View Job Applications</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php echo $_SERVER['PHP_SELF'] . "?tab=viewAccountSettings";?>">Account Settings</a>
+                    <a class="nav-link" href="<?php echo $_SERVER['PHP_SELF'] . "?tab=viewAccountSettings"; ?>">Account Settings</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href=<?php echo $_SERVER['PHP_SELF'] . "?tab=signout"; ?>> Sign out</a>
@@ -42,14 +42,15 @@
             </ul>
         </div>
     </nav>
-    <div>
-        <form action="seekerDash.php" method="GET">
-            <div class="form-group">
-                <input type="search" class="form-control" name="search" id="jobSearch" />
-            </div>
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
+    <div class="p-2" id="jobSearch">
+      <form  action="<?php echo $_SERVER['PHP_SELF'] ?>" method="GET">
+        <div class="form-group">
+          <input class="form-control" placeholder="Search for jobs" type="search" class="form-control" name="search"/>
+        </div>
+        <!-- <button type="submit" class="btn btn-primary">Search</button> -->
+      </form>
     </div>
+
     <div class="row justify-content-center m-1 d-none" id ="accSettingsNavbar">
         <div class='col-8'>
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -81,7 +82,7 @@
             </nav>
         </div>
     </div>
-    <div id="viewJobs"> </div>
+    <div id="viewJobs"></div>
     <div id="accountSettings" class="container"></div>
 </div>
 <script src="assets/js/jquery.min.js"></script>

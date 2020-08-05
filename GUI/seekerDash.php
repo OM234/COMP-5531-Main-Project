@@ -10,17 +10,17 @@ if (!isset($_SESSION['isLogin']) || $_SESSION['isLogin'] == false) {
 
 /*********** Data models variables ***********************************************************************/
 
-$username = $_SESSION['username'];      // currently logged in user
-$accountType = $_SESSION['accountType'];  // current user account type, (job seeker, employer, admin)
-$userCategory = getUserCategory($username);  // current user's category, (basic, prime, gold)
-$accountStatus = getAccountStatus($username);  // get account status, true(active), false(not active)
-$accountBalance = getAccountBalance($username);  // get account balance
-$monthlyCharge= getMonthlyCharge($userCategory);
+$username = $_SESSION['username']; // currently logged in user
+$accountType = $_SESSION['accountType']; // current user account type, (job seeker, employer, admin)
+$userCategory = getUserCategory($username); // current user's category, (basic, prime, gold)
+$accountStatus = getAccountStatus($username); // get account status, true(active), false(not active)
+$accountBalance = getAccountBalance($username); // get account balance
+$monthlyCharge = getMonthlyCharge($userCategory);
 $jobCategories = getAllJobCategories();
-$numOfAppliedJobs = getNumOfAppliedJobs($username);
+// $numOfAppliedJobs = getNumOfAppliedJobs($username);
 $paymentInfo = getPaymentInfo();
-$autoPay = getAutoOrManual($username);    // auto payment or maunal payment, true for auto.
-$autoPayString = $autoPay ? "auto": "manual";
+$autoPay = getAutoOrManual($username); // auto payment or maunal payment, true for auto.
+$autoPayString = $autoPay ? "auto" : "manual";
 
 echo "username: $username &nbsp&nbsp&nbsp&nbsp";
 echo "accountType: $accountType &nbsp&nbsp&nbsp&nbsp";
@@ -31,19 +31,18 @@ echo "numOfAppliedJobs: $numOfAppliedJobs<br>";
 echo "<br>";
 /************** End of data models ************************************************************************/
 
-
 /*********************** Controllers *********************************************************************/
 if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
     require_once "../GUI/view/seekerDashView.php";
 
-    if(isset($_GET['tab'])) {
+    if (isset($_GET['tab'])) {
 
         $tab = $_GET['tab'];
 
         echo "$tab<br>";
 
-        switch ($tab) {     //Make Account Settings navbar visible
+        switch ($tab) { //Make Account Settings navbar visible
 
             case "viewAccountSettings":
             case "viewContactInfo":
@@ -51,6 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
             case "viewAccBalance":
             case "viewPasswordChange":
                 echo "<script>document.getElementById('accSettingsNavbar').classList.remove('d-none');</script>";
+                echo "<script>document.getElementById('jobSearch').classList.add('d-none');</script>";
+
                 break;
         }
 
@@ -59,14 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
                 session_destroy();
                 goToPage("/GUI/index.php");
                 break;
-            case "viewJobs":  // view posted jobs
+            case "viewJobs": // view posted jobs
                 if ($accountStatus) {
                     if (isset($_GET['jobCategory'])) {
                         $jobCategory = $_GET['jobCategory'];
                         $jobsOfCategory = getJobsOfCategory($jobCategory);
                         showPostedJobs($jobsOfCategory);
-                    }
-                    else {
+                    } else {
                         $postedJobsData = getPostedJobsData();
                         showPostedJobs($postedJobsData);
                     }
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
                 showContactInfo();
                 break;
             case "viewPaymentInfo":
-                showPaymentInfo($paymentInfo);  // show payment info
+                showPaymentInfo($paymentInfo); // show payment info
                 break;
             case "viewAccBalance":
                 showAccBalance();
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         }
     }
 
-    if(isset($_GET['empContactInfo'])) {
+    if (isset($_GET['empContactInfo'])) {
         $empUserName = $_GET['empContactInfo'];
         echo "employer username: $empUserName<br>";
         $data = getEmpContInfo($empUserName);
@@ -106,8 +106,9 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
     if (isset($_GET['search'])) {
         $searchedJob = getSearchedJobs($_GET['search']);
-        showPostedJobs($searchedJob);
+        searchJob($searchedJob, $_GET['search']);
     }
+
 }
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
@@ -116,34 +117,40 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     switch ($tab) {
         case "applyjob":
-            if ($userCategory === 'basic') {
-                echo "<script>alert('You are in basic category, cannot apply for jobs!')</script>";
-            } else if ($userCategory === 'prime' && $numOfAppliedJobs >= 5) {
-                echo "<script>alert('You are in prime category, the number of applied jobs exceed 5!')</script>";
+            $jobID = $_POST['applyJobID'];
+            echo "apply job ID: " . $jobID . "<br>";
+            if (applyJob($jobID, $username)) {
+                echo "operation success<br>";
             } else {
-                $jobID = $_POST['applyJobID'];
-                echo "apply job ID: " . $jobID . "<br>";
-                if (applyJob($jobID, $username)) echo "operation success<br>";
-                else echo "operation failed<br>";
+                echo "operation failed<br>";
             }
+
             echo "<a href='seekerDash.php?tab=viewApplications'>view applications</a>";
             break;
 
         case "withdrawapp":
             $jobID = $_POST['withdrawJobID'];
-            echo "withdraw application ID: ". $_POST['withdrawJobID'] . "<br>";
+            echo "withdraw application ID: " . $_POST['withdrawJobID'] . "<br>";
             echo "Applicant Username: " . $username . "<br>";
-            if (withdrawApplication($jobID, $username)) echo "operation success<br>";
-            else echo "operation failed<br>";
+            if (withdrawApplication($jobID, $username)) {
+                echo "operation success<br>";
+            } else {
+                echo "operation failed<br>";
+            }
+
             echo "<a href='seekerDash.php?tab=viewApplications'>view applications</a>";
             break;
 
         case "acceptoffer":
             $jobID = $_POST['acceptJobID'];
-            echo "accept offer application ID: ". $_POST['acceptJobID'] . "<br>";
+            echo "accept offer application ID: " . $_POST['acceptJobID'] . "<br>";
             echo "Applicant Username: " . $username . "<br>";
-            if (acceptApplication($jobID, $username)) echo "operation success<br>";
-            else echo "operation failed<br>";
+            if (acceptApplication($jobID, $username)) {
+                echo "operation success<br>";
+            } else {
+                echo "operation failed<br>";
+            }
+
             echo "<a href='seekerDash.php?tab=viewApplications'>view applications</a>";
             break;
 
@@ -152,10 +159,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $lastName = $_POST['lastName'];
             $email = $_POST['email'];
             $number = $_POST['number'];
-            echo "firstName: " .$firstName . "<br>";
-            echo "lastName: " .$lastName . "<br>";
-            echo "email: " .$email . "<br>";
-            echo "number: " .$number . "<br>";
+            echo "firstName: " . $firstName . "<br>";
+            echo "lastName: " . $lastName . "<br>";
+            echo "email: " . $email . "<br>";
+            echo "number: " . $number . "<br>";
             if (changeContactInfo($username, $firstName, $lastName, $email, $number)) {
                 echo "operation success. <br>";
             } else {
@@ -168,8 +175,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $ccNumber = $_POST['ccNumber'];
             $ccbNumber = $_POST['ccbNumber'];
             $ccExpiration = $_POST['ccExpiration'];
-            echo "ccNumber: " .$_POST['ccNumber'] . "<br>";
-            echo "ccbNumber: " .$_POST['ccbNumber'] . "<br>";
+            echo "ccNumber: " . $_POST['ccNumber'] . "<br>";
+            echo "ccbNumber: " . $_POST['ccbNumber'] . "<br>";
             echo "ccExpiration: " . $ccExpiration . "<br>";
             if (insertCreditCard($username, $ccNumber, $ccbNumber, $ccExpiration)) {
                 echo "operation success<br>";
@@ -181,23 +188,23 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $baNumber = $_POST['baNumber'];
             $instituteNumber = $_POST['instituteNumber'];
             $branchNumber = $_POST['branchNumber'];
-            echo "baNumber: " .$_POST['baNumber'] . "<br>";
-            echo "instituteNumber: " .$_POST['instituteNumber'] . "<br>";
-            echo "branchNumber: " .$_POST['branchNumber'] . "<br>";
+            echo "baNumber: " . $_POST['baNumber'] . "<br>";
+            echo "instituteNumber: " . $_POST['instituteNumber'] . "<br>";
+            echo "branchNumber: " . $_POST['branchNumber'] . "<br>";
             if (insertDebitCard($username, $baNumber, $instituteNumber, $branchNumber)) {
                 echo "operation success<br>";
-            } else { echo "operation failed"; }
+            } else {echo "operation failed";}
             echo "<a href='seekerDash.php?tab=viewPaymentInfo'>view payment info</a>";
             break;
 
         case "changeDebitStatus":
             $op = $_POST['op'];
             $accountNumber = $_REQUEST['accountNumber'];
-            echo "account number: " .$_REQUEST['accountNumber'] . "<br>";
+            echo "account number: " . $_REQUEST['accountNumber'] . "<br>";
             echo "operation: " . $_POST['op'] . "<br>";
             if (changeDebitStatus($username, $op, $accountNumber)) {
                 echo "operation success<br>";
-            } else { echo "operation failed"; }
+            } else {echo "operation failed";}
             echo "<a href='seekerDash.php?tab=viewPaymentInfo'>view payment info</a>";
             break;
 
@@ -210,13 +217,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             echo "operation: " . $_POST['op'] . "<br>";
             if (changeCreditStatus($username, $op, $ccNumber, $ccExpiry)) {
                 echo "operation success<br>";
-            } else { echo "operation failed"; }
+            } else {echo "operation failed";}
             echo "<a href='seekerDash.php?tab=viewPaymentInfo'>view payment info</a>";
             break;
 
         case "makePayment":
             $amount = $_POST['amount'];
-            echo "payment Amount: " .$_POST['amount'] ."<br>";
+            echo "payment Amount: " . $_POST['amount'] . "<br>";
             if (makePayment($amount)) {
                 echo "operation success<br>";
             } else {
@@ -227,37 +234,45 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
         case "changeAccBalance":
             if (isset($_POST['upgrade'])) {
-                echo "upgrade to: ". $_POST['upgrade'] . "<br>" ;
+                echo "upgrade to: " . $_POST['upgrade'] . "<br>";
                 $category = $_POST['upgrade'];
-                if (changeUserCategory($category)) echo "operation success<br>";
-                else echo "operation failed<br>";
+                if (changeUserCategory($category)) {
+                    echo "operation success<br>";
+                } else {
+                    echo "operation failed<br>";
+                }
+
             }
             if (isset($_POST['downgrade'])) {
-                echo "downgrade to: ". $_POST['downgrade'] . "<br>" ;
+                echo "downgrade to: " . $_POST['downgrade'] . "<br>";
                 $category = $_POST['downgrade'];
-                if ($numOfAppliedJobs > 5) {
-                    echo "<script>alert('You cannot downgrade to prime, number of applied jobs exceed 5!')</script>";
+                if (changeUserCategory($category)) {
+                    echo "operation success<br>";
                 } else {
-                    if (changeUserCategory($category)) echo "operation success<br>";
-                    else echo "operation failed<br>";
+                    echo "operation failed<br>";
                 }
+
             }
             if (isset($_POST['basic'])) {
                 echo "downgrade to: " . $_POST['basic'] . "<br>";
                 $category = $_POST['basic'];
-                if ($numOfAppliedJobs > 0) {
-                    echo "<script>alert('You cannot downgrade to basic, you have some job applications.')</script>";
+                if (changeUserCategory($category)) {
+                    echo "operation success<br>";
                 } else {
-                    if (changeUserCategory($category)) echo "operation success<br>";
-                    else echo "operation failed<br>";
+                    echo "operation failed<br>";
                 }
+
             }
             if (isset($_POST['auto'])) {
-                echo "Change auto payment to auto? : ". $_POST['auto'] . "<br>";
+                echo "Change auto payment to auto? : " . $_POST['auto'] . "<br>";
                 $isAuto = $_POST['auto'];
                 $defaultPayment = getDefaultPayment();
-                if (changeAutoManual($defaultPayment, $isAuto)) echo "operation success<br>";
-                else echo "operation failed<br>";
+                if (changeAutoManual($defaultPayment, $isAuto)) {
+                    echo "operation success<br>";
+                } else {
+                    echo "operation failed<br>";
+                }
+
             }
             echo "<br><br><a href='/GUI/seekerDash.php?tab=viewAccBalance'>view account balance</a>";
             break;
@@ -265,10 +280,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         case "passwordChange":
             $prevPass = $_POST['prevPass'];
             $newPass = $_POST['newPass'];
-            echo "previous Password: ". $_POST['prevPass'] . "<br>";
-            echo "new Password: ". $_POST['newPass'] . "<br>";
-            if (changePassword($prevPass, $newPass)) echo "operation success<br>";
-            else echo "operation failed<br>";
+            echo "previous Password: " . $_POST['prevPass'] . "<br>";
+            echo "new Password: " . $_POST['newPass'] . "<br>";
+            if (changePassword($prevPass, $newPass)) {
+                echo "operation success<br>";
+            } else {
+                echo "operation failed<br>";
+            }
+
             echo "<a href='seekerDash.php?tab=viewPasswordChange'>change password page</a>";
             break;
     }
@@ -276,11 +295,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 /*********************** End of Controllers ******************************************************/
 
-
-
 /************* Data access part *****************************************************************************/
 // Get user's category, gold/prime
-function getUserCategory($username) {
+function getUserCategory($username)
+{
     $conn = connectDB();
     $sql = "select Category from applicant where UserName = '$username'";
     $result = $conn->query($sql);
@@ -288,19 +306,26 @@ function getUserCategory($username) {
 }
 
 //  get user's payment method, auto or manual, return true for auto, false for manual.
-function getAutoOrManual($username) {
-    if (getDefaultPayment()['autoManual'] == 1) return true;
-    else return false;
+function getAutoOrManual($username)
+{
+    if (getDefaultPayment()['autoManual'] == 1) {
+        return true;
+    } else {
+        return false;
+    }
+
 }
 
 // Get user's account status, true for active, false for freeze
-function getAccountStatus($username) {
+function getAccountStatus($username)
+{
     $balance = getAccountBalance($username);
     return $balance >= 0;
 }
 
 // Get user's account balance
-function getAccountBalance($username) {
+function getAccountBalance($username)
+{
     $conn = connectDB();
     $sql = "select Balance from applicant where UserName = '$username'";
     $result = $conn->query($sql);
@@ -308,7 +333,8 @@ function getAccountBalance($username) {
 }
 
 // get monthly payment for different user category
-function getMonthlyCharge($userCategory) {
+function getMonthlyCharge($userCategory)
+{
     if ($userCategory === 'gold') {
         return 20;
     } else if ($userCategory === 'prime') {
@@ -319,7 +345,8 @@ function getMonthlyCharge($userCategory) {
 }
 
 // get posted jobs data from database
-function getPostedJobsData() {
+function getPostedJobsData()
+{
     $data = array();
 
     $conn = connectDB();
@@ -327,8 +354,8 @@ function getPostedJobsData() {
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            $job = array("jobID" =>$row["JobID"], "title"=>$row["Title"], "datePosted"=>$row["DatePosted"], "category"=>$row["Category"],
-                "description"=>$row["Description"], "numOfOpenings"=>$row["EmpNeeded"], "employerUserName"=>$row["EmployerUserName"]);
+            $job = array("jobID" => $row["JobID"], "title" => $row["Title"], "datePosted" => $row["DatePosted"], "category" => $row["Category"],
+                "description" => $row["Description"], "numOfOpenings" => $row["EmpNeeded"], "employerUserName" => $row["EmployerUserName"]);
             $jobStatus = ($row["JobStatus"] == 1) ? "open" : "closed";
             $employerName = getEmployerName($row["EmployerUserName"]);
             $job["jobStatus"] = $jobStatus;
@@ -340,7 +367,8 @@ function getPostedJobsData() {
 }
 
 // get posted jobs of one category
-function getJobsOfCategory($jobCategory) {
+function getJobsOfCategory($jobCategory)
+{
     $data = array();
 
     $conn = connectDB();
@@ -348,8 +376,8 @@ function getJobsOfCategory($jobCategory) {
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            $job = array("jobID" =>$row["JobID"], "title"=>$row["Title"], "datePosted"=>$row["DatePosted"], "category"=>$row["Category"],
-                "description"=>$row["Description"], "numOfOpenings"=>$row["EmpNeeded"], "employerUserName"=>$row["EmployerUserName"]);
+            $job = array("jobID" => $row["JobID"], "title" => $row["Title"], "datePosted" => $row["DatePosted"], "category" => $row["Category"],
+                "description" => $row["Description"], "numOfOpenings" => $row["EmpNeeded"], "employerUserName" => $row["EmployerUserName"]);
             $jobStatus = ($row["JobStatus"] == 1) ? "open" : "closed";
             $employerName = getEmployerName($row["EmployerUserName"]);
             $job["jobStatus"] = $jobStatus;
@@ -360,8 +388,32 @@ function getJobsOfCategory($jobCategory) {
     return $data;
 }
 
+//Fetching all job based on the search string
+function getSearchedJobs($searchString)
+{
+    $data = array();
+
+    $conn = connectDB();
+    $sql = "SELECT * FROM job WHERE JOBSTATUS = 1 AND title LIKE '%$searchString%'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $job = array("jobID" => $row["JobID"], "title" => $row["Title"], "datePosted" => $row["DatePosted"], "category" => $row["Category"],
+                "description" => $row["Description"], "numOfOpenings" => $row["EmpNeeded"], "employerUserName" => $row["EmployerUserName"]);
+            $jobStatus = ($row["JobStatus"] == 1) ? "open" : "closed";
+            $employerName = getEmployerName($row["EmployerUserName"]);
+            $job["jobStatus"] = $jobStatus;
+            $job["employerName"] = $employerName;
+            array_push($data, $job);
+        }
+    }
+    return $data;
+
+}
+
 // get employer name by employerUserName
-function getEmployerName($username) {
+function getEmployerName($username)
+{
     $conn = connectDB();
     $result = mysqli_query($conn, "select EmployerName from employer where UserName = '$username'");
     if ($result->num_rows > 0) {
@@ -371,7 +423,8 @@ function getEmployerName($username) {
 }
 
 // get employer contact info
-function getEmpContInfo($empUserName) {
+function getEmpContInfo($empUserName)
+{
     $data = array();
     $conn = connectDB();
     $result = mysqli_query($conn, "select EmployerName from employer where UserName = '$empUserName'");
@@ -392,7 +445,8 @@ function getEmpContInfo($empUserName) {
 }
 
 // get applied jobs data from database
-function getAppliedJobsData($username) {
+function getAppliedJobsData($username)
+{
     $data = array();
     $conn = connectDB();
     $sql = "select * from application where ApplicantUserName = '$username'";
@@ -400,9 +454,9 @@ function getAppliedJobsData($username) {
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             $job = getJobByID($row["JobID"]);
-            $app = array("jobID" =>$job["jobID"], "title"=>$job["title"], "datePosted"=>$job["datePosted"], "category"=>$job["category"],
-                "description"=>$job["description"], "numOfOpenings"=>$job["numOfOpenings"], "jobStatus"=>$job["jobStatus"],
-                "employerName"=>$job["employerName"], "employerUserName"=>$job["employerUserName"]);
+            $app = array("jobID" => $job["jobID"], "title" => $job["title"], "datePosted" => $job["datePosted"], "category" => $job["category"],
+                "description" => $job["description"], "numOfOpenings" => $job["numOfOpenings"], "jobStatus" => $job["jobStatus"],
+                "employerName" => $job["employerName"], "employerUserName" => $job["employerUserName"]);
             $app["appStatus"] = $row["ApplicationStatus"];
             $app["appDate"] = $row["ApplicationDate"];
             array_push($data, $app);
@@ -410,40 +464,6 @@ function getAppliedJobsData($username) {
     }
     return $data;
 }
-
-function getNumOfAppliedJobs($username) {
-    $conn = connectDB();
-    $sql = "select count(*) as n from application where ApplicantUserName = '$username'";
-    $result = mysqli_query($conn, $sql);
-    if ($result->num_rows > 0) {
-        return $result->fetch_assoc()['n'];
-    }
-}
-
-
-//Fetching all job based on the search string
-function getSearchedJobs($searchString)
-{
-    $data = array();
-
-    $conn = connectDB();
-    $sql = "SELECT * FROM job WHERE title LIKE '%$searchString%'";
-    $result = $conn->query($sql);
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $job = array("jobID" => $row["JobID"], "title" => $row["Title"], "datePosted" => $row["DatePosted"], "category" => $row["Category"],
-                "description" => $row["Description"], "numOfOpenings" => $row["EmpNeeded"], "employerUserName" => $row["EmployerUserName"]);
-            $jobStatus = ($row["JobStatus"] == 1) ? "open" : "closed";
-            $employerName = getEmployerName($row["EmployerUserName"]);
-            $job["jobStatus"] = $jobStatus;
-            $job["employerName"] = $employerName;
-            array_push($data, $job);
-        }
-    }
-    return $data;
-
-}
-
 
 // get job by jobID, select * from Job where jobID = $jobID
 /**
@@ -459,13 +479,14 @@ function getSearchedJobs($searchString)
  *  "numOfApplications": 3
  * }
  */
-function getJobByID($jobID) {
+function getJobByID($jobID)
+{
     $conn = connectDB();
     $result = mysqli_query($conn, "select * from job where JobID = $jobID");
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        $job = array("jobID" =>$row["JobID"], "title"=>$row["Title"], "datePosted"=>$row["DatePosted"], "category"=>$row["Category"],
-            "description"=>$row["Description"], "numOfOpenings"=>$row["EmpNeeded"], "employerUserName"=>$row["EmployerUserName"]);
+        $job = array("jobID" => $row["JobID"], "title" => $row["Title"], "datePosted" => $row["DatePosted"], "category" => $row["Category"],
+            "description" => $row["Description"], "numOfOpenings" => $row["EmpNeeded"], "employerUserName" => $row["EmployerUserName"]);
         $jobStatus = ($row["JobStatus"] == 1) ? "open" : "closed";
         $employerName = getEmployerName($row["EmployerUserName"]);
         $job["jobStatus"] = $jobStatus;
@@ -474,39 +495,57 @@ function getJobByID($jobID) {
     return $job;
 }
 
-function withdrawApplication($jobID, $username) {
+function withdrawApplication($jobID, $username)
+{
     $conn = connectDB();
     $sql = "delete from application where ApplicantUserName = '$username' and JobID = $jobID";
-    if (mysqli_query($conn, $sql))  return true;
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+
     return false;
 }
 
-function acceptApplication($jobID, $username) {
+function acceptApplication($jobID, $username)
+{
     $conn = connectDB();
-    $sql = "update application set ApplicationStatus = 'hired' 
+    $sql = "update application set ApplicationStatus = 'accepted'
             where ApplicantUserName = '$username' and JobID = $jobID";
-    if (mysqli_query($conn, $sql)) return true;
-    else return false;
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    } else {
+        return false;
+    }
+
 }
 
-function applyJob($jobID, $username) {
+function applyJob($jobID, $username)
+{
     $conn = connectDB();
     $sql = "insert into application (ApplicantUserName, JobID, ApplicationStatus, ApplicationDate)
             values ('$username', $jobID, 'sent', current_date())";
-    if (mysqli_query($conn, $sql)) return true;
-    else return false;
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    } else {
+        return false;
+    }
+
 }
 
-
-function changeContactInfo($username, $firstName, $lastName, $email, $number) {
+function changeContactInfo($username, $firstName, $lastName, $email, $number)
+{
     $conn = connectDB();
     $sql = "update user set FirstName = '$firstName', LastName = '$lastName', Email = '$email', ContactNumber = '$number'
             where UserName = '$username'";
-    if (mysqli_query($conn, $sql)) return true;
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+
     return false;
 }
 
-function getPaymentInfo() {
+function getPaymentInfo()
+{
     global $username;
     $creditCardInfo = getCreditCardInfo($username);
     $debitCardInfo = getDebitCardInfo($username);
@@ -514,7 +553,8 @@ function getPaymentInfo() {
 }
 
 // get credit card info
-function getCreditCardInfo($username) {
+function getCreditCardInfo($username)
+{
     $creditCardInfo = array();
 
     $conn = connectDB();
@@ -527,8 +567,8 @@ function getCreditCardInfo($username) {
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            $cci = array("CCNumber"=>$row["CCNumber"], "CCExpiry"=>$row["ExpireDate"], "CCBNumber"=>$row["CCBNumber"],
-                "isDefault"=>$row["IsDefault"], "autoManual"=>$row["Auto_Manual"]);
+            $cci = array("CCNumber" => $row["CCNumber"], "CCExpiry" => $row["ExpireDate"], "CCBNumber" => $row["CCBNumber"],
+                "isDefault" => $row["IsDefault"], "autoManual" => $row["Auto_Manual"]);
             array_push($creditCardInfo, $cci);
         }
     }
@@ -536,7 +576,8 @@ function getCreditCardInfo($username) {
 }
 
 // get debit card info
-function getDebitCardInfo($username) {
+function getDebitCardInfo($username)
+{
     $debitCardInfo = array();
 
     $conn = connectDB();
@@ -548,8 +589,8 @@ function getDebitCardInfo($username) {
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            $dci = array("accountNumber"=>$row["AccountNumber"], "instituteNumber"=>$row["InstituteNumber"],
-                "branchNumber"=>$row["BranchNumber"], "isDefault"=>$row["IsDefault"], "autoManual"=>$row["Auto_Manual"]);
+            $dci = array("accountNumber" => $row["AccountNumber"], "instituteNumber" => $row["InstituteNumber"],
+                "branchNumber" => $row["BranchNumber"], "isDefault" => $row["IsDefault"], "autoManual" => $row["Auto_Manual"]);
             array_push($debitCardInfo, $dci);
         }
     }
@@ -557,7 +598,8 @@ function getDebitCardInfo($username) {
 }
 
 // get default payment info
-function getDefaultPayment() {
+function getDefaultPayment()
+{
     global $paymentInfo;
     $creditInfo = $paymentInfo[0];
     $debitInfo = $paymentInfo[1];
@@ -567,19 +609,20 @@ function getDefaultPayment() {
             $ccNumber = $creditInfo[$i]['CCNumber'];
             $ccExpiry = $creditInfo[$i]['CCExpiry'];
             $isAuto = $creditInfo[$i]['autoManual'];
-            return array("type"=>"credit", "ccNumber"=>$ccNumber, "ccExpiry"=>$ccExpiry, "autoManual"=>$isAuto);
+            return array("type" => "credit", "ccNumber" => $ccNumber, "ccExpiry" => $ccExpiry, "autoManual" => $isAuto);
         }
     }
     for ($i = 0; $i < count($debitInfo); $i++) {
         if ($debitInfo[$i]['isDefault']) {
             $accountNumber = $debitInfo[$i]['accountNumber'];
             $isAuto = $debitInfo[$i]['autoManual'];
-            return array("type"=>"debit", "accountNumber"=>$accountNumber, "autoManual"=>$isAuto);
+            return array("type" => "debit", "accountNumber" => $accountNumber, "autoManual" => $isAuto);
         }
     }
 }
 
-function insertCreditCard($username, $ccNumber, $ccbNumber, $ccExpiration) {
+function insertCreditCard($username, $ccNumber, $ccbNumber, $ccExpiration)
+{
     $month = substr($ccExpiration, 0, 2);
     $year = substr($ccExpiration, 2, 4);
     $expDate = $year . "-" . $month . "-1";
@@ -593,12 +636,16 @@ function insertCreditCard($username, $ccNumber, $ccbNumber, $ccExpiration) {
     }
 
     if ($flag) {
-        if (insertApplicantCC($ccNumber, $username)) return true;
+        if (insertApplicantCC($ccNumber, $username)) {
+            return true;
+        }
+
     }
     return false;
 }
 
-function insertApplicantCC($ccNumber, $username) {
+function insertApplicantCC($ccNumber, $username)
+{
     $conn = connectDB();
     $sql = "insert into applicantcc (ApplicantUserName, CCNumber) values ('$username', '$ccNumber')";
     if (mysqli_query($conn, $sql)) {
@@ -608,23 +655,28 @@ function insertApplicantCC($ccNumber, $username) {
 }
 
 // insert debit card info
-function insertDebitCard($username, $baNumber, $instituteNumber, $branchNumber) {
+function insertDebitCard($username, $baNumber, $instituteNumber, $branchNumber)
+{
     $conn = connectDB();
     $flag = false;
-    $sql = "insert into padinfo (AccountNumber, InstituteNumber, BranchNumber, IsDefault, Auto_Manual) 
+    $sql = "insert into padinfo (AccountNumber, InstituteNumber, BranchNumber, IsDefault, Auto_Manual)
             values ('$baNumber', '$instituteNumber', '$branchNumber', 0, 0)";
     if (mysqli_query($conn, $sql)) {
         $flag = true;
     }
 
     if ($flag) {
-        if (insertApplicantPad($username, $baNumber)) return true;
+        if (insertApplicantPad($username, $baNumber)) {
+            return true;
+        }
+
     }
     return false;
 }
 
 // insert into employerpad table
-function insertApplicantPad($username, $baNumber) {
+function insertApplicantPad($username, $baNumber)
+{
     $conn = connectDB();
     $sql = "insert into applicantpad (ApplicantUserName, AccountNumber) values ('$username', '$baNumber')";
     if (mysqli_query($conn, $sql)) {
@@ -633,47 +685,60 @@ function insertApplicantPad($username, $baNumber) {
     return false;
 }
 
-function changeDebitStatus($username, $op, $accountNumber) {
+function changeDebitStatus($username, $op, $accountNumber)
+{
     if ($op === 'delete') {
         $conn = connectDB();
         $sql = "delete from applicantpad where ApplicantUserName = '$username' and AccountNumber = '$accountNumber'";
         if (mysqli_query($conn, $sql)) {
             $conn2 = connectDB();
             $sql2 = "delete from padinfo where AccountNumber = '$accountNumber'";
-            if (mysqli_query($conn2, $sql2)) return true;
+            if (mysqli_query($conn2, $sql2)) {
+                return true;
+            }
+
         }
-    }
-    else if ($op === 'setDefault') {
+    } else if ($op === 'setDefault') {
         setUndefault();
         $conn = connectDB();
         $sql = "update padinfo set IsDefault = 1 where AccountNumber = '$accountNumber'";
-        if (mysqli_query($conn, $sql)) return true;
+        if (mysqli_query($conn, $sql)) {
+            return true;
+        }
+
     }
     return false;
 }
 
 // change credit card status
-function changeCreditStatus($username, $op, $ccNumber, $ccExpiry) {
+function changeCreditStatus($username, $op, $ccNumber, $ccExpiry)
+{
     if ($op === 'delete') {
         $conn = connectDB();
         $sql = "delete from applicantcc where ApplicantUserName = '$username' and CCNumber = '$ccNumber'";
         if (mysqli_query($conn, $sql)) {
             $conn2 = connectDB();
             $sql2 = "delete from creditcardinfo where CCNumber = '$ccNumber' and ExpireDate = '$ccExpiry'";
-            if (mysqli_query($conn2, $sql2)) return true;
+            if (mysqli_query($conn2, $sql2)) {
+                return true;
+            }
+
         }
-    }
-    else if ($op === 'setDefault') {
+    } else if ($op === 'setDefault') {
         setUndefault();
         $conn = connectDB();
         $sql = "update creditcardinfo set IsDefault = 1 where CCNumber = '$ccNumber' and ExpireDate = '$ccExpiry'";
-        if (mysqli_query($conn, $sql)) return true;
+        if (mysqli_query($conn, $sql)) {
+            return true;
+        }
+
     }
     return false;
 }
 
 // Change current default to undefault
-function setUndefault() {
+function setUndefault()
+{
     global $username;
     global $paymentInfo;
     $creditInfo = $paymentInfo[0];
@@ -685,7 +750,10 @@ function setUndefault() {
             $ccExpiry = $creditInfo[$i]['CCExpiry'];
             $conn = connectDB();
             $sql = "update creditcardinfo set IsDefault = 0 where CCNumber = '$ccNumber' and ExpireDate = '$ccExpiry'";
-            if (!mysqli_query($conn, $sql)) echo "error in setUndefault";
+            if (!mysqli_query($conn, $sql)) {
+                echo "error in setUndefault";
+            }
+
         }
     }
     for ($i = 0; $i < count($debitInfo); $i++) {
@@ -693,20 +761,28 @@ function setUndefault() {
             $accountNumber = $debitInfo[$i]['accountNumber'];
             $conn = connectDB();
             $sql = "update padinfo set IsDefault = 0 where AccountNumber = '$accountNumber'";
-            if (!mysqli_query($conn, $sql)) echo "error in setUndefault";
+            if (!mysqli_query($conn, $sql)) {
+                echo "error in setUndefault";
+            }
+
         }
     }
 }
 
-function makePayment($amount) {
+function makePayment($amount)
+{
     global $username;
     $conn = connectDB();
     $sql = "update applicant set Balance = Balance+$amount where UserName = '$username'";
-    if (mysqli_query($conn, $sql)) return true;
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+
     return false;
 }
 
-function changeUserCategory($category) {
+function changeUserCategory($category)
+{
     global $username;
     $conn = connectDB();
     $sql = "update applicant set Category = '$category' where UserName = '$username'";
@@ -716,27 +792,31 @@ function changeUserCategory($category) {
     return false;
 }
 
-function changeAutoManual($defaultPayment, $isAuto) {
-    $b = $isAuto==='true' ? 1 : 0;
+function changeAutoManual($defaultPayment, $isAuto)
+{
+    $b = $isAuto === 'true' ? 1 : 0;
     $conn = connectDB();
     $sql = "";
     $s = $defaultPayment['type'];
     if ($s === 'credit') {
         $ccNumber = $defaultPayment['ccNumber'];
         $ccExpiry = $defaultPayment['ccExpiry'];
-        $sql = "update creditcardinfo set Auto_Manual = $b 
+        $sql = "update creditcardinfo set Auto_Manual = $b
                 where CCNumber = '$ccNumber' and ExpireDate = '$ccExpiry'";
-    }
-    else if ($s === 'debit') {
+    } else if ($s === 'debit') {
         $accountNumber = $defaultPayment['accountNumber'];
         $sql = "update padinfo set Auto_Manual = $b
                 where AccountNumber = '$accountNumber'";
     }
-    if (mysqli_query($conn, $sql)) return true;
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    }
+
     return false;
 }
 
-function changePassword($prevPass, $newPass) {
+function changePassword($prevPass, $newPass)
+{
     global $username;
     $conn = connectDB();
     $result = mysqli_query($conn, "select Password from user where UserName = '$username'");
@@ -746,12 +826,16 @@ function changePassword($prevPass, $newPass) {
     } else {
         $conn2 = connectDB();
         $sql = "update user set Password = '$newPass' where UserName = '$username'";
-        if (mysqli_query($conn2, $sql)) return true;
+        if (mysqli_query($conn2, $sql)) {
+            return true;
+        }
+
         return false;
     }
 }
 
-function getAllJobCategories() {
+function getAllJobCategories()
+{
     $data = array();
     $conn = connectDB();
     $sql = "select distinct Category from job;";
@@ -767,22 +851,55 @@ function getAllJobCategories() {
 
 /************************* End of data access *****************************************************/
 
-
 /****************** Front-end view part ******************************************************/
 
-function showPostedJobs($postedJobsData) {
+//Search bar for job seeker
+function searchJob($searchResult, $searchString)
+{
+    $message = count($searchResult) ? "Showing search result for " . "<mark>" . $searchString . "</mark>" : "Sorry no available job to display";
+    $html = "<span>" . $message . "</span>";
+    for ($i = 0; $i < count($searchResult); $i++) {
+
+        $ID = $searchResult[$i]['jobID'];
+        $empUserName = $searchResult[$i]['employerUserName'];
+
+        $html .=
+            "<div class='row align-items-center justify-content-center'>" .
+            "    <div class='col-8 border border-dark rounded'>" .
+            "       <p class='jobTitle'><b>" . $searchResult[$i]['title'] . "</b></p><br>" .
+            "       <p><b>Job ID: </b>" . $searchResult[$i]['jobID'] . "</p>" .
+            "       <p><b>Date Posted: </b>" . $searchResult[$i]['datePosted'] . "</p>" .
+            "       <p><b>Employer: </b><a href='seekerDash.php?empContactInfo=$empUserName'>" . $searchResult[$i]['employerName'] . "</a></p>" .
+            "       <p><b>Category: </b>" . $searchResult[$i]['category'] . "</p>" .
+            "       <p><b>Description: </b>" . $searchResult[$i]['description'] . "</p>" .
+            "       <p><b># Openings: </b>" . $searchResult[$i]['numOfOpenings'] . "</p>" .
+            "       <p><b>Job Status: </b>" . $searchResult[$i]['jobStatus'] . "</p>" .
+            "    </div>" .
+            "    <div class='col-2 d-flex justify-content-center '>" .
+            "    <form action='" . $_SERVER['PHP_SELF'] . "?tab=applyjob' method='post'>" .
+            "       <button type='submit' name='applyJobID' value='$ID' class='btn btn-success'> Apply </button>" .
+            "    </form>" .
+            "    </div>" .
+            "</div>";
+    }
+    echo "<script>document.getElementById('viewJobs').innerHTML = \"" . $html . "\"</script>";
+
+}
+
+function showPostedJobs($postedJobsData)
+{
     global $jobCategories;
 
     $html =
-        "<div class='row justify-content-center'>".
-        "    <div class = 'col-4'>".
-        "    <form action='".$_SERVER['PHP_SELF']."'>" .
+        "<div class='row justify-content-center'>" .
+        "    <div class = 'col-4'>" .
+        "    <form action='" . $_SERVER['PHP_SELF'] . "'>" .
         "       <div class='form-group text-center'>" .
         "            <label for='selectCategory'>Select category:</label>" .
         "            <select class='form-control' id='selectCategory' name='jobCategory'>" .
         "                 <option>...</option>";
 
-    for($i = 0; $i < count($jobCategories); $i++) {
+    for ($i = 0; $i < count($jobCategories); $i++) {
 
         $category = $jobCategories[$i];
         $html .=
@@ -790,10 +907,10 @@ function showPostedJobs($postedJobsData) {
     }
     $html .=
         "            </select>" .
-        "      </div>".
+        "      </div>" .
         "   <button class='btn btn-primary' type='submit' name='tab' value='viewJobs'>Submit</button>" .
         "   </form>" .
-        "   </div>".
+        "   </div>" .
         "</div>";
 
     for ($i = 0; $i < count($postedJobsData); $i++) {
@@ -804,26 +921,27 @@ function showPostedJobs($postedJobsData) {
         $html .=
             "<div class='row align-items-center justify-content-center'>" .
             "    <div class='col-8 border border-dark rounded'>" .
-            "       <p class='jobTitle'><b>" . $postedJobsData[$i]['title'] .  "</b></p><br>" .
+            "       <p class='jobTitle'><b>" . $postedJobsData[$i]['title'] . "</b></p><br>" .
             "       <p><b>Job ID: </b>" . $postedJobsData[$i]['jobID'] . "</p>" .
             "       <p><b>Date Posted: </b>" . $postedJobsData[$i]['datePosted'] . "</p>" .
-            "       <p><b>Employer: </b><a href='seekerDash.php?empContactInfo=$empUserName'>" . $postedJobsData[$i]['employerName']."</a></p>" .
+            "       <p><b>Employer: </b><a href='seekerDash.php?empContactInfo=$empUserName'>" . $postedJobsData[$i]['employerName'] . "</a></p>" .
             "       <p><b>Category: </b>" . $postedJobsData[$i]['category'] . "</p>" .
             "       <p><b>Description: </b>" . $postedJobsData[$i]['description'] . "</p>" .
             "       <p><b># Openings: </b>" . $postedJobsData[$i]['numOfOpenings'] . "</p>" .
             "       <p><b>Job Status: </b>" . $postedJobsData[$i]['jobStatus'] . "</p>" .
             "    </div>" .
             "    <div class='col-2 d-flex justify-content-center '>" .
-            "    <form action='". $_SERVER['PHP_SELF'] ."?tab=applyjob' method='post'>" .
+            "    <form action='" . $_SERVER['PHP_SELF'] . "?tab=applyjob' method='post'>" .
             "       <button type='submit' name='applyJobID' value='$ID' class='btn btn-success'> Apply </button>" .
             "    </form>" .
-            "    </div>".
+            "    </div>" .
             "</div>";
     }
-    echo "<script>document.getElementById('viewJobs').innerHTML = \"". $html ."\"</script>";
+    echo "<script>document.getElementById('viewJobs').innerHTML = \"" . $html . "\"</script>";
 }
 
-function showApplications($data) {
+function showApplications($data)
+{
 
     $html = "";
 
@@ -835,10 +953,10 @@ function showApplications($data) {
         $html .=
             "<div class='row align-items-center justify-content-center'>" .
             "    <div class='col-8 border border-dark rounded'>" .
-            "       <p class='jobTitle'><b>" . $data[$i]['title'] .  "</b></p><br>" .
+            "       <p class='jobTitle'><b>" . $data[$i]['title'] . "</b></p><br>" .
             "       <p><b>Job ID: </b>" . $data[$i]['jobID'] . "</p>" .
             "       <p><b>Date Posted: </b>" . $data[$i]['datePosted'] . "</p>" .
-            "       <p><b>Employer: </b><a href='seekerDash.php?empContactInfo=$empUserName'>". $data[$i]['employerName']."</a></p>" .
+            "       <p><b>Employer: </b><a href='seekerDash.php?empContactInfo=$empUserName'>" . $data[$i]['employerName'] . "</a></p>" .
             "       <p><b>Category: </b>" . $data[$i]['category'] . "</p>" .
             "       <p><b>Description: </b>" . $data[$i]['description'] . "</p>" .
             "       <p><b># Openings: </b>" . $data[$i]['numOfOpenings'] . "</p>" .
@@ -847,56 +965,57 @@ function showApplications($data) {
             "       <p><b>Application Date: </b>" . $data[$i]['appDate'] . "</p>" .
             "    </div>" .
             "    <div class='col-2 d-flex text-center '>" .
-            "    <form action='". $_SERVER['PHP_SELF']."?tab=withdrawapp' method='post'>" .
+            "    <form action='" . $_SERVER['PHP_SELF'] . "?tab=withdrawapp' method='post'>" .
             "       <button type='submit' name='withdrawJobID' value='$jobID' class='btn btn-danger'> Withdraw </button>" .
             "    </form>";
         if ($appStatus === 'accepted') {
             $html .=
-            "    <form action='" . $_SERVER['PHP_SELF'] . "?tab=acceptoffer' method='post'>" .
-            "       <button type='submit' name='acceptJobID' value='$jobID' class='btn btn-success'> Accept Offer </button>" .
-            "    </form>" .
-            "    </div>" .
-            "</div>";
+                "    <form action='" . $_SERVER['PHP_SELF'] . "?tab=acceptoffer' method='post'>" .
+                "       <button type='submit' name='acceptJobID' value='$jobID' class='btn btn-success'> Accept Offer </button>" .
+                "    </form>" .
+                "    </div>" .
+                "</div>";
         } else {
             $html .=
-            "    </div>" .
-            "</div>";
+                "    </div>" .
+                "</div>";
         }
     }
-    echo "<script>document.getElementById('viewJobs').innerHTML = \"". $html ."\"</script>";
+    echo "<script>document.getElementById('viewJobs').innerHTML = \"" . $html . "\"</script>";
 }
 
-function viewEmpContInfo($data) {
+function viewEmpContInfo($data)
+{
 
     $empName = $empRepName = $empRepEmail = $empRepNumber = "To do";
     $html =
         "<div class = 'row justify-content-center'>" .
         "     <div class = 'col-8'>" .
-        "          <p><b>Employer Name: </b> ". $data["empName"] ."</p>" .
-        "          <p><b>Representative Name: </b> ". $data["empRepFirstName"]." ".$data["empRepFirstName"]."</p>" .
-        "          <p><b>Representative Email: </b> ".$data["empRepEmail"]."</p>" .
-        "          <p><b>Representative Number: </b>". $data["empRepContactNumber"] ."</p>" .
+        "          <p><b>Employer Name: </b> " . $data["empName"] . "</p>" .
+        "          <p><b>Representative Name: </b> " . $data["empRepFirstName"] . " " . $data["empRepFirstName"] . "</p>" .
+        "          <p><b>Representative Email: </b> " . $data["empRepEmail"] . "</p>" .
+        "          <p><b>Representative Number: </b>" . $data["empRepContactNumber"] . "</p>" .
         "     </div>";
-        "</div>";
+    "</div>";
 
-    echo "<script>document.getElementById('viewJobs').innerHTML = \"". $html ."\"</script>";
+    echo "<script>document.getElementById('viewJobs').innerHTML = \"" . $html . "\"</script>";
 }
 
-function showPaymentInfo($paymentInfo) {
+function showPaymentInfo($paymentInfo)
+{
 
     $creditCardInfo = $paymentInfo[0];
     $debitCardInfo = $paymentInfo[1];
 
     $html =
-        "<div class = 'row justify-content-center align-items-center'>".
-        "     <div class = 'col-8 text-center'>".
+        "<div class = 'row justify-content-center align-items-center'>" .
+        "     <div class = 'col-8 text-center'>" .
         "          <button class = 'btn btn-success' onclick='editCreditCardSeeker()'>Add Credit Card</button>" .
         "          <button class = 'btn btn-success' onclick='editDebitCardSeeker()'>Add Bank Card</button>" .
-        "     </div>".
+        "     </div>" .
         "</div>";
 
-
-    for($i = 0; $i < count($creditCardInfo); $i++) {
+    for ($i = 0; $i < count($creditCardInfo); $i++) {
 
         $html = showCreditCardInfo($html, $creditCardInfo[$i]);
 
@@ -908,7 +1027,7 @@ function showPaymentInfo($paymentInfo) {
 
     }
 
-    echo "<script>document.getElementById('accountSettings').innerHTML = \"". $html ."\"</script>";
+    echo "<script>document.getElementById('accountSettings').innerHTML = \"" . $html . "\"</script>";
 }
 
 function showDebitCardInfo(string $html, $data): string
@@ -921,7 +1040,7 @@ function showDebitCardInfo(string $html, $data): string
     $html .=
         "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>";
 
-    if($isDefault == true) { // Make green border
+    if ($isDefault == true) { // Make green border
 
         $html .=
             "<div class = 'col-8 border border-success rounded'>";
@@ -931,19 +1050,19 @@ function showDebitCardInfo(string $html, $data): string
             "<div class = 'col-8 border rounded'>";
     }
     $html .=
-        "     <p><b>Bank Account Number: </b>$accountNumber</p>".
-        "     <p><b>Institute Number: </b>$instituteNumber</p>".
-        "     <p><b>Branch Number: </b>$branchNumber</p>".
+        "     <p><b>Bank Account Number: </b>$accountNumber</p>" .
+        "     <p><b>Institute Number: </b>$instituteNumber</p>" .
+        "     <p><b>Branch Number: </b>$branchNumber</p>" .
         "</div>";
 
-    if($isDefault == false) {
+    if ($isDefault == false) {
 
         $html .=
             "<div class = 'col-2 text-center'>" .
-            "   <form action='".$_SERVER['PHP_SELF']."?tab=changeDebitStatus&accountNumber=$accountNumber' method='post'>".
+            "   <form action='" . $_SERVER['PHP_SELF'] . "?tab=changeDebitStatus&accountNumber=$accountNumber' method='post'>" .
             "     <button type=submit name='op' value='setDefault' class = 'btn btn-primary'>Set Default</button>" .
             "     <button type=submit name='op' value='delete' class = 'btn btn-danger'>Delete</button>" .
-            "   </form>".
+            "   </form>" .
             "</div>";
     } else {
 
@@ -968,7 +1087,7 @@ function showCreditCardInfo(string $html, $data): string
     $html .=
         "<div class = 'row justify-content-center align-items-center' style='margin-left: 10px'>";
 
-    if($isDefault == true) {  // Make green border
+    if ($isDefault == true) { // Make green border
 
         $html .=
             "<div class = 'col-8 border border-success rounded'>";
@@ -979,19 +1098,19 @@ function showCreditCardInfo(string $html, $data): string
     }
 
     $html .=
-        "     <p><b>Credit Card Number: </b>$CCNumber</p>".
-        "     <p><b>Expiry Date: </b>$CCExpiry</p>".
-        "     <p><b>CCB Number: </b>$CCBNumber</p>".
+        "     <p><b>Credit Card Number: </b>$CCNumber</p>" .
+        "     <p><b>Expiry Date: </b>$CCExpiry</p>" .
+        "     <p><b>CCB Number: </b>$CCBNumber</p>" .
         "</div>";
 
     if ($isDefault == false) {
 
         $html .=
             "   <div class = 'col-2 text-center'>" .
-            "   <form action='".$_SERVER['PHP_SELF']."?tab=changeCreditStatus&ccNumber=$CCNumber&ccExpiry=$CCExpiry' method='post'>".
+            "   <form action='" . $_SERVER['PHP_SELF'] . "?tab=changeCreditStatus&ccNumber=$CCNumber&ccExpiry=$CCExpiry' method='post'>" .
             "       <button type='submit' name='op' value='setDefault' class = 'btn btn-primary'>Set Default</button>" .
             "       <button type='submit' name='op' value='delete' class = 'btn btn-danger'>Delete</button>" .
-            "   </form>".
+            "   </form>" .
             "   </div>";
     } else {
 
@@ -1006,8 +1125,9 @@ function showCreditCardInfo(string $html, $data): string
     return $html;
 }
 
-function showContactInfo() {
-    $url = $_SERVER['PHP_SELF']."?tab=changeContactInfo";
+function showContactInfo()
+{
+    $url = $_SERVER['PHP_SELF'] . "?tab=changeContactInfo";
 
     $html =
         "<div class = 'row justify-content-center'>" .
@@ -1029,27 +1149,28 @@ function showContactInfo() {
         "                  <label for='number'><b>Number</b></label>" .
         "                  <input type='text' class='form-control' id='number' name='number' placeholder='Enter phone number' required>" .
         "              </div>" .
-        "              <input class='btn btn-primary' type='submit' value='Submit'>".
+        "              <input class='btn btn-primary' type='submit' value='Submit'>" .
         "           </form>" .
         "       </div>" .
         "  </div>" .
         "</div>";
 
-    echo "<script>document.getElementById('accountSettings').innerHTML = \"". $html ."\"</script>";
+    echo "<script>document.getElementById('accountSettings').innerHTML = \"" . $html . "\"</script>";
 }
 
-function showAccBalance() {
+function showAccBalance()
+{
 
     global $accountBalance;
 
     $html = getBalanceHTML($accountBalance);
 
-    if(true) {
+    if (true) {
         $html = getMonthlyPaymentRadioButtonsHTML($html);
     }
     $html = getSeekerCategoryHTML($html);
 
-    echo "<script>document.getElementById('accountSettings').innerHTML = \"". $html ."\"</script>";
+    echo "<script>document.getElementById('accountSettings').innerHTML = \"" . $html . "\"</script>";
 }
 
 /**
@@ -1067,12 +1188,27 @@ function getSeekerCategoryHTML(string $html): string
         "<div class = 'row justify-content-center'>" .
         "     <div class = 'col-8'>" .
         "          <div><b>Job Seeker Category: $userCategory</b></div>" .
-        "       <form action='".$_SERVER['PHP_SELF']."?tab=changeAccBalance' method='post'>".
-        "          <button type='submit' class='btn btn-secondary' name='basic' value='basic'>Change to Basic</button>".
-        "          <button type='submit' class='btn btn-info' name='downgrade' value='prime'>Change to Prime</button>".
-        "          <button type='submit' class='btn btn-warning' name='upgrade' value='gold'>Change to Gold</button>".
-        "       </form>".
+        "          <div class='btn-group btn-group-toggle' data-toggle='buttons'>" .
+        "               <label class='btn btn-secondary' data-toggle='tooltip' data-placement='top' title='$toolTipSeekerBasic'>" .
+        "                    <input type='radio' name='options' id='seekerBasic' autocomplete='off'> Job Seeker Basic" .
+        "               </label>" .
+        "               <label class='btn btn-success' data-toggle='tooltip' data-placement='top' title='$toolTipSeekerPrime'>" .
+        "                    <input type='radio' name='options' id='seekerPrime' autocomplete='off'> Job Seeker Prime" .
+        "               </label>" .
+        "               <label class='btn btn-warning' data-toggle='tooltip' data-placement='top' title='$toolTipSeekerGold'>" .
+        "                    <input type='radio' name='options' id='seekerGold' autocomplete='off'> Job Seeker Gold" .
+        "               </label>" .
+        "          </div>" .
         "     </div>" .
+        "</div>" .
+        "<div class = 'row justify-content-center mt-3'>" .
+        "    <div class='col-8'>" .
+        "       <form action='" . $_SERVER['PHP_SELF'] . "?tab=changeAccBalance' method='post'>" .
+        "          <button type='submit' class='btn-primary' name='downgrade' value='prime'>Upgrade/Downgrade to Prime</button>" .
+        "          <button type='submit' class='btn-primary' name='upgrade' value='gold'>Upgrade to Gold</button>" .
+        "          <button type='submit' class='btn-primary' name='basic' value='basic'>Downgrad to Basic</button>" .
+        "       </form>" .
+        "    </div>" .
         "</div>";
 
     return $html;
@@ -1092,13 +1228,13 @@ function getMonthlyPaymentRadioButtonsHTML(string $html): string
         "          <div><b>Payment Method: $paymentMethod</b></div>" .
         "     </div>" .
         "</div>" .
-        "<div class='row justify-content-center mt-3'>".
-        "   <div class='col-8'>".
-        "       <form action='".$_SERVER['PHP_SELF']."?tab=changeAccBalance' method='post'>".
-        "          <button type='submit' class='btn btn-info' name='auto' value='true'>Change to Auto payment</button>".
-        "          <button type='submit' class='btn btn-info' name='auto' value='false'>Change to Manual payment</button>".
-        "       </form>".
-        "     </div>" .
+        "<div class='row justify-content-center mt-3'>" .
+        "   <div class='col-8'>" .
+        "       <form action='" . $_SERVER['PHP_SELF'] . "?tab=changeAccBalance' method='post'>" .
+        "          <button type='submit' class='btn-primary' name='auto' value='true'>Change to Auto payment</button>" .
+        "          <button type='submit' class='btn-primary' name='auto' value='false'>Change to Manual payment</button>" .
+        "       </form>" .
+        "   </div>" .
         "</div>";
 
     return $html;
@@ -1117,30 +1253,29 @@ function getBalanceHTML(float $balance): string
         "<div class = 'row justify-content-center'>" .
         "     <div class = 'col-6'>";
 
-
     if ($balance >= 0) {
 
         $html .=
             "     <div><b>Account Balance:</b> $$balance</div>" .
-            "     <div>Your account is in good standing.</div>".
-            "</div>".
+            "     <div>Your account is in good standing.</div>" .
+            "</div>" .
             "<div class ='col-2'>";
     } else {
 
         $html .=
             "     <div><span class='badge badge-danger'>Account Balance </span>$$balance</div>" .
-            "     <div>Your account limited. Make a payment to gain full access</div>".
-            "</div>".
+            "     <div>Your account limited. Make a payment to gain full access</div>" .
+            "</div>" .
             "<div class ='col-2'>";
     }
 
-    if($balance < 0  || (!$autoPay)) {
+    if ($balance < 0 || (!$autoPay)) {
 
         $html .=
-            "          <form action='".$_SERVER['PHP_SELF']."?tab=makePayment' method='post' onsubmit='return confirmPayment()'>" .
-            "          <button class='btn btn-success' type='submit' name='amount' value='$monthlyCharge'> Make Payment $$monthlyCharge </button>".
+            "          <form action='" . $_SERVER['PHP_SELF'] . "?tab=makePayment' method='post' onsubmit='return confirmPayment()'>" .
+            "          <button class='btn btn-success' type='submit' name='amount' value='$monthlyCharge'> Make Payment $$monthlyCharge </button>" .
             "          </form>" .
-            "     </div>".
+            "     </div>" .
             "</div>";
     } else { // balance in good standing and auto monthly payment
 
@@ -1152,12 +1287,13 @@ function getBalanceHTML(float $balance): string
     return $html;
 }
 
-function showPasswordChange() {
+function showPasswordChange()
+{
 
     $html =
-        "<form action='".$_SERVER['PHP_SELF']."?tab=passwordChange' method='post' onsubmit='return confirmPassword()'>".
-        "     <div class = 'row justify-content-center'>".
-        "        <div class = 'col-8'>".
+        "<form action='" . $_SERVER['PHP_SELF'] . "?tab=passwordChange' method='post' onsubmit='return confirmPassword()'>" .
+        "     <div class = 'row justify-content-center'>" .
+        "        <div class = 'col-8'>" .
         "             <div class='form-group'>" .
         "                  <label for='prevPass'><b>Previous Password</b></label> " .
         "                  <input type='password' class='form-control' placeholder='Enter previous password' id='prevPass' name='prevPass' value='' required>" .
@@ -1170,16 +1306,10 @@ function showPasswordChange() {
         "                   <label for='conNewPass'><b>Confirm New Password</b></label> " .
         "                   <input type='password' class='form-control' placeholder='Confirm password' id='conNewPass' name='conNewPass' value='' required>" .
         "              </div>" .
-        "                   <input class='btn btn-primary' type='submit' value='Submit'>".
-        "         </div>".
-        "    </div>".
+        "                   <input class='btn btn-primary' type='submit' value='Submit'>" .
+        "         </div>" .
+        "    </div>" .
         "</form>";
 
-    echo "<script>document.getElementById('accountSettings').innerHTML = \"". $html ."\"</script>";
+    echo "<script>document.getElementById('accountSettings').innerHTML = \"" . $html . "\"</script>";
 }
-
-function goToPage($url) {
-    echo "<script>window.location.href = '$url'</script>";
-}
-
-
