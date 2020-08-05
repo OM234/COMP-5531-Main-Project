@@ -231,11 +231,9 @@ WHERE UserName = 'Lennon_R94';
 
 # xvii. Report of all users by the administrator for employers or employees
 
-# employees (applicants aka job seekers)
 SELECT UserName, FirstName, LastName, Email, Category, Balance
-FROM user natural join applicant;
-
-# employers
+FROM user natural join applicant
+UNION
 SELECT UserName, FirstName, LastName, Email, Category, Balance
 FROM user natural join employer;
 
