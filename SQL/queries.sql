@@ -2,69 +2,75 @@ use cxc55311;
 
 # i. Create, delete, edit, and display an Employer
 
-INSERT INTO User(UserName, FirstName, LastName, Email, ContactNumber, Password)
-VALUES ('Xavier_K67', 'Xavier', 'Kelp', 'XavierKelp34@coldmail.com', '514-675-2345', 'xylophone454');
+# username of employer is foreign key to user table. insert into user table first.
+INSERT INTO user(UserName, FirstName, LastName, Email, ContactNumber, Password)
+VALUES ('Xavier_Kyle67', 'Xavier', 'Kelp', 'XavierKelp34@coldmail.com', '514-675-2345', 'xylophone454');
 
-INSERT INTO Employer(UserName, EmployerName, Activated, Category, Balance)
-VALUES ('Xavier_K67', 'Microsoft Corporation', true, 'gold', '675.23');
+INSERT INTO employer(UserName, EmployerName, Activated, Category, Balance)
+VALUES ('Xavier_Kyle67', 'Microsoft Corporation', true, 'gold', '675.23');
 
-DELETE FROM Employer
-WHERE UserName = 'Xavier_K67';
+DELETE FROM employer
+WHERE UserName = 'Xavier_Kyle67';
 
-UPDATE Employer
+UPDATE employer
 SET EmployerName = 'Google LLC'
-WHERE UserName = 'Lennon_R37';
+WHERE UserName = 'Fern_Jama67';
 
-# Display specific record
+# Display specific employer record
 SELECT *
-FROM Employer
-WHERE UserName = 'Lennon_R37';
+FROM employer
+WHERE UserName = 'Fern_Jama67';
 
-# Display random record
+# Display random emplyoer record
 SELECT *
-FROM Employer
+FROM employer
 ORDER BY RAND()
 LIMIT 1;
 
 # ii. Create, delete, edit, display a category by an Employer.
 
-INSERT INTO User(UserName, FirstName, LastName, Email, ContactNumber, Password)
+INSERT INTO user(UserName, FirstName, LastName, Email, ContactNumber, Password)
 VALUES ('Xavier_K67', 'Xavier', 'Kelp', 'XavierKelp34@coldmail.com', '514-675-2345', 'xylophone454');
 
-INSERT INTO Employer(UserName, EmployerName, Activated, Category, Balance)
+INSERT INTO employer(UserName, EmployerName, Activated, Category, Balance)
 VALUES ('Xavier_K67', 'Microsoft Corporation', true, 'prime', '675.23');
 
-UPDATE Employer
+UPDATE employer
 SET Category = null
-WHERE UserName = 'Harley_O96';
+WHERE UserName = 'Fern_Jama67';
 
-UPDATE Employer
+UPDATE employer
 SET Category = 'gold'
-WHERE UserName = 'Harley_O96';
+WHERE UserName = 'Fern_Jama67';
 
+# Display a category and employer name of a random employer
 SELECT Category, EmployerName
-FROM Employer
+FROM employer
 ORDER BY RAND()
 LIMIT 1;
 
 # iii. Post a new job by an employer
 
-INSERT INTO Job(JOBID, EMPLOYERUSERNAME, TITLE, DATEPOSTED, DESCRIPTION, CATEGORY, JOBSTATUS, EMPNEEDED)
-VALUES ('1111', 'Alexis_S04', 'Project Manager', '2020-07-20', 'Looking for reliable person. 2 years experience',
+INSERT INTO job(JOBID, EMPLOYERUSERNAME, TITLE, DATEPOSTED, DESCRIPTION, CATEGORY, JOBSTATUS, EMPNEEDED)
+VALUES ('1111', 'Kortez_Nena32', 'Project Manager', '2020-07-20', 'Looking for reliable person. 2 years experience',
         'Information Technology', '1', '1');
 
 # iv. Provide a job offer for an employee by an employer
 
-INSERT INTO Application(ApplicantUserName, JobID, ApplicationStatus, ApplicationDate)
-VALUES ('Addison_C81', '1111', 'sent', '2020-07-23');
+INSERT INTO application(ApplicantUserName, JobID, ApplicationStatus, ApplicationDate)
+VALUES ('Ameisha_Dalesia62', '1111', 'sent', '2020-07-23');
 
-# v. Report of a posted job by an employer
+# v. Report of a posted job by an employer (Job title and description, date
+# posted, list of employees applied to the job and status of each application)
 
-SELECT Title, Description, DatePosted, ApplicantUserName, ApplicationStatus
-FROM application, job
-WHERE application.JobID = job.JobID AND application.JobID = 1743;
+SELECT Title, DatePosted, description, j.Category, EmpNeeded, EmployerName, ApplicantUserName
+    FROM employer e join job j on e.UserName = j.EmployerUserName join application
+    WHERE EmployerName = 'Ultimate Software' and title = 'Global Mobility Specialist' and j.JobID = application.JobID;
 
 # vi. Report of posted jobs by an employer during a specific period of time
+# (Job title, date posted, short description of the job up to 50 characters, number
+# of needed employees to the post, number of applied jobs to the post,
+# number of accepted offers)
 
 SELECT Job_Title, DatePosted, description, EmpNeeded, EmployerName, NumberHired, COUNT(Job_Title) as NumberOfApplicants
 FROM (SELECT Title as Job_Title, DatePosted, description, EmpNeeded, EmployerName
@@ -85,25 +91,26 @@ LEFT JOIN (SELECT Title, ApplicationStatus FROM employer e join job j on e.UserN
 numberOfHires where UltimateSoftwareJobs.Job_Title = numberOfHires.HireTitle
 GROUP BY Job_Title;
 
-# vii. Create/Delete/Edit/Display an employee
+# vii. Create/Delete/Edit/Display an employee (job seeker)
 
-INSERT INTO User(UserName, FirstName, LastName, Email, ContactNumber, Password)
-VALUES ('Zack_B67', 'Zack', 'Bael', 'ZackBael61@hmail.com', '438-634-9835', 'couch872');
+INSERT INTO user(UserName, FirstName, LastName, Email, ContactNumber, Password)
+VALUES ('Zack_Barns67', 'Zack', 'Bael', 'ZackBael61@hmail.com', '438-634-9835', 'couch872');
 
-INSERT INTO Applicant(UserName, Activated, Category, Balance)
-VALUES ('Zack_B67', true, 'basic', '34.55');
+INSERT INTO applicant(UserName, Activated, Category, Balance)
+VALUES ('Zack_Barns67', true, 'basic', '34.55');
 
 DELETE FROM applicant
-WHERE UserName = 'Zack_B67';
+WHERE UserName = 'Zack_Barns67';
 
-UPDATE Applicant
+# edit an employee, changing their balance. Replace SET BALANCE' with any other attribute.
+UPDATE applicant
 SET BALANCE = '100.34'
-Where UserName = 'Ainsley_L20';
+Where UserName = 'Alizabeth_Carnell12';
 
 # Display specific record
 SELECT *
 FROM applicant
-WHERE UserName = 'Ainsley_L20';
+WHERE UserName = 'Alizabeth_Carnell12';
 
 # Display random record
 SELECT *
@@ -111,51 +118,50 @@ FROM applicant
 ORDER BY RAND()
 LIMIT 1;
 
-# viii. Search for a job by an employee (or search for jobs an employee applied for?)
+# viii. Search for a job by an employee (i.e. someone who wants a job searches for one)
 
+#search for a job with a keyword. In this case, retrieves all 'technician' jobs'
 SELECT *
-FROM Job;
+FROM job
+WHERE Title LIKE '%technician%';
 
 # List of jobs by specific category.
 SELECT *
 FROM job
 WHERE Category = 'Education and Training';
 
-SELECT *
-FROM application
-WHERE ApplicantUserName = 'Alex_G66';
-
 # ix. Apply for a job by an employee.
 
 INSERT INTO application(applicantusername, jobid, applicationstatus, applicationdate)
-VALUES ('Campbell_B00', '1426', 'sent', '2020-07-25');
+VALUES ('Darien_Tzipporah02', '1145', 'sent', '2020-07-25');
 
 # x. Accept/Deny a job offer by an employee.
 
 UPDATE application
 SET ApplicationStatus = 'accepted'
-WHERE ApplicantUserName = 'Campbell_B00' AND JobID = '1426';
+WHERE ApplicantUserName = 'Darien_Tzipporah02' AND JobID = '1145';
 
 UPDATE application
 SET ApplicationStatus = 'denied'
-WHERE ApplicantUserName = 'Campbell_B00' AND JobID = '1426';
+WHERE ApplicantUserName = 'Darien_Tzipporah02' AND JobID = '1145';
 
 # xi. Withdraw from an applied job by an employee
 
 DELETE from application
-WHERE ApplicantUserName = 'Campbell_B00' AND JobID = '1426';
+WHERE ApplicantUserName = 'Darien_Tzipporah02' AND JobID = '1145';
 
 # xii. Delete a profile by an employee.
 
 DELETE FROM application
-WHERE ApplicantUserName = 'Campbell_B00';
+WHERE ApplicantUserName = 'Darien_Tzipporah02';
 
-# xiii. Report of applied jobs by an employee during a specific period of time
+# xiii. Report of applied jobs by an employee during a specific period of time (Job title, date applied,
+# short description of the job up to 50 characters, status of the application).
 
 SELECT job.Title, application.ApplicationDate, job.description, application.ApplicationStatus
 FROM application, job
 WHERE (ApplicationDate BETWEEN '2020-01-20' AND '2020-10-15') AND job.JobID = application.JobID AND
-      applicantUserName = 'Bethany_Delena72';
+      applicantUserName = 'Ladarious_Nelia48';
 
 # xiv. Add/Delete/Edit a method of payment by a user.
 
@@ -163,32 +169,30 @@ INSERT INTO creditcardinfo(CCNumber, ExpireDate, CCBNumber, IsDefault, Auto_Manu
 VALUES('3468567234567502', '2025-02-22', '345', '1', '0');
 
 INSERT INTO applicantcc(ApplicantUserName, CCNumber)
-VALUES('Frances_M45', '3468567234567502');
+VALUES('Ladarious_Nelia48', '3468567234567502');
 
 DELETE FROM creditcardinfo
 WHERE CCNUMBER IN (SELECT applicantcc.CCnumber FROM applicantcc WHERE CCNumber = '3468567234567502' AND
-                                                                      ApplicantUserName = 'Frances_M45');
+                                                                      ApplicantUserName = 'Ladarious_Nelia48');
 
 INSERT INTO padinfo(AccountNumber, InstituteNumber, BranchNumber, IsDefault, Auto_Manual)
 VALUES('1895612', '001', '232', '0', '0');
 
 INSERT INTO applicantpad(ApplicantUserName, AccountNumber)
-VALUES('Frances_M45', '1895612');
+VALUES('Ladarious_Nelia48', '1895612');
 
 DELETE FROM padinfo
 WHERE AccountNumber IN (SELECT applicantpad.accountnumber FROM applicantpad WHERE applicantpad.AccountNumber ='1895612'
-                        AND applicantpad.ApplicantUserName = 'Frances_M45');
+                        AND applicantpad.ApplicantUserName = 'Ladarious_Nelia48');
 
 # Update credit card in this creditcardinfo table first, then update in child table applicantcc
 UPDATE creditcardinfo
 SET CCnumber = '0729363628516973'
-WHERE CCNumber IN (SELECT applicantcc.CCNumber FROM applicantcc WHERE ApplicantUserName = 'Frances_M45');
+WHERE CCNumber IN (SELECT applicantcc.CCNumber FROM applicantcc WHERE ApplicantUserName = 'Ladarious_Nelia48');
 
 UPDATE applicantcc
 SET CCnumber = '0729363628516973'
-WHERE ApplicantUserName = 'Frances_M45';
-
-# 0729363628516973 original cc
+WHERE ApplicantUserName = 'Ladarious_Nelia48';
 
 # xv. Add/Delete/Edit an automatic payment by a user.
 
@@ -196,12 +200,11 @@ INSERT INTO creditcardinfo(CCNumber, ExpireDate, CCBNumber, IsDefault, Auto_Manu
 VALUES ('827390457394827812', '2026-03-24', '323', '0', '1');
 
 INSERT INTO applicantcc(ApplicantUserName, CCNumber)
-VALUES ('Frances_M45', '827390457394827812');
+VALUES ('Ladarious_Nelia48', '827390457394827812');
 
 DELETE from applicantcc
-WHERE ApplicantUserName = 'Frances_M45';
+WHERE ApplicantUserName = 'Ladarious_Nelia48';
 
-# Trying to update an auto (1) credit card from a user... But usernames aren't in the same table as auto setting.
 UPDATE applicantcc
 SET CCNUMBER = '827390457394827812'
 WHERE CCNumber IN (SELECT creditcardinfo.CCNumber FROM creditcardinfo WHERE Auto_Manual = '1' AND
@@ -209,35 +212,36 @@ WHERE CCNumber IN (SELECT creditcardinfo.CCNumber FROM creditcardinfo WHERE Auto
 
 # xvi. Make a manual payment by a user.
 
-# Prime payment
+# Prime Job Seeker payment
 UPDATE applicant
 SET Balance = Balance - 10
-WHERE UserName = 'Frances_M45';
+WHERE UserName = 'Ladarious_Nelia48';
 
-# Gold Payment
+# Gold Job Seeker Payment
 UPDATE applicant
 SET Balance = Balance - 20
-WHERE UserName = 'Campbell_B00';
+WHERE UserName = 'Maigen_Cheryll33';
 
-# Prime payment
+# Prime Employer payment
 UPDATE applicant
 SET Balance = Balance - 50
-WHERE UserName = 'Amari_C79';
+WHERE UserName = 'Telia_Naticia93';
 
-# Gold Payment
+# Gold Employer Payment
 UPDATE applicant
 SET Balance = Balance - 100
-WHERE UserName = 'Lennon_R94';
+WHERE UserName = 'Venetia_Caspar38';
 
-# xvii. Report of all users by the administrator for employers or employees
+# xvii. Report of all users by the administrator for employers or employees (Name, email, category, status, balance).
 
-SELECT FirstName, LastName, Email, Category, Balance
+SELECT FirstName, LastName, Email, Category, Activated as Status, Balance
 FROM user natural join applicant
 UNION
-SELECT FirstName, LastName, Email, Category, Balance
+SELECT FirstName, LastName, Email, Category, Activated as Status, Balance
 FROM user natural join employer;
 
-# xviii. Report of all outstanding balance accounts
+# xviii. Report of all outstanding balance accounts (User name, email, balance,
+# since when the account is suffering).
 
 SELECT UserName, email, balance
 FROM user
